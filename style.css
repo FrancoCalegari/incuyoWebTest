@@ -351,11 +351,40 @@ a:hover {
 			transparent 50%
 		);
 	pointer-events: none;
+	z-index: 1;
+}
+
+/* Hero Background Video */
+.hero-bg-video {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: auto;
+	transform: translate(-50%, -50%);
+	object-fit: cover;
+	z-index: 0;
+	filter: blur(8px) brightness(0.6);
+}
+
+/* Glassmorphism Overlay */
+.hero-glass-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(34, 58, 91, 0.3);
+	backdrop-filter: blur(50px) saturate(180%);
+	-webkit-backdrop-filter: blur(10px) saturate(180%);
+	z-index: 1;
 }
 
 .hero-content {
 	position: relative;
-	z-index: 1;
+	z-index: 10;
 	text-align: center;
 	max-width: 900px;
 	width: 100%;
@@ -1043,6 +1072,74 @@ a:hover {
 
 .icon {
 	color: var(--gray-100);
+}
+
+/* Tech Stack Infinite Carousel */
+.tech-carousel-container {
+	margin-top: var(--space-16);
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	padding: var(--space-8) 0;
+}
+
+.tech-carousel {
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+	mask-image: linear-gradient(
+		to right,
+		transparent,
+		black 10%,
+		black 90%,
+		transparent
+	);
+	-webkit-mask-image: linear-gradient(
+		to right,
+		transparent,
+		black 10%,
+		black 90%,
+		transparent
+	);
+}
+
+.tech-carousel-track {
+	display: flex;
+	gap: var(--space-12);
+	animation: scroll-tech 30s linear infinite;
+	width: max-content;
+}
+
+.tech-carousel-track:hover {
+	animation-play-state: paused;
+}
+
+.tech-icon {
+	font-size: 3.5rem;
+	color: var(--primary-gold);
+	opacity: 0.8;
+	transition: all var(--transition-base);
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 80px;
+	height: 80px;
+}
+
+.tech-icon:hover {
+	opacity: 1;
+	transform: scale(1.2) translateY(-5px);
+	filter: drop-shadow(0 4px 12px rgba(195, 146, 21, 0.5));
+}
+
+@keyframes scroll-tech {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
 }
 
 /* CTA Button Pulse Animation */

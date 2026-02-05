@@ -446,9 +446,9 @@ a:hover {
 }
 
 .btn-secondary {
-	background: transparent;
+	background: var(--primary-dark);
 	color: var(--white);
-	border: 2px solid var(--primary-blue-light);
+	border: 2px solid var(--primary-dark);
 }
 
 .btn-secondary:hover {
@@ -1043,6 +1043,58 @@ a:hover {
 
 .icon {
 	color: var(--gray-100);
+}
+
+/* CTA Button Pulse Animation */
+.cta-pulse {
+	position: relative;
+	animation: ctaPulse 2s ease-in-out infinite;
+}
+
+.cta-pulse::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: inherit;
+	background: inherit;
+	opacity: 0.7;
+	animation: ctaGlow 2s ease-in-out infinite;
+	z-index: -1;
+}
+
+.cta-pulse:hover {
+	animation: none;
+	transform: scale(1.05);
+}
+
+.cta-pulse:hover::before {
+	animation: none;
+	opacity: 1;
+}
+
+@keyframes ctaPulse {
+	0%,
+	100% {
+		transform: scale(1);
+		box-shadow: 0 4px 20px rgba(195, 146, 21, 0.4);
+	}
+	50% {
+		transform: scale(1.03);
+		box-shadow: 0 6px 30px rgba(195, 146, 21, 0.6);
+	}
+}
+
+@keyframes ctaGlow {
+	0%,
+	100% {
+		box-shadow: 0 0 15px rgba(195, 146, 21, 0.5);
+	}
+	50% {
+		box-shadow: 0 0 30px rgba(195, 146, 21, 0.8);
+	}
 }
 
 /* ============================================

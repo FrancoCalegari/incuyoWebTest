@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Proyectos creados por alumnos del Instituto INCUYO - Tecnicatura en Desarrollo de Software"
+		/>
+		<title>Proyectos de Alumnos - Instituto INCUYO</title>
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+		<!-- Stylesheet -->
+		<link rel="stylesheet" href="style.css" />
+
+		<!-- Font Awesome for Icons -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
+
+		<style>
+			/* Additional styles for projects page */
+			.projects-hero {
+				min-height: 50vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: var(--gradient-dark);
+				position: relative;
+				padding: var(--space-24) 0 var(--space-16);
+			}
+
+			.projects-hero::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: radial-gradient(
+					circle at 30% 50%,
+					rgba(195, 146, 21, 0.15) 0%,
+					transparent 50%
+				);
+				pointer-events: none;
+			}
+
+			.projects-hero-content {
+				position: relative;
+				z-index: 1;
+				text-align: center;
+			}
+
+			.back-link {
+				display: inline-flex;
+				align-items: center;
+				gap: var(--space-2);
+				color: var(--primary-gold);
+				font-weight: 600;
+				margin-bottom: var(--space-6);
+				transition: all var(--transition-base);
+			}
+
+			.back-link:hover {
+				transform: translateX(-5px);
+			}
+
+			.project-card {
+				background: var(--white);
+				border-radius: var(--radius-2xl);
+				overflow: hidden;
+				box-shadow: var(--shadow-lg);
+				transition: all var(--transition-base);
+				margin-bottom: var(--space-12);
+			}
+
+			.project-card:hover {
+				transform: translateY(-5px);
+				box-shadow: var(--shadow-xl);
+			}
+
+			.project-header {
+				display: grid;
+				grid-template-columns: auto 1fr;
+				gap: var(--space-6);
+				padding: var(--space-8);
+				align-items: center;
+				background: linear-gradient(
+					135deg,
+					var(--gray-100) 0%,
+					var(--off-white) 100%
+				);
+				border-bottom: 3px solid var(--primary-gold);
+			}
+
+			.student-photo {
+				width: 80px;
+				height: 80px;
+				border-radius: var(--radius-full);
+				object-fit: cover;
+				border: 3px solid var(--primary-gold);
+				box-shadow: var(--shadow-md);
+			}
+
+			.student-info h3 {
+				color: var(--gray-900);
+				font-size: var(--text-2xl);
+				margin-bottom: var(--space-2);
+			}
+
+			.student-year {
+				display: inline-block;
+				background: var(--gradient-accent);
+				color: var(--white);
+				padding: var(--space-2) var(--space-4);
+				border-radius: var(--radius-full);
+				font-size: var(--text-sm);
+				font-weight: 600;
+			}
+
+			.project-content {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: var(--space-8);
+				padding: var(--space-8);
+			}
+
+			.project-media {
+				position: relative;
+				border-radius: var(--radius-xl);
+				overflow: hidden;
+				aspect-ratio: 16/9;
+				box-shadow: var(--shadow-md);
+			}
+
+			.project-media img,
+			.project-media video {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.project-details h4 {
+				color: var(--gray-900);
+				font-size: var(--text-xl);
+				margin-bottom: var(--space-4);
+				display: flex;
+				align-items: center;
+				gap: var(--space-3);
+			}
+
+			.project-description {
+				color: var(--gray-600);
+				line-height: 1.8;
+				margin-bottom: var(--space-6);
+			}
+
+			.project-tech {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--space-2);
+				margin-bottom: var(--space-6);
+			}
+
+			.tech-tag {
+				background: var(--gray-100);
+				color: var(--gray-700);
+				padding: var(--space-2) var(--space-3);
+				border-radius: var(--radius-md);
+				font-size: var(--text-sm);
+				font-weight: 500;
+			}
+
+			.project-actions {
+				display: flex;
+				gap: var(--space-4);
+			}
+
+			.btn-demo {
+				flex: 1;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				gap: var(--space-2);
+			}
+
+			/* Responsive */
+			@media (max-width: 768px) {
+				.project-content {
+					grid-template-columns: 1fr;
+				}
+
+				.project-header {
+					grid-template-columns: 1fr;
+					text-align: center;
+				}
+
+				.student-photo {
+					margin: 0 auto;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- NAVIGATION -->
+		<nav class="navbar scrolled" id="navbar">
+			<div class="container">
+				<a href="index.html" class="navbar-brand">
+					INSTITUTO <span>INCUYO</span>
+				</a>
+
+				<button
+					class="navbar-toggle"
+					id="navbarToggle"
+					aria-label="Toggle navigation"
+				>
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+
+				<ul class="navbar-menu" id="navbarMenu">
+					<li><a href="index.html#inicio">Inicio</a></li>
+					<li><a href="index.html#programa">Programa</a></li>
+					<li><a href="index.html#inscripciones">Inscripciones</a></li>
+					<li><a href="index.html#curriculum">Curriculum</a></li>
+					<li><a href="websdemo.html">Proyectos</a></li>
+					<li><a href="index.html#contacto">Contacto</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<!-- HERO SECTION -->
+		<section class="projects-hero">
+			<div class="container">
+				<div class="projects-hero-content">
+					<a href="index.html" class="back-link">
+						<i class="fas fa-arrow-left"></i> Volver al inicio
+					</a>
+					<h1 class="hero-title" style="color: var(--white)">
+						Proyectos de Alumnos
+					</h1>
+					<p class="hero-description" style="color: var(--gray-300)">
+						Descubrí los increíbles proyectos creados por nuestros estudiantes
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- PROJECTS SECTION -->
+		<section class="section" style="background: var(--gray-100)">
+			<div class="container" style="max-width: 1200px">
+				<!-- Project 1: Franco Calegari -->
+				<div class="project-card reveal">
+					<div class="project-header">
+						<img
+							src="https://ui-avatars.com/api/?name=Franco+Calegari&size=160&background=c39215&color=fff&bold=true"
+							alt="Franco Calegari"
+							class="student-photo"
+						/>
+						<div class="student-info">
+							<h3>Franco Calegari</h3>
+							<span class="student-year">2° Año</span>
+						</div>
+					</div>
+
+					<div class="project-content">
+						<div class="project-media">
+							<img
+								src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&h=450&fit=crop"
+								alt="Spider Web Test Screenshot"
+								loading="lazy"
+							/>
+						</div>
+
+						<div class="project-details">
+							<h4>
+								<i class="fas fa-spider" style="color: var(--primary-gold)"></i>
+								Spider Web Test
+							</h4>
+
+							<p class="project-description">
+								Aplicación web interactiva desarrollada con tecnologías
+								modernas. Este proyecto demuestra habilidades avanzadas en
+								desarrollo frontend, con un diseño responsive y animaciones
+								fluidas. Incluye funcionalidades dinámicas y una excelente
+								experiencia de usuario.
+							</p>
+
+							<div class="project-tech">
+								<span class="tech-tag"><i class="fab fa-react"></i> React</span>
+								<span class="tech-tag"
+									><i class="fab fa-js"></i> JavaScript</span
+								>
+								<span class="tech-tag"><i class="fab fa-css3"></i> CSS3</span>
+								<span class="tech-tag"
+									><i class="fas fa-database"></i> API Integration</span
+								>
+							</div>
+
+							<div class="project-actions">
+								<a
+									href="https://spider-web-test.vercel.app/"
+									target="_blank"
+									class="btn btn-primary btn-demo"
+								>
+									<i class="fas fa-external-link-alt"></i> Ver Demo en Vivo
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Project 2: Gabriel Reina -->
+				<div class="project-card reveal">
+					<div class="project-header">
+						<img
+							src="https://ui-avatars.com/api/?name=Gabriel+Reina&size=160&background=223a5b&color=c39215&bold=true"
+							alt="Gabriel Reina"
+							class="student-photo"
+						/>
+						<div class="student-info">
+							<h3>Gabriel Reina</h3>
+							<span class="student-year">1° Año</span>
+						</div>
+					</div>
+
+					<div class="project-content">
+						<div class="project-media">
+							<img
+								src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=450&fit=crop"
+								alt="Tartas Odi Screenshot"
+								loading="lazy"
+							/>
+						</div>
+
+						<div class="project-details">
+							<h4>
+								<i
+									class="fas fa-birthday-cake"
+									style="color: var(--primary-gold)"
+								></i>
+								Tartas Odi
+							</h4>
+
+							<p class="project-description">
+								Sitio web completo para una pastelería artesanal, desarrollado
+								por un alumno de primer año. Incluye catálogo de productos,
+								sistema de pedidos y diseño atractivo. Demuestra excelente
+								comprensión de diseño web y programación básica, creando una
+								solución funcional para un negocio real.
+							</p>
+
+							<div class="project-tech">
+								<span class="tech-tag"><i class="fab fa-html5"></i> HTML5</span>
+								<span class="tech-tag"
+									><i class="fab fa-css3-alt"></i> CSS3</span
+								>
+								<span class="tech-tag"
+									><i class="fab fa-js"></i> JavaScript</span
+								>
+								<span class="tech-tag"
+									><i class="fas fa-mobile-alt"></i> Responsive</span
+								>
+							</div>
+
+							<div class="project-actions">
+								<a
+									href="https://tartas-odi.vercel.app/"
+									target="_blank"
+									class="btn btn-primary btn-demo"
+								>
+									<i class="fas fa-external-link-alt"></i> Ver Demo en Vivo
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- CTA Section -->
+				<div class="text-center" style="margin-top: var(--space-16)">
+					<div
+						class="card"
+						style="
+							background: var(--gradient-primary);
+							color: white;
+							max-width: 700px;
+							margin: 0 auto;
+						"
+					>
+						<h3 class="card-title" style="color: white">
+							¿Querés crear proyectos como estos?
+						</h3>
+						<p class="card-text" style="color: rgba(255, 255, 255, 0.9)">
+							Unite a nuestra Tecnicatura en Desarrollo de Software y aprendé a
+							crear aplicaciones profesionales desde el primer año.
+						</p>
+						<a
+							href="index.html#inscripciones"
+							class="btn btn-secondary btn-lg"
+							style="margin-top: var(--space-4)"
+						>
+							<i class="fas fa-graduation-cap"></i> Inscribite Ahora
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- FOOTER -->
+		<footer class="footer">
+			<div class="container">
+				<div class="footer-content">
+					<!-- About Section -->
+					<div class="footer-section">
+						<h3>Instituto INCUYO</h3>
+						<p>Instituto de Estudios Superiores Nuevo Cuyo PT-169</p>
+						<p>
+							Formando profesionales en desarrollo de software con las últimas
+							tecnologías e inteligencia artificial.
+						</p>
+					</div>
+
+					<!-- Quick Links -->
+					<div class="footer-section">
+						<h3>Enlaces Rápidos</h3>
+						<p><a href="index.html#inicio">Inicio</a></p>
+						<p><a href="index.html#programa">Programa</a></p>
+						<p><a href="index.html#curriculum">Curriculum</a></p>
+						<p><a href="websdemo.html">Proyectos</a></p>
+					</div>
+
+					<!-- Contact Info -->
+					<div class="footer-section">
+						<h3>Contacto</h3>
+						<div class="contact-item">
+							<i class="fas fa-phone contact-icon"></i>
+							<a href="tel:+5492616271658">(+054) 261 6271658</a>
+						</div>
+						<div class="contact-item">
+							<i class="fas fa-envelope contact-icon"></i>
+							<a href="mailto:incuyo@gmail.com">incuyo@gmail.com</a>
+						</div>
+						<div class="contact-item">
+							<i class="fas fa-map-marker-alt contact-icon"></i>
+							<span>La Rioja 614, Mendoza, Argentina</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="footer-bottom">
+					<p>&copy; 2024 Instituto INCUYO - Todos los derechos reservados</p>
+				</div>
+			</div>
+		</footer>
+
+		<!-- WHATSAPP FLOATING BUTTON -->
+		<div class="whatsapp-float">
+			<a
+				href="https://wa.me/5492616271658?text=Hola!%20Me%20gustaría%20recibir%20más%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
+				class="whatsapp-btn"
+				target="_blank"
+				aria-label="Contactar por WhatsApp"
+			>
+				<i class="fab fa-whatsapp"></i>
+			</a>
+		</div>
+
+		<!-- JavaScript -->
+		<script src="script.js"></script>
+	</body>
+</html>

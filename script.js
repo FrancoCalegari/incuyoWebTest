@@ -426,3 +426,249 @@ if ("serviceWorker" in navigator) {
 		// });
 	});
 }
+
+// ============================================
+// AI CHATBOT – GEMINI API
+// ============================================
+(function () {
+	// ── Gemini API credentials (leídas desde config.js — ver config.example.js) ──
+	const GEMINI_API_KEY = (window.INCUYO_CONFIG && window.INCUYO_CONFIG.GEMINI_API_KEY) || "";
+	const GEMINI_MODEL = "gemini-1.5-flash";
+	const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+	if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+		console.warn("[INCUYO AI] No se encontró una clave de API válida. Copiá config.example.js → config.js y completá tu GEMINI_API_KEY.");
+	}
+
+	// ── Page context the AI will use ────────────────────────────────────────
+	const PAGE_CONTEXT = `
+Eres el asistente virtual oficial del Instituto INCUYO (Instituto de Estudios Superiores Nuevo Cuyo PT-169), ubicado en La Rioja 614, Ciudad de Mendoza, Argentina.
+
+INSTRUCCIÓN FUNDAMENTAL: Solo debes responder preguntas relacionadas con el Instituto INCUYO, sus programas, inscripciones, certificaciones, metodología y contacto. Si la pregunta NO tiene relación con el instituto, responde exactamente: "Lo siento, solo puedo responder preguntas relacionadas con el Instituto INCUYO y su oferta educativa."
+
+INFORMACIÓN DEL INSTITUTO:
+- Nombre completo: Instituto de Estudios Superiores Nuevo Cuyo PT-169
+- Carrera: Tecnicatura Superior en Desarrollo de Software
+- Duración: 6 cuatrimestres (3 años)
+- Modalidad: Presencial / Bimodal (también por Zoom, clases grabadas para consultas)
+- Resolución: 2024-6079-E-GDEMZA-DGE
+- Ubicación: La Rioja 614, Ciudad de Mendoza, Argentina
+- Teléfono/WhatsApp: (+054) 261 6271658
+- Email: incuyo@gmail.com
+- Campus Virtual: aula.incuyo.edu.ar
+
+TÍTULOS QUE OTORGA:
+- Título Nacional: Técnico Superior en Desarrollo de Software
+- Títulos intermedios: Programador Junior / Desarrollador Full Stack Junior
+
+CONDICIONES DE INGRESO:
+- Haber aprobado el nivel Secundario o Ciclo Polimodal
+- O ser mayor de 25 años según el Art. 7° de la Ley de Educación Superior N° 24.521
+
+PLAN DE ESTUDIOS:
+1° AÑO: Programación 1 + IA, Matemática aplicada, Lógica computacional, Inglés técnico 1, Alfabetización académica, Seminario de nuevas tecnologías + IA, Arquitectura de dispositivos, Sistemas operativos 1, Base de datos 1, Práctica Profesionalizante 1 + IA.
+2° AÑO: Programación 2 + IA, Matemática discreta, Comunicación y redes, Inglés técnico 2, Modelado de software + IA, Sistemas Operativos 2, Base de datos 2 + IA, Práctica Profesionalizante 2 + IA.
+3° AÑO: Programación 3 + IA, Arquitectura y diseño de interfaces UI y UX + IA, Auditoría y calidad de sistemas, Ciberseguridad + IA, Inglés técnico 3, Legislación informática y ética profesional, Estadística y probabilidades para el desarrollo de software, Gestión de proyectos de software, Metodologías ágiles + IA, Base de datos 3 + IA, Práctica Profesionalizante 3 + IA.
+
+CERTIFICACIONES LABORALES ADICIONALES (coprogramáticas):
+1° Año: Técnico en Hardware y Software, Programador Python (nivel Junior).
+2° Año: Sistemas Operativos (Linux-Windows), Sistemas de Programación Pymes, Análisis y Técnicas de sistemas.
+3° Año: Diseño y programación de páginas web, WEB SITE con base de datos dinámicas, Inteligencia Artificial en la nube.
+
+BECAS E INSCRIPCIONES:
+- Inscripciones abiertas desde agosto.
+- Becas con hasta 40% de descuento.
+- Consultas por WhatsApp: (+054) 261 6271658
+
+CARACTERÍSTICAS DESTACADAS:
+- Clases prácticas desde la primera semana con proyectos reales.
+- Docentes con experiencia en la industria del software.
+- Ambiente colaborativo y de excelente compañerismo.
+- Inteligencia Artificial integrada en varias materias.
+- Campus virtual en aula.incuyo.edu.ar.
+- Los alumnos pueden crear proyectos reales desde el primer año.
+- Compromiso social: alumnos organizan actividades para ayudar a la comunidad.
+`;
+
+	// ── DOM references ───────────────────────────────────────────────────────
+	const chatBtn = document.getElementById("aiChatBtn");
+	const chatWindow = document.getElementById("aiChatWindow");
+	const closeBtn = document.getElementById("aiChatClose");
+	const messagesEl = document.getElementById("aiChatMessages");
+	const inputEl = document.getElementById("aiChatInput");
+	const sendBtn = document.getElementById("aiChatSend");
+
+	if (!chatBtn || !chatWindow) return; // Safety guard
+
+	// ── Conversation history (Gemini multi-turn format) ──────────────────────
+	let history = [];
+	let isLoading = false;
+
+	// ── Toggle chat window ───────────────────────────────────────────────────
+	function openChat() {
+		chatWindow.classList.add("open");
+		chatWindow.setAttribute("aria-hidden", "false");
+		inputEl.focus();
+	}
+
+	function closeChat() {
+		chatWindow.classList.remove("open");
+		chatWindow.setAttribute("aria-hidden", "true");
+	}
+
+	chatBtn.addEventListener("click", function () {
+		if (chatWindow.classList.contains("open")) {
+			closeChat();
+		} else {
+			openChat();
+		}
+	});
+
+	closeBtn.addEventListener("click", closeChat);
+
+	// Close on ESC
+	document.addEventListener("keydown", function (e) {
+		if (e.key === "Escape" && chatWindow.classList.contains("open")) {
+			closeChat();
+		}
+	});
+
+	// ── Auto-resize textarea ─────────────────────────────────────────────────
+	inputEl.addEventListener("input", function () {
+		this.style.height = "auto";
+		this.style.height = Math.min(this.scrollHeight, 110) + "px";
+	});
+
+	// ── Send on Enter (Shift+Enter = new line) ───────────────────────────────
+	inputEl.addEventListener("keydown", function (e) {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault();
+			sendMessage();
+		}
+	});
+
+	sendBtn.addEventListener("click", sendMessage);
+
+	// ── Append a message bubble ──────────────────────────────────────────────
+	function appendMessage(text, role, isError = false) {
+		const wrapper = document.createElement("div");
+		wrapper.className = `ai-chat-msg ai-chat-msg--${role}${isError ? " ai-chat-msg--error" : ""}`;
+
+		const bubble = document.createElement("div");
+		bubble.className = "ai-chat-msg-bubble";
+		bubble.innerHTML = text.replace(/\n/g, "<br>");
+
+		wrapper.appendChild(bubble);
+		messagesEl.appendChild(wrapper);
+		scrollToBottom();
+		return wrapper;
+	}
+
+	// ── Typing indicator ─────────────────────────────────────────────────────
+	function showTyping() {
+		const wrapper = document.createElement("div");
+		wrapper.className = "ai-chat-msg ai-chat-msg--bot";
+		wrapper.id = "aiTypingIndicator";
+
+		const dot = document.createElement("div");
+		dot.className = "ai-chat-typing";
+		dot.innerHTML = "<span></span><span></span><span></span>";
+
+		wrapper.appendChild(dot);
+		messagesEl.appendChild(wrapper);
+		scrollToBottom();
+	}
+
+	function hideTyping() {
+		const el = document.getElementById("aiTypingIndicator");
+		if (el) el.remove();
+	}
+
+	function scrollToBottom() {
+		messagesEl.scrollTop = messagesEl.scrollHeight;
+	}
+
+	// ── Main send function ───────────────────────────────────────────────────
+	async function sendMessage() {
+		const text = inputEl.value.trim();
+		if (!text || isLoading) return;
+
+		// Reset input
+		inputEl.value = "";
+		inputEl.style.height = "auto";
+
+		// Show user message
+		appendMessage(text, "user");
+
+		// Add to history
+		history.push({ role: "user", parts: [{ text }] });
+
+		// Lock UI
+		isLoading = true;
+		sendBtn.disabled = true;
+
+		showTyping();
+
+		try {
+			const response = await fetch(GEMINI_URL, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					system_instruction: {
+						parts: [{ text: PAGE_CONTEXT }]
+					},
+					contents: history,
+					generationConfig: {
+						temperature: 0.4,
+						maxOutputTokens: 600
+					}
+				})
+			});
+
+			// Always parse JSON first to get real error messages
+			const data = await response.json();
+
+			if (!response.ok) {
+				const apiMsg = data?.error?.message || "";
+				console.error("[INCUYO AI] API error body:", JSON.stringify(data));
+				if (response.status === 400 && (apiMsg.includes("API key not valid") || apiMsg.includes("INVALID_ARGUMENT"))) {
+					throw new Error("API_KEY_INVALID");
+				}
+				throw new Error(`HTTP ${response.status}: ${apiMsg || "Error desconocido"}`);
+			}
+
+			// Extract reply text
+			const reply =
+				data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+				"Lo siento, no pude generar una respuesta. Por favor intentá de nuevo.";
+
+			hideTyping();
+			appendMessage(reply, "bot");
+
+			// Add to history
+			history.push({ role: "model", parts: [{ text: reply }] });
+
+		} catch (err) {
+			hideTyping();
+			console.error("AI Chatbot error:", err);
+
+			if (err.message === "API_KEY_INVALID") {
+				appendMessage(
+					"⚠️ La clave de la API de Gemini no es válida. Configurala en <code>config.js</code> (ver README).",
+					"bot",
+					true
+				);
+			} else {
+				appendMessage(
+					`⚠️ Error: ${err.message}. Revisá la consola para más detalles.`,
+					"bot",
+					true
+				);
+			}
+		} finally {
+			isLoading = false;
+			sendBtn.disabled = false;
+			inputEl.focus();
+		}
+	}
+})();

@@ -78,22 +78,45 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (chatBtn && chatWindow) {
 		const chatHistory = [];
 
-		chatBtn.onclick = () => {
-			chatWindow.style.display = chatWindow.style.display === "flex" ? "none" : "flex";
-			chatWindow.setAttribute("aria-hidden", chatWindow.style.display === "none");
-		};
+		function toggleChat(forceClose) {
+			const isOpen = chatWindow.classList.contains("open");
+			if (forceClose || isOpen) {
+				chatWindow.classList.remove("open");
+				chatWindow.setAttribute("aria-hidden", "true");
+			} else {
+				chatWindow.classList.add("open");
+				chatWindow.setAttribute("aria-hidden", "false");
+				if (chatInput) chatInput.focus();
+			}
+		}
 
-		if (chatClose) chatClose.onclick = () => {
-			chatWindow.style.display = "none";
-			chatWindow.setAttribute("aria-hidden", "true");
-		};
+		chatBtn.onclick = () => toggleChat(false);
+
+		if (chatClose) chatClose.onclick = () => toggleChat(true);
 
 		function addMessage(text, isBot) {
 			const msgDiv = document.createElement("div");
 			msgDiv.className = `ai-chat-msg ai-chat-msg--${isBot ? 'bot' : 'user'}`;
-			msgDiv.innerHTML = `<div class="ai-chat-msg-bubble">${text}</div>`;
+			// Simple markdown-like formatting for bot responses
+			let html = text;
+			if (isBot) {
+				html = html
+					.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+					.replace(/\n/g, '<br>');
+			}
+			msgDiv.innerHTML = `<div class="ai-chat-msg-bubble">${html}</div>`;
 			chatMessages.appendChild(msgDiv);
 			chatMessages.scrollTop = chatMessages.scrollHeight;
+		}
+
+		function showTyping() {
+			const typingDiv = document.createElement("div");
+			typingDiv.className = "ai-chat-msg ai-chat-msg--bot";
+			typingDiv.id = "chatTyping";
+			typingDiv.innerHTML = '<div class="ai-chat-typing"><span></span><span></span><span></span></div>';
+			chatMessages.appendChild(typingDiv);
+			chatMessages.scrollTop = chatMessages.scrollHeight;
+			return typingDiv;
 		}
 
 		async function sendMessage() {
@@ -102,13 +125,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			addMessage(prompt, false);
 			chatInput.value = "";
+			chatInput.style.height = 'auto';
 
-			// Show typing indicator
-			const typingDiv = document.createElement("div");
-			typingDiv.className = "ai-chat-msg ai-chat-msg--bot";
-			typingDiv.innerHTML = '<div class="ai-chat-msg-bubble"><i class="fas fa-spinner fa-spin"></i> Pensando...</div>';
-			chatMessages.appendChild(typingDiv);
-			chatMessages.scrollTop = chatMessages.scrollHeight;
+			const typingEl = showTyping();
 
 			try {
 				const res = await fetch("/api/chat", {
@@ -118,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				});
 				const data = await res.json();
 
-				chatMessages.removeChild(typingDiv);
+				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
 
 				if (data.response) {
 					chatHistory.push({ role: "user", parts: [{ text: prompt }] });
@@ -128,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					addMessage("Lo siento, hubo un error. Por favor intentá de nuevo.", true);
 				}
 			} catch (err) {
-				chatMessages.removeChild(typingDiv);
+				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
 				addMessage("Error de conexión. Intentá de nuevo más tarde.", true);
 			}
 		}
@@ -140,6 +159,11 @@ document.addEventListener("DOMContentLoaded", () => {
 					e.preventDefault();
 					sendMessage();
 				}
+			});
+			// Auto-resize textarea
+			chatInput.addEventListener("input", () => {
+				chatInput.style.height = 'auto';
+				chatInput.style.height = Math.min(chatInput.scrollHeight, 110) + 'px';
 			});
 		}
 	}

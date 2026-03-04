@@ -126,34 +126,68 @@ TERCER AÑO:
 "📲 Escribinos por WhatsApp al +54 9 261 627-1658 y te respondemos todas tus consultas"`;
 
 app.post('/api/chat', async (req, res) => {
+    console.log('\n--- 🤖 NUEVA CONSULTA IA RECIBIDA ---');
     try {
         const { prompt, history } = req.body;
-        const API_KEY = process.env.GEMINI_API_KEY;
-        if (!API_KEY) return res.status(500).json({ error: 'Gemini API key not configured' });
+        console.log(`💬 Prompt recibido: "${prompt}"`);
+        console.log(`📚 Mensajes en el historial: ${(history || []).length}`);
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+        const API_KEY = process.env.GEMINI_API_KEY;
+        if (!API_KEY) {
+            console.error('❌ ERROR: GEMINI_API_KEY no está configurada en .env');
+            return res.status(500).json({ error: 'Gemini API key not configured' });
+        }
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+        console.log('🔗 Conectando con Gemini API...');
+
+        // Preparamos payload
+        const reqPayload = {
+            system_instruction: {
+                parts: [{ text: INCUYO_SYSTEM_PROMPT }],
+            },
+            contents: (history || []).concat([{ role: 'user', parts: [{ text: prompt }] }]),
+            generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 500,
+            },
+        };
 
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system_instruction: {
-                    parts: [{ text: INCUYO_SYSTEM_PROMPT }],
-                },
-                contents: (history || []).concat([{ role: 'user', parts: [{ text: prompt }] }]),
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 500,
-                },
-            }),
+            body: JSON.stringify(reqPayload),
         });
 
+        console.log(`📡 Status HTTP de Gemini: ${response.status} ${response.statusText}`);
+
+        if (!response.ok) {
+            // Error de la API de Gemini (ej: 400 Bad Request, 403 Forbidden, 429 Too Many Requests)
+            const errorText = await response.text();
+            console.error(`❌ ERROR de la API de Gemini (HTTP ${response.status}):\n${errorText}`);
+            return res.status(500).json({ error: 'Error del servicio LLM', details: errorText });
+        }
+
         const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Lo siento, no pude procesar tu pregunta. Escribinos por WhatsApp al +54 9 261 627-1658.';
+
+        // Verificamos posibles bloqueos de seguridad de Gemini
+        if (data.promptFeedback && data.promptFeedback.blockReason) {
+            console.warn(`⚠️ ADVERTENCIA: Gemini bloqueó parte del prompt por: ${data.promptFeedback.blockReason}`);
+        }
+
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!text) {
+            console.error('❌ ERROR EXTRAÑO: Gemini respondió con 200 OK pero sin contenido útil.', JSON.stringify(data, null, 2));
+            return res.json({ response: 'El bot no pudo generar una respuesta. Por favor intentá de nuevo.' });
+        }
+
+        console.log('✅ IA procesada con éxito. Enviando respuesta al cliente.');
+        console.log('--- FIN CONSULTA IA ---\n');
         res.json({ response: text });
     } catch (err) {
-        console.error('Chat error:', err);
-        res.status(500).json({ error: 'Error al procesar la consulta' });
+        console.error('❌ ERROR CRÍTICO procesando chat en servidor:', err);
+        res.status(500).json({ error: 'Error al procesar la consulta', details: err.message });
     }
 });
 

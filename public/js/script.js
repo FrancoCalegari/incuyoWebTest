@@ -130,23 +130,34 @@ document.addEventListener("DOMContentLoaded", () => {
 			const typingEl = showTyping();
 
 			try {
+				console.log("🤖 Enviando consulta a la IA:", prompt);
+				console.log("📜 Historial de chat actual:", chatHistory.length, "mensajes");
+
 				const res = await fetch("/api/chat", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ prompt, history: chatHistory }),
 				});
+
 				const data = await res.json();
+				console.log("📥 Respuesta recibida del servidor:", data);
 
 				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
 
-				if (data.response) {
+				if (res.status === 429 || (data.details && data.details.includes('429'))) {
+					console.warn("⏳ Límite de cuota alcanzado (429)");
+					addMessage("¡Uf! Estoy recibiendo muchos mensajes a la vez. 😅 Por favor, esperá un minuto y volvé a preguntarme.", true);
+				} else if (data.response) {
+					console.log("✅ Renderizando respuesta de la IA");
 					chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 					chatHistory.push({ role: "model", parts: [{ text: data.response }] });
 					addMessage(data.response, true);
 				} else {
-					addMessage("Lo siento, hubo un error. Por favor intentá de nuevo.", true);
+					console.warn("⚠️ Advertencia: Respuesta parseada correctamente pero sin campo 'response'");
+					addMessage("Lo siento, hubo un error interno. Por favor intentá de nuevo más tarde.", true);
 				}
 			} catch (err) {
+				console.error("❌ Error CRÍTICO de conexión o parseo en el chat:", err);
 				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
 				addMessage("Error de conexión. Intentá de nuevo más tarde.", true);
 			}

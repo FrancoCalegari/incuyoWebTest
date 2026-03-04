@@ -250,9 +250,12 @@
             </div>
 
             <div class="image-gallery">
-                <% commitments.forEach(function(item) { %>
+                <% commitments.forEach(function(item) { // Extraer ID de la URL vieja si existe let
+                    finalUrl=item.image_url; if (finalUrl && finalUrl.includes('/api/v1/storage/files/')) { const
+                    fileId=finalUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                    finalUrl=`/api/storage/files/${fileId}`; } %>
                     <div class="gallery-item reveal">
-                        <img src="<%= item.image_url %>" alt="<%= item.title %>" loading="lazy" />
+                        <img src="<%= finalUrl %>" alt="<%= item.title %>" loading="lazy" />
                         <div class="gallery-item-overlay">
                             <p class="gallery-item-title">
                                 <%= item.title %>

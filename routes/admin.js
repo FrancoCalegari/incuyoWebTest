@@ -96,6 +96,15 @@ router.put('/api/curriculum/:id', requireAdmin, async (req, res) => {
     }
 });
 
+router.delete('/api/curriculum/all', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM curriculum`);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.delete('/api/curriculum/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM curriculum WHERE id=${parseInt(req.params.id)}`);
@@ -129,6 +138,15 @@ router.put('/api/commitment/:id', requireAdmin, async (req, res) => {
     try {
         const { title, description, image_url, order_index } = req.body;
         await query(`UPDATE social_commitment SET title=?, description=?, image_url=?, order_index=${parseInt(order_index || 0)} WHERE id=${parseInt(req.params.id)}`, [title, description, image_url]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/api/commitment/all', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM social_commitment`);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

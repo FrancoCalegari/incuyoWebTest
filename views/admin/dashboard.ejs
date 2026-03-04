@@ -674,9 +674,14 @@
                 <div class="panel-section">
                     <div class="panel-title">
                         <h3><i class="fas fa-book"></i> Plan de Estudios</h3>
-                        <button class="btn btn-gold" onclick="openCurriculumModal()">
-                            <i class="fas fa-plus"></i> Agregar Materia
-                        </button>
+                        <div style="display: flex; gap: var(--space-4);">
+                            <button class="btn btn-danger" onclick="clearCurriculum()">
+                                <i class="fas fa-trash-alt"></i> Limpiar Todo
+                            </button>
+                            <button class="btn btn-gold" onclick="openCurriculumModal()">
+                                <i class="fas fa-plus"></i> Agregar Materia
+                            </button>
+                        </div>
                     </div>
 
                     <div class="filter-tabs">
@@ -731,9 +736,14 @@
                 <div class="panel-section">
                     <div class="panel-title">
                         <h3><i class="fas fa-heart"></i> Compromiso Social</h3>
-                        <button class="btn btn-gold" onclick="openCommitmentModal()">
-                            <i class="fas fa-plus"></i> Agregar
-                        </button>
+                        <div style="display: flex; gap: var(--space-4);">
+                            <button class="btn btn-danger" onclick="clearCommitment()">
+                                <i class="fas fa-trash-alt"></i> Limpiar Todo
+                            </button>
+                            <button class="btn btn-gold" onclick="openCommitmentModal()">
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
+                        </div>
                     </div>
 
                     <div class="commitment-grid" id="commitmentGrid">
@@ -743,8 +753,11 @@
                                 data-desc="<%- encodeURIComponent(item.description || '') %>"
                                 data-image="<%- encodeURIComponent(item.image_url || '') %>"
                                 data-order="<%= item.order_index %>">
-                                <% if (item.image_url) { %>
-                                    <img src="<%= item.image_url %>" alt="<%= item.title %>">
+                                <% let commImageUrl=item.image_url; if (commImageUrl &&
+                                    commImageUrl.includes('/api/v1/storage/files/')) { const
+                                    fileId=commImageUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                    commImageUrl=`/api/storage/files/${fileId}`; } if (commImageUrl) { %>
+                                    <img src="<%= commImageUrl %>" alt="<%= item.title %>">
                                     <% } %>
                                         <div class="card-body">
                                             <h4>
@@ -792,8 +805,11 @@
                             <div class="admin-project-card" data-id="<%= p.id %>" data-year="<%= p.year %>"
                                 data-proj="<%- encodeURIComponent(JSON.stringify(p)) %>">
                                 <div class="admin-project-card-header">
-                                    <% if (p.student_photo_url) { %>
-                                        <img src="<%= p.student_photo_url %>" alt="<%= p.student_name %>">
+                                    <% let adminPhotoUrl=p.student_photo_url; if (adminPhotoUrl &&
+                                        adminPhotoUrl.includes('/api/v1/storage/files/')) { const
+                                        fileId=adminPhotoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                        adminPhotoUrl=`/api/storage/files/${fileId}`; } if (adminPhotoUrl) { %>
+                                        <img src="<%= adminPhotoUrl %>" alt="<%= p.student_name %>">
                                         <% } else { %>
                                             <div class="placeholder-photo"><i class="fas fa-user"></i></div>
                                             <% } %>
@@ -1121,7 +1137,7 @@
             }
         }
 
-        async function deleteCurriculum(id) {
+        async function deleteCurriculum(id, el) {
             if (!confirm('¿Eliminar esta materia?')) return;
             try {
                 await apiCall('/admin/api/curriculum/' + id, 'DELETE');
@@ -1129,6 +1145,17 @@
                 location.reload();
             } catch (err) {
                 showToast('Error al eliminar', 'error');
+            }
+        }
+
+        async function clearCurriculum() {
+            if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL PLAN DE ESTUDIOS? Esta acción no se puede deshacer.')) return;
+            try {
+                await apiCall('/admin/api/curriculum/all', 'DELETE');
+                showToast('Plan de estudios vaciado correctamente');
+                location.reload();
+            } catch (err) {
+                showToast('Error al vaciar plan de estudios', 'error');
             }
         }
 
@@ -1190,6 +1217,17 @@
                 location.reload();
             } catch (err) {
                 showToast('Error al eliminar', 'error');
+            }
+        }
+
+        async function clearCommitment() {
+            if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL COMPROMISO SOCIAL? Esta acción no se puede deshacer.')) return;
+            try {
+                await apiCall('/admin/api/commitment/all', 'DELETE');
+                showToast('Compromiso social vaciado correctamente');
+                location.reload();
+            } catch (err) {
+                showToast('Error al vaciar compromiso social', 'error');
             }
         }
 

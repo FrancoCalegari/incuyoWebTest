@@ -150,8 +150,31 @@ document.addEventListener("DOMContentLoaded", () => {
 				} else if (data.response) {
 					console.log("✅ Renderizando respuesta de la IA");
 					chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-					chatHistory.push({ role: "model", parts: [{ text: data.response }] });
+					// Si es función, falseamos el historial para Gemini (mandamos un function call + response mock)
+					if (data.action) {
+						chatHistory.push({ role: "model", parts: [{ functionCall: { name: data.action, args: {} } }] });
+						chatHistory.push({ role: "function", parts: [{ functionResponse: { name: data.action, response: { result: "success" } } }] });
+					} else {
+						chatHistory.push({ role: "model", parts: [{ text: data.response }] });
+					}
+
 					addMessage(data.response, true);
+
+					// Ejecutar acción de UI si el bot la pidió
+					if (data.action) {
+						console.log("⚡ Ejecutando acción de UI:", data.action);
+						setTimeout(() => {
+							if (data.action === "mostrar_plan_de_estudios") {
+								window.location.href = "/#plan-de-estudios";
+								setTimeout(() => toggleChat(true), 1500);
+							} else if (data.action === "mostrar_proyectos") {
+								window.location.href = "/proyectosalumnos";
+							} else if (data.action === "mostrar_compromiso_social") {
+								window.location.href = "/#compromiso-social";
+								setTimeout(() => toggleChat(true), 1500);
+							}
+						}, 1200); // Pequeño delay para que el usuario lea el mensaje antes de mover la pantalla
+					}
 				} else {
 					console.warn("⚠️ Advertencia: Respuesta parseada correctamente pero sin campo 'response'");
 					addMessage("Lo siento, hubo un error interno. Por favor intentá de nuevo más tarde.", true);

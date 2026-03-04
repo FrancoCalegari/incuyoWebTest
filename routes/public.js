@@ -51,4 +51,35 @@ router.get('/proyectosalumnos', async (req, res) => {
     }
 });
 
+// Proxy for Cloud Storage Images to bypass CORS and hide API KEY
+router.get('/api/storage/files/:id', async (req, res) => {
+    try {
+        const fileId = req.params.id;
+        // Make request to Spider API
+        const spiderUrl = `${process.env.SPIDER_API_URL}/api/v1/storage/files/${fileId}`;
+        const response = await fetch(spiderUrl, {
+            method: 'GET',
+            headers: {
+                'X-API-KEY': process.env.SPIDER_API_KEY
+            }
+        });
+
+        if (!response.ok) {
+            return res.status(response.status).send('Error fetching image');
+        }
+
+        // Forward content-type header
+        const contentType = response.headers.get('content-type');
+        if (contentType) {
+            res.setHeader('Content-Type', contentType);
+        }
+
+        // Stream the image directly to the client
+        response.body.pipe(res);
+    } catch (err) {
+        console.error('Error proxying image:', err);
+        res.status(500).send('Internal Server Error proxying image');
+    }
+});
+
 module.exports = router;

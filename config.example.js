@@ -7,5 +7,5 @@
 // ============================================================
 
 window.INCUYO_CONFIG = {
-    GEMINI_API_KEY: "YOUR_GEMINI_API_KEY_HERE"
+    GEMINI_API_KEY: "AIzaSyC4sCnCFfp8UraJR--wqFEOalQELT1V1mM"
 };

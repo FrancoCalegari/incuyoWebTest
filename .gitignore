@@ -1,7 +1,5 @@
 # Credenciales y configuración local (NO subir)
 config.js
-
-# Variables de entorno
 .env
 .env.local
 .env.*.local

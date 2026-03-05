@@ -130,14 +130,18 @@ document.addEventListener("DOMContentLoaded", () => {
 			const typingEl = showTyping();
 
 			try {
+<<<<<<< HEAD
 				console.log("🤖 Enviando consulta a la IA:", prompt);
 				console.log("📜 Historial de chat actual:", chatHistory.length, "mensajes");
 
+=======
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
 				const res = await fetch("/api/chat", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ prompt, history: chatHistory }),
 				});
+<<<<<<< HEAD
 
 				const data = await res.json();
 				console.log("📥 Respuesta recibida del servidor:", data);
@@ -181,6 +185,20 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			} catch (err) {
 				console.error("❌ Error CRÍTICO de conexión o parseo en el chat:", err);
+=======
+				const data = await res.json();
+
+				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+
+				if (data.response) {
+					chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+					chatHistory.push({ role: "model", parts: [{ text: data.response }] });
+					addMessage(data.response, true);
+				} else {
+					addMessage("Lo siento, hubo un error. Por favor intentá de nuevo.", true);
+				}
+			} catch (err) {
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
 				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
 				addMessage("Error de conexión. Intentá de nuevo más tarde.", true);
 			}

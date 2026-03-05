@@ -51,6 +51,7 @@ router.get('/proyectosalumnos', async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 // Proxy for Cloud Storage Images to bypass CORS and hide API KEY
 router.get('/api/storage/files/:id', async (req, res) => {
     try {
@@ -82,4 +83,6 @@ router.get('/api/storage/files/:id', async (req, res) => {
     }
 });
 
+=======
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
 module.exports = router;

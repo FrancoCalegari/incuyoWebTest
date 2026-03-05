@@ -250,12 +250,18 @@
             </div>
 
             <div class="image-gallery">
+<<<<<<< HEAD
                 <% commitments.forEach(function(item) { // Extraer ID de la URL vieja si existe let
                     finalUrl=item.image_url; if (finalUrl && finalUrl.includes('/api/v1/storage/files/')) { const
                     fileId=finalUrl.split('/api/v1/storage/files/')[1].split('?')[0];
                     finalUrl=`/api/storage/files/${fileId}`; } %>
                     <div class="gallery-item reveal">
                         <img src="<%= finalUrl %>" alt="<%= item.title %>" loading="lazy" />
+=======
+                <% commitments.forEach(function(item) { %>
+                    <div class="gallery-item reveal">
+                        <img src="<%= item.image_url %>" alt="<%= item.title %>" loading="lazy" />
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                         <div class="gallery-item-overlay">
                             <p class="gallery-item-title">
                                 <%= item.title %>
@@ -493,7 +499,11 @@
                 </div>
                 <div>
                     <p class="ai-chat-title">Asistente INCUYO</p>
+<<<<<<< HEAD
                     <p class="ai-chat-subtitle">Respondido por IA · Gemini</p>
+=======
+                    <p class="ai-chat-subtitle">Respondido por IA · SpiderWeb</p>
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                 </div>
             </div>
             <button class="ai-chat-close" id="aiChatClose" aria-label="Cerrar chat">

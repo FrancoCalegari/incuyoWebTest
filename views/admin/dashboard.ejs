@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Instituto INCUYO Admin</title>
+    <link rel="icon" type="image/png"
+        href="https://aula.incuyo.edu.ar/pluginfile.php/1/theme_academi/logo/1756927387/logo%203.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #223a5b;
+            --primary-blue: #223a5b;
+            --primary-gold: #c39215;
+            --accent-gold-light: #d4a520;
+            --bg-main: #0f1420;
+            --bg-card: #1a1f2e;
+            --bg-input: #232838;
+            --border: rgba(255, 255, 255, 0.08);
+            --text-white: #f0f0f0;
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-white);
+            min-height: 100vh;
+        }
+
+        /* ─── Layout ─────────────────────────────── */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-logo img {
+            height: 32px;
+            filter: brightness(0) invert(1);
+        }
+
+        .sidebar-logo span {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            flex: 1;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(195, 146, 21, 0.12);
+            color: var(--primary-gold);
+        }
+
+        .sidebar-nav a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+
+        .sidebar-bottom a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-bottom a:hover {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ─── Panels ─────────────────────────────── */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .panel-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .panel-title h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* ─── Buttons ────────────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #c39215, #d4a520);
+            color: white;
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 4px 15px rgba(195, 146, 21, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.78rem;
+        }
+
+        /* ─── Tables ─────────────────────────────── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.88rem;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .year-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .year-badge.y1 {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+        }
+
+        .year-badge.y2 {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+        }
+
+        .year-badge.y3 {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c4b5fd;
+        }
+
+        /* ─── Modal ──────────────────────────────── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 1rem;
+        }
+
+        .modal h3 {
+            font-size: 1.15rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 500;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-gold);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        /* ─── Project Cards in Admin ─────────────── */
+        .admin-project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+
+        .admin-project-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            transition: border-color 0.2s;
+        }
+
+        .admin-project-card:hover {
+            border-color: rgba(195, 146, 21, 0.3);
+        }
+
+        .admin-project-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .admin-project-card-header img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-gold);
+        }
+
+        .admin-project-card-header .placeholder-photo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .admin-project-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .admin-project-card .subtitle {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+        }
+
+        .admin-project-card p.desc {
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.5;
+            margin: 0.5rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .admin-project-card .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        /* Commitment Cards */
+        .commitment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .commitment-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .commitment-card:hover {
+            border-color: rgba(195, 146, 21, 0.3);
+        }
+
+        .commitment-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .commitment-card .card-body {
+            padding: 1rem;
+        }
+
+        .commitment-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .commitment-card p {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+
+        .commitment-card .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        /* ─── Toast ──────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.85rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            z-index: 300;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        /* ─── File Upload ────────────────────────── */
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.35rem;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary-gold);
+            background: rgba(195, 146, 21, 0.05);
+        }
+
+        .file-upload-area i {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-area p {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        .file-upload-area input[type="file"] {
+            display: none;
+        }
+
+        .file-preview {
+            display: none;
+            margin-top: 0.5rem;
+        }
+
+        .file-preview img {
+            max-height: 100px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        /* ─── Responsive ─────────────────────────── */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 150;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+<<<<<<< HEAD
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+=======
+            transition: z-index 0s;
+        }
+
+        /* Overlay semitransparente detrás del sidebar (mobile) */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 90;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            body.sidebar-open {
+                overflow: hidden;
+            }
+
+            .dashboard {
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 100;
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+<<<<<<< HEAD
+=======
+            /* Hamburguesa queda detrás cuando sidebar está abierto */
+            body.sidebar-open .mobile-toggle {
+                z-index: 50;
+            }
+
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            .mobile-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+<<<<<<< HEAD
+=======
+                width: 100%;
+                overflow-x: hidden;
+                box-sizing: border-box;
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            }
+
+            .admin-project-grid,
+            .commitment-grid {
+                grid-template-columns: 1fr;
+            }
+<<<<<<< HEAD
+=======
+
+            .panel-section {
+                overflow-x: auto;
+            }
+
+            .data-table {
+                min-width: 520px;
+            }
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+        }
+
+        /* ─── Year filter tabs ───────────────────── */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 0.4rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: rgba(195, 146, 21, 0.15);
+            color: var(--primary-gold);
+            border-color: rgba(195, 146, 21, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+<<<<<<< HEAD
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+=======
+    <!-- Overlay para cerrar sidebar al hacer clic afuera -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" id="mobileToggle">
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="/assets/img/logo.png" alt="INCUYO">
+                <span>INCUYO Admin</span>
+            </div>
+
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active" data-panel="curriculum"><i class="fas fa-book"></i> Plan de
+                        Estudios</a></li>
+                <li><a href="#" data-panel="commitment"><i class="fas fa-heart"></i> Compromiso Social</a></li>
+                <li><a href="#" data-panel="projects"><i class="fas fa-code"></i> Proyectos Alumnos</a></li>
+            </ul>
+
+            <div class="sidebar-bottom">
+                <a href="/"><i class="fas fa-globe"></i> Ver Sitio Web</a>
+                <a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Panel de Administración</h1>
+                <p>Gestioná el contenido del sitio web del Instituto INCUYO</p>
+            </div>
+
+            <!-- ═══ CURRICULUM PANEL ═══ -->
+            <div class="panel active" id="panel-curriculum">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-book"></i> Plan de Estudios</h3>
+<<<<<<< HEAD
+                        <div style="display: flex; gap: var(--space-4);">
+                            <button class="btn btn-danger" onclick="clearCurriculum()">
+                                <i class="fas fa-trash-alt"></i> Limpiar Todo
+                            </button>
+                            <button class="btn btn-gold" onclick="openCurriculumModal()">
+                                <i class="fas fa-plus"></i> Agregar Materia
+                            </button>
+                        </div>
+=======
+                        <button class="btn btn-gold" onclick="openCurriculumModal()">
+                            <i class="fas fa-plus"></i> Agregar Materia
+                        </button>
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+                    </div>
+
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all"
+                            onclick="filterCurriculum('all', this)">Todos</button>
+                        <button class="filter-tab" data-filter="1" onclick="filterCurriculum(1, this)">1° Año</button>
+                        <button class="filter-tab" data-filter="2" onclick="filterCurriculum(2, this)">2° Año</button>
+                        <button class="filter-tab" data-filter="3" onclick="filterCurriculum(3, this)">3° Año</button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Año</th>
+                                <th>Materia</th>
+                                <th>Orden</th>
+                                <th style="text-align:right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="curriculumTable">
+                            <% curriculum.forEach(function(item) { %>
+                                <tr data-id="<%= item.id %>" data-year="<%= item.year %>"
+                                    data-name="<%- encodeURIComponent(item.subject_name) %>"
+                                    data-order="<%= item.order_index %>">
+                                    <td><span class="year-badge y<%= item.year %>">
+                                            <%= item.year %>° Año
+                                        </span></td>
+                                    <td>
+                                        <%= item.subject_name %>
+                                    </td>
+                                    <td>
+                                        <%= item.order_index %>
+                                    </td>
+                                    <td style="text-align:right">
+                                        <button class="btn btn-secondary btn-sm" onclick="editCurrFromRow(this)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm"
+                                            onclick="deleteCurriculum(<%= item.id %>)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ═══ COMMITMENT PANEL ═══ -->
+            <div class="panel" id="panel-commitment">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-heart"></i> Compromiso Social</h3>
+<<<<<<< HEAD
+                        <div style="display: flex; gap: var(--space-4);">
+                            <button class="btn btn-danger" onclick="clearCommitment()">
+                                <i class="fas fa-trash-alt"></i> Limpiar Todo
+                            </button>
+                            <button class="btn btn-gold" onclick="openCommitmentModal()">
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
+                        </div>
+=======
+                        <button class="btn btn-gold" onclick="openCommitmentModal()">
+                            <i class="fas fa-plus"></i> Agregar
+                        </button>
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+                    </div>
+
+                    <div class="commitment-grid" id="commitmentGrid">
+                        <% commitments.forEach(function(item) { %>
+                            <div class="commitment-card" data-id="<%= item.id %>"
+                                data-title="<%- encodeURIComponent(item.title) %>"
+                                data-desc="<%- encodeURIComponent(item.description || '') %>"
+                                data-image="<%- encodeURIComponent(item.image_url || '') %>"
+                                data-order="<%= item.order_index %>">
+<<<<<<< HEAD
+                                <% let commImageUrl=item.image_url; if (commImageUrl &&
+                                    commImageUrl.includes('/api/v1/storage/files/')) { const
+                                    fileId=commImageUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                    commImageUrl=`/api/storage/files/${fileId}`; } if (commImageUrl) { %>
+                                    <img src="<%= commImageUrl %>" alt="<%= item.title %>">
+=======
+                                <% if (item.image_url) { %>
+                                    <img src="<%= item.image_url %>" alt="<%= item.title %>">
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+                                    <% } %>
+                                        <div class="card-body">
+                                            <h4>
+                                                <%= item.title %>
+                                            </h4>
+                                            <p>
+                                                <%= item.description %>
+                                            </p>
+                                            <div class="card-actions">
+                                                <button class="btn btn-secondary btn-sm"
+                                                    onclick="editCommFromCard(this)">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                    onclick="deleteCommitment(<%= item.id %>)">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </button>
+                                            </div>
+                                        </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ PROJECTS PANEL ═══ -->
+            <div class="panel" id="panel-projects">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-code"></i> Proyectos de Alumnos</h3>
+                        <button class="btn btn-gold" onclick="openProjectModal()">
+                            <i class="fas fa-plus"></i> Agregar Proyecto
+                        </button>
+                    </div>
+
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterProjects('all', this)">Todos</button>
+                        <button class="filter-tab" onclick="filterProjects(1, this)">1° Año</button>
+                        <button class="filter-tab" onclick="filterProjects(2, this)">2° Año</button>
+                        <button class="filter-tab" onclick="filterProjects(3, this)">3° Año</button>
+                    </div>
+
+                    <div class="admin-project-grid" id="projectsGrid">
+                        <% projects.forEach(function(p) { %>
+                            <div class="admin-project-card" data-id="<%= p.id %>" data-year="<%= p.year %>"
+                                data-proj="<%- encodeURIComponent(JSON.stringify(p)) %>">
+                                <div class="admin-project-card-header">
+<<<<<<< HEAD
+                                    <% let adminPhotoUrl=p.student_photo_url; if (adminPhotoUrl &&
+                                        adminPhotoUrl.includes('/api/v1/storage/files/')) { const
+                                        fileId=adminPhotoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                        adminPhotoUrl=`/api/storage/files/${fileId}`; } if (adminPhotoUrl) { %>
+                                        <img src="<%= adminPhotoUrl %>" alt="<%= p.student_name %>">
+=======
+                                    <% if (p.student_photo_url) { %>
+                                        <img src="<%= p.student_photo_url %>" alt="<%= p.student_name %>">
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+                                        <% } else { %>
+                                            <div class="placeholder-photo"><i class="fas fa-user"></i></div>
+                                            <% } %>
+                                                <div>
+                                                    <h4>
+                                                        <%= p.project_name %>
+                                                    </h4>
+                                                    <span class="subtitle">
+                                                        <%= p.student_name %> · <span class="year-badge y<%= p.year %>">
+                                                                <%= p.year %>° Año
+                                                            </span>
+                                                    </span>
+                                                </div>
+                                </div>
+                                <p class="desc">
+                                    <%= p.project_description %>
+                                </p>
+                                <div class="card-actions">
+                                    <button class="btn btn-secondary btn-sm" onclick="editProjFromCard(this)">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteProject(<%= p.id %>)">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══ MODALS ═══ -->
+
+    <!-- Curriculum Modal -->
+    <div class="modal-overlay" id="curriculumModal">
+        <div class="modal">
+            <h3><i class="fas fa-book"></i> <span id="currModalTitle">Agregar Materia</span></h3>
+            <form id="curriculumForm" onsubmit="saveCurriculum(event)">
+                <input type="hidden" id="currId" value="">
+                <div class="form-group">
+                    <label>Año</label>
+                    <select id="currYear" required>
+                        <option value="1">1° Año</option>
+                        <option value="2">2° Año</option>
+                        <option value="3">3° Año</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de la Materia</label>
+                    <input type="text" id="currName" placeholder="Ej: Programación 1 + IA" required>
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="currOrder" value="0" min="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('curriculumModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-gold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Commitment Modal -->
+    <div class="modal-overlay" id="commitmentModal">
+        <div class="modal">
+            <h3><i class="fas fa-heart"></i> <span id="commModalTitle">Agregar Compromiso</span></h3>
+            <form id="commitmentForm" onsubmit="saveCommitment(event)">
+                <input type="hidden" id="commId" value="">
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="commTitle" placeholder="Ej: Apoyo a comedores comunitarios" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="commDesc" placeholder="Descripción de la actividad..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Imagen</label>
+                    <div class="file-upload-area" onclick="document.getElementById('commFileInput').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Hacé clic para subir una imagen</p>
+                        <input type="file" id="commFileInput" accept="image/*"
+                            onchange="previewFile(this, 'commImagePreview', 'commImageUrl')">
+                    </div>
+                    <div class="file-preview" id="commImagePreview"></div>
+                    <input type="hidden" id="commImageUrl" value="">
+                    <div class="form-group" style="margin-top:0.5rem">
+                        <input type="text" id="commImageUrlManual" placeholder="O pegá una URL de imagen directamente"
+                            onchange="document.getElementById('commImageUrl').value = this.value">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="commOrder" value="0" min="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('commitmentModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-gold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal">
+            <h3><i class="fas fa-code"></i> <span id="projModalTitle">Agregar Proyecto</span></h3>
+            <form id="projectForm" onsubmit="saveProject(event)">
+                <input type="hidden" id="projId" value="">
+                <div class="form-group">
+                    <label>Nombre del Alumno</label>
+                    <input type="text" id="projStudentName" placeholder="Ej: Franco Calegari" required>
+                </div>
+                <div class="form-group">
+                    <label>Año</label>
+                    <select id="projYear" required>
+                        <option value="1">1° Año</option>
+                        <option value="2">2° Año</option>
+                        <option value="3">3° Año</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Foto del Alumno</label>
+                    <div class="file-upload-area" onclick="document.getElementById('projPhotoInput').click()">
+                        <i class="fas fa-user-circle"></i>
+                        <p>Subir foto del alumno</p>
+                        <input type="file" id="projPhotoInput" accept="image/*"
+                            onchange="previewFile(this, 'projPhotoPreview', 'projStudentPhoto')">
+                    </div>
+                    <div class="file-preview" id="projPhotoPreview"></div>
+                    <input type="hidden" id="projStudentPhoto" value="">
+                    <input type="text" id="projStudentPhotoManual" placeholder="O pegá una URL"
+                        style="margin-top:0.35rem"
+                        onchange="document.getElementById('projStudentPhoto').value = this.value">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del Proyecto</label>
+                    <input type="text" id="projName" placeholder="Ej: Spider Web Test" required>
+                </div>
+                <div class="form-group">
+                    <label>Ícono (clase Font Awesome)</label>
+                    <input type="text" id="projIcon" placeholder="Ej: fas fa-spider" value="fas fa-code">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="projDesc" placeholder="Descripción del proyecto..." rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Screenshot del Proyecto</label>
+                    <div class="file-upload-area" onclick="document.getElementById('projImageInput').click()">
+                        <i class="fas fa-image"></i>
+                        <p>Subir screenshot</p>
+                        <input type="file" id="projImageInput" accept="image/*"
+                            onchange="previewFile(this, 'projImagePreview', 'projImageUrl')">
+                    </div>
+                    <div class="file-preview" id="projImagePreview"></div>
+                    <input type="hidden" id="projImageUrl" value="">
+                    <input type="text" id="projImageUrlManual" placeholder="O pegá una URL" style="margin-top:0.35rem"
+                        onchange="document.getElementById('projImageUrl').value = this.value">
+                </div>
+                <div class="form-group">
+                    <label>URL de Demo</label>
+                    <input type="url" id="projDemoUrl" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Tecnologías (separadas por coma)</label>
+                    <input type="text" id="projTech" placeholder="Ej: Node.js, JavaScript, CSS3">
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="projOrder" value="0" min="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('projectModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-gold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ─── Navigation ─────────────────────────────
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                document.getElementById('panel-' + link.dataset.panel).classList.add('active');
+                // Close sidebar on mobile
+                document.querySelector('.sidebar').classList.remove('open');
+            });
+        });
+
+        // ─── Toast ───────────────────────────────────
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type + ' show';
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ─── Modal Controls ─────────────────────────
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('active');
+            });
+        });
+
+        // ─── API Helper ─────────────────────────────
+        async function apiCall(url, method = 'GET', body = null) {
+            const opts = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(url, opts);
+            return res.json();
+        }
+
+        // ─── File Upload ────────────────────────────
+<<<<<<< HEAD
+=======
+        let pendingUploads = 0;
+
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+        async function previewFile(input, previewId, hiddenId) {
+            const file = input.files[0];
+            if (!file) return;
+
+<<<<<<< HEAD
+            // Show preview
+=======
+            // Show local preview immediately (uses local file, no network needed)
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            const preview = document.getElementById(previewId);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = '<img src="' + e.target.result + '">';
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+<<<<<<< HEAD
+            // Upload
+=======
+            // Clear URL and track upload in progress
+            document.getElementById(hiddenId).value = '';
+            pendingUploads++;
+
+            // Disable all save buttons while uploading
+            document.querySelectorAll('.modal-overlay.active .btn-gold[type="submit"]').forEach(btn => {
+                btn.disabled = true;
+                btn.dataset.origText = btn.textContent;
+                btn.textContent = '⏳ Subiendo imagen...';
+            });
+
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            const form = new FormData();
+            form.append('file', file);
+            try {
+                const res = await fetch('/admin/api/upload', { method: 'POST', body: form });
+                const data = await res.json();
+                if (data.success && data.file) {
+                    document.getElementById(hiddenId).value = data.file.url;
+<<<<<<< HEAD
+                    showToast('Imagen subida correctamente');
+                } else {
+                    showToast('Error al subir imagen', 'error');
+                }
+            } catch (err) {
+                showToast('Error al subir imagen', 'error');
+=======
+                    showToast('✓ Imagen subida correctamente');
+                } else {
+                    showToast('Error al subir imagen: ' + (data.error || 'desconocido'), 'error');
+                }
+            } catch (err) {
+                showToast('Error de conexión al subir imagen', 'error');
+            } finally {
+                pendingUploads--;
+                // Re-enable save buttons
+                document.querySelectorAll('.modal-overlay.active .btn-gold[type="submit"]').forEach(btn => {
+                    btn.disabled = false;
+                    btn.textContent = btn.dataset.origText || 'Guardar';
+                });
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            }
+        }
+
+        // ─── CURRICULUM ─────────────────────────────
+        function openCurriculumModal(id, year, name, order) {
+            document.getElementById('currId').value = id || '';
+            document.getElementById('currYear').value = year || 1;
+            document.getElementById('currName').value = name || '';
+            document.getElementById('currOrder').value = order || 0;
+            document.getElementById('currModalTitle').textContent = id ? 'Editar Materia' : 'Agregar Materia';
+            document.getElementById('curriculumModal').classList.add('active');
+        }
+
+        function editCurriculum(id, year, name, order) {
+            openCurriculumModal(id, year, name, order);
+        }
+
+        function editCurrFromRow(btn) {
+            const tr = btn.closest('tr');
+            openCurriculumModal(
+                tr.dataset.id,
+                tr.dataset.year,
+                decodeURIComponent(tr.dataset.name),
+                tr.dataset.order
+            );
+        }
+
+        function editCommFromCard(btn) {
+            const card = btn.closest('.commitment-card');
+            openCommitmentModal(
+                card.dataset.id,
+                decodeURIComponent(card.dataset.title),
+                decodeURIComponent(card.dataset.desc),
+                decodeURIComponent(card.dataset.image),
+                card.dataset.order
+            );
+        }
+
+        function editProjFromCard(btn) {
+            const card = btn.closest('.admin-project-card');
+            const data = JSON.parse(decodeURIComponent(card.dataset.proj));
+            openProjectModal(data);
+        }
+
+        async function saveCurriculum(e) {
+            e.preventDefault();
+            const id = document.getElementById('currId').value;
+            const data = {
+                year: parseInt(document.getElementById('currYear').value),
+                subject_name: document.getElementById('currName').value,
+                order_index: parseInt(document.getElementById('currOrder').value) || 0,
+            };
+
+            try {
+                if (id) {
+                    await apiCall('/admin/api/curriculum/' + id, 'PUT', data);
+                    showToast('Materia actualizada');
+                } else {
+                    await apiCall('/admin/api/curriculum', 'POST', data);
+                    showToast('Materia agregada');
+                }
+                closeModal('curriculumModal');
+                location.reload();
+            } catch (err) {
+                showToast('Error al guardar', 'error');
+            }
+        }
+
+<<<<<<< HEAD
+        async function deleteCurriculum(id, el) {
+=======
+        async function deleteCurriculum(id) {
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            if (!confirm('¿Eliminar esta materia?')) return;
+            try {
+                await apiCall('/admin/api/curriculum/' + id, 'DELETE');
+                showToast('Materia eliminada');
+                location.reload();
+            } catch (err) {
+                showToast('Error al eliminar', 'error');
+            }
+        }
+
+<<<<<<< HEAD
+        async function clearCurriculum() {
+            if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL PLAN DE ESTUDIOS? Esta acción no se puede deshacer.')) return;
+            try {
+                await apiCall('/admin/api/curriculum/all', 'DELETE');
+                showToast('Plan de estudios vaciado correctamente');
+                location.reload();
+            } catch (err) {
+                showToast('Error al vaciar plan de estudios', 'error');
+            }
+        }
+
+=======
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+        function filterCurriculum(year, btn) {
+            document.querySelectorAll('#panel-curriculum .filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('#curriculumTable tr').forEach(tr => {
+                tr.style.display = (year === 'all' || tr.dataset.year == year) ? '' : 'none';
+            });
+        }
+
+        // ─── COMMITMENT ─────────────────────────────
+        function openCommitmentModal(id, title, desc, imageUrl, order) {
+            document.getElementById('commId').value = id || '';
+            document.getElementById('commTitle').value = title || '';
+            document.getElementById('commDesc').value = desc || '';
+            document.getElementById('commImageUrl').value = imageUrl || '';
+            document.getElementById('commImageUrlManual').value = imageUrl || '';
+            document.getElementById('commOrder').value = order || 0;
+            document.getElementById('commImagePreview').style.display = 'none';
+            document.getElementById('commModalTitle').textContent = id ? 'Editar Compromiso' : 'Agregar Compromiso';
+            document.getElementById('commitmentModal').classList.add('active');
+        }
+
+        function editCommitment(id, title, desc, imageUrl, order) {
+            openCommitmentModal(id, title, desc, imageUrl, order);
+        }
+
+        async function saveCommitment(e) {
+            e.preventDefault();
+<<<<<<< HEAD
+=======
+            if (pendingUploads > 0) {
+                showToast('⏳ Esperá, la imagen se está subiendo...', 'error');
+                return;
+            }
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            const id = document.getElementById('commId').value;
+            const data = {
+                title: document.getElementById('commTitle').value,
+                description: document.getElementById('commDesc').value,
+                image_url: document.getElementById('commImageUrl').value || document.getElementById('commImageUrlManual').value,
+                order_index: parseInt(document.getElementById('commOrder').value) || 0,
+            };
+
+            try {
+                if (id) {
+                    await apiCall('/admin/api/commitment/' + id, 'PUT', data);
+                    showToast('Compromiso actualizado');
+                } else {
+                    await apiCall('/admin/api/commitment', 'POST', data);
+                    showToast('Compromiso agregado');
+                }
+                closeModal('commitmentModal');
+                location.reload();
+            } catch (err) {
+                showToast('Error al guardar', 'error');
+            }
+        }
+
+        async function deleteCommitment(id) {
+            if (!confirm('¿Eliminar este compromiso?')) return;
+            try {
+                await apiCall('/admin/api/commitment/' + id, 'DELETE');
+                showToast('Compromiso eliminado');
+                location.reload();
+            } catch (err) {
+                showToast('Error al eliminar', 'error');
+            }
+        }
+
+<<<<<<< HEAD
+        async function clearCommitment() {
+            if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL COMPROMISO SOCIAL? Esta acción no se puede deshacer.')) return;
+            try {
+                await apiCall('/admin/api/commitment/all', 'DELETE');
+                showToast('Compromiso social vaciado correctamente');
+                location.reload();
+            } catch (err) {
+                showToast('Error al vaciar compromiso social', 'error');
+            }
+        }
+
+=======
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+        // ─── PROJECTS ───────────────────────────────
+        function openProjectModal(data) {
+            const d = data || {};
+            document.getElementById('projId').value = d.id || '';
+            document.getElementById('projStudentName').value = d.student_name || '';
+            document.getElementById('projYear').value = d.year || 1;
+            document.getElementById('projStudentPhoto').value = d.student_photo_url || '';
+            document.getElementById('projStudentPhotoManual').value = d.student_photo_url || '';
+            document.getElementById('projName').value = d.project_name || '';
+            document.getElementById('projIcon').value = d.project_icon || 'fas fa-code';
+            document.getElementById('projDesc').value = d.project_description || '';
+            document.getElementById('projImageUrl').value = d.project_image_url || '';
+            document.getElementById('projImageUrlManual').value = d.project_image_url || '';
+            document.getElementById('projDemoUrl').value = d.project_demo_url || '';
+            document.getElementById('projTech').value = (d.tech_tags_arr || []).join(', ');
+            document.getElementById('projOrder').value = d.order_index || 0;
+            document.getElementById('projPhotoPreview').style.display = 'none';
+            document.getElementById('projImagePreview').style.display = 'none';
+            document.getElementById('projModalTitle').textContent = d.id ? 'Editar Proyecto' : 'Agregar Proyecto';
+            document.getElementById('projectModal').classList.add('active');
+        }
+
+        function editProject(data) {
+            openProjectModal(data);
+        }
+
+        async function saveProject(e) {
+            e.preventDefault();
+<<<<<<< HEAD
+=======
+            if (pendingUploads > 0) {
+                showToast('⏳ Esperá, la imagen se está subiendo...', 'error');
+                return;
+            }
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+            const id = document.getElementById('projId').value;
+            const techStr = document.getElementById('projTech').value;
+            const data = {
+                student_name: document.getElementById('projStudentName').value,
+                student_photo_url: document.getElementById('projStudentPhoto').value || document.getElementById('projStudentPhotoManual').value,
+                year: parseInt(document.getElementById('projYear').value),
+                project_name: document.getElementById('projName').value,
+                project_icon: document.getElementById('projIcon').value,
+                project_description: document.getElementById('projDesc').value,
+                project_image_url: document.getElementById('projImageUrl').value || document.getElementById('projImageUrlManual').value,
+                project_demo_url: document.getElementById('projDemoUrl').value,
+                tech_tags: JSON.stringify(techStr.split(',').map(t => t.trim()).filter(Boolean)),
+                order_index: parseInt(document.getElementById('projOrder').value) || 0,
+            };
+
+            try {
+                if (id) {
+                    await apiCall('/admin/api/projects/' + id, 'PUT', data);
+                    showToast('Proyecto actualizado');
+                } else {
+                    await apiCall('/admin/api/projects', 'POST', data);
+                    showToast('Proyecto agregado');
+                }
+                closeModal('projectModal');
+                location.reload();
+            } catch (err) {
+                showToast('Error al guardar', 'error');
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('¿Eliminar este proyecto?')) return;
+            try {
+                await apiCall('/admin/api/projects/' + id, 'DELETE');
+                showToast('Proyecto eliminado');
+                location.reload();
+            } catch (err) {
+                showToast('Error al eliminar', 'error');
+            }
+        }
+
+        function filterProjects(year, btn) {
+            document.querySelectorAll('#panel-projects .filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.admin-project-card').forEach(card => {
+                card.style.display = (year === 'all' || card.dataset.year == year) ? '' : 'none';
+            });
+        }
+<<<<<<< HEAD
+=======
+        // ─── Sidebar mobile: abrir/cerrar + overlay ───────────────
+        (function () {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggleBtn = document.getElementById('mobileToggle');
+
+            function openSidebar() {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+                document.body.classList.add('sidebar-open');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.classList.remove('sidebar-open');
+            }
+
+            toggleBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+            });
+
+            // Cerrar al hacer clic en el overlay
+            overlay.addEventListener('click', closeSidebar);
+
+            // Cerrar al navegar (click en link del sidebar en mobile)
+            sidebar.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth <= 768) closeSidebar();
+                });
+            });
+        })();
+>>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+    </script>
+</body>
+
+</html>

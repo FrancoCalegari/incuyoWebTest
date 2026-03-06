@@ -578,15 +578,6 @@
             padding: 0.6rem;
             border-radius: 8px;
             cursor: pointer;
-<<<<<<< HEAD
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-=======
-            transition: z-index 0s;
         }
 
         /* Overlay semitransparente detrás del sidebar (mobile) */
@@ -621,21 +612,17 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
                 z-index: 100;
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             }
 
             .sidebar.open {
                 transform: translateX(0);
             }
 
-<<<<<<< HEAD
-=======
             /* Hamburguesa queda detrás cuando sidebar está abierto */
             body.sidebar-open .mobile-toggle {
                 z-index: 50;
             }
 
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             .mobile-toggle {
                 display: block;
             }
@@ -644,20 +631,15 @@
                 margin-left: 0;
                 padding: 1rem;
                 padding-top: 4rem;
-<<<<<<< HEAD
-=======
                 width: 100%;
                 overflow-x: hidden;
                 box-sizing: border-box;
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             }
 
             .admin-project-grid,
             .commitment-grid {
                 grid-template-columns: 1fr;
             }
-<<<<<<< HEAD
-=======
 
             .panel-section {
                 overflow-x: auto;
@@ -666,7 +648,6 @@
             .data-table {
                 min-width: 520px;
             }
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
         }
 
         /* ─── Year filter tabs ───────────────────── */
@@ -699,16 +680,11 @@
 </head>
 
 <body>
-<<<<<<< HEAD
-    <!-- Mobile Toggle -->
-    <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
-=======
     <!-- Overlay para cerrar sidebar al hacer clic afuera -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Mobile Toggle -->
     <button class="mobile-toggle" id="mobileToggle">
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
         <i class="fas fa-bars"></i>
     </button>
 
@@ -745,8 +721,7 @@
                 <div class="panel-section">
                     <div class="panel-title">
                         <h3><i class="fas fa-book"></i> Plan de Estudios</h3>
-<<<<<<< HEAD
-                        <div style="display: flex; gap: var(--space-4);">
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button class="btn btn-danger" onclick="clearCurriculum()">
                                 <i class="fas fa-trash-alt"></i> Limpiar Todo
                             </button>
@@ -754,11 +729,6 @@
                                 <i class="fas fa-plus"></i> Agregar Materia
                             </button>
                         </div>
-=======
-                        <button class="btn btn-gold" onclick="openCurriculumModal()">
-                            <i class="fas fa-plus"></i> Agregar Materia
-                        </button>
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                     </div>
 
                     <div class="filter-tabs">
@@ -813,8 +783,7 @@
                 <div class="panel-section">
                     <div class="panel-title">
                         <h3><i class="fas fa-heart"></i> Compromiso Social</h3>
-<<<<<<< HEAD
-                        <div style="display: flex; gap: var(--space-4);">
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button class="btn btn-danger" onclick="clearCommitment()">
                                 <i class="fas fa-trash-alt"></i> Limpiar Todo
                             </button>
@@ -822,11 +791,6 @@
                                 <i class="fas fa-plus"></i> Agregar
                             </button>
                         </div>
-=======
-                        <button class="btn btn-gold" onclick="openCommitmentModal()">
-                            <i class="fas fa-plus"></i> Agregar
-                        </button>
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                     </div>
 
                     <div class="commitment-grid" id="commitmentGrid">
@@ -836,16 +800,11 @@
                                 data-desc="<%- encodeURIComponent(item.description || '') %>"
                                 data-image="<%- encodeURIComponent(item.image_url || '') %>"
                                 data-order="<%= item.order_index %>">
-<<<<<<< HEAD
                                 <% let commImageUrl=item.image_url; if (commImageUrl &&
                                     commImageUrl.includes('/api/v1/storage/files/')) { const
                                     fileId=commImageUrl.split('/api/v1/storage/files/')[1].split('?')[0];
                                     commImageUrl=`/api/storage/files/${fileId}`; } if (commImageUrl) { %>
                                     <img src="<%= commImageUrl %>" alt="<%= item.title %>">
-=======
-                                <% if (item.image_url) { %>
-                                    <img src="<%= item.image_url %>" alt="<%= item.title %>">
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                                     <% } %>
                                         <div class="card-body">
                                             <h4>
@@ -893,16 +852,11 @@
                             <div class="admin-project-card" data-id="<%= p.id %>" data-year="<%= p.year %>"
                                 data-proj="<%- encodeURIComponent(JSON.stringify(p)) %>">
                                 <div class="admin-project-card-header">
-<<<<<<< HEAD
                                     <% let adminPhotoUrl=p.student_photo_url; if (adminPhotoUrl &&
                                         adminPhotoUrl.includes('/api/v1/storage/files/')) { const
                                         fileId=adminPhotoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
                                         adminPhotoUrl=`/api/storage/files/${fileId}`; } if (adminPhotoUrl) { %>
                                         <img src="<%= adminPhotoUrl %>" alt="<%= p.student_name %>">
-=======
-                                    <% if (p.student_photo_url) { %>
-                                        <img src="<%= p.student_photo_url %>" alt="<%= p.student_name %>">
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                                         <% } else { %>
                                             <div class="placeholder-photo"><i class="fas fa-user"></i></div>
                                             <% } %>
@@ -1135,20 +1089,12 @@
         }
 
         // ─── File Upload ────────────────────────────
-<<<<<<< HEAD
-=======
         let pendingUploads = 0;
-
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
         async function previewFile(input, previewId, hiddenId) {
             const file = input.files[0];
             if (!file) return;
 
-<<<<<<< HEAD
-            // Show preview
-=======
             // Show local preview immediately (uses local file, no network needed)
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             const preview = document.getElementById(previewId);
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -1157,9 +1103,6 @@
             };
             reader.readAsDataURL(file);
 
-<<<<<<< HEAD
-            // Upload
-=======
             // Clear URL and track upload in progress
             document.getElementById(hiddenId).value = '';
             pendingUploads++;
@@ -1170,8 +1113,6 @@
                 btn.dataset.origText = btn.textContent;
                 btn.textContent = '⏳ Subiendo imagen...';
             });
-
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             const form = new FormData();
             form.append('file', file);
             try {
@@ -1179,14 +1120,6 @@
                 const data = await res.json();
                 if (data.success && data.file) {
                     document.getElementById(hiddenId).value = data.file.url;
-<<<<<<< HEAD
-                    showToast('Imagen subida correctamente');
-                } else {
-                    showToast('Error al subir imagen', 'error');
-                }
-            } catch (err) {
-                showToast('Error al subir imagen', 'error');
-=======
                     showToast('✓ Imagen subida correctamente');
                 } else {
                     showToast('Error al subir imagen: ' + (data.error || 'desconocido'), 'error');
@@ -1200,7 +1133,6 @@
                     btn.disabled = false;
                     btn.textContent = btn.dataset.origText || 'Guardar';
                 });
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             }
         }
 
@@ -1269,11 +1201,7 @@
             }
         }
 
-<<<<<<< HEAD
-        async function deleteCurriculum(id, el) {
-=======
         async function deleteCurriculum(id) {
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             if (!confirm('¿Eliminar esta materia?')) return;
             try {
                 await apiCall('/admin/api/curriculum/' + id, 'DELETE');
@@ -1284,7 +1212,6 @@
             }
         }
 
-<<<<<<< HEAD
         async function clearCurriculum() {
             if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL PLAN DE ESTUDIOS? Esta acción no se puede deshacer.')) return;
             try {
@@ -1295,9 +1222,6 @@
                 showToast('Error al vaciar plan de estudios', 'error');
             }
         }
-
-=======
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
         function filterCurriculum(year, btn) {
             document.querySelectorAll('#panel-curriculum .filter-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
@@ -1325,13 +1249,10 @@
 
         async function saveCommitment(e) {
             e.preventDefault();
-<<<<<<< HEAD
-=======
             if (pendingUploads > 0) {
                 showToast('⏳ Esperá, la imagen se está subiendo...', 'error');
                 return;
             }
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             const id = document.getElementById('commId').value;
             const data = {
                 title: document.getElementById('commTitle').value,
@@ -1366,7 +1287,6 @@
             }
         }
 
-<<<<<<< HEAD
         async function clearCommitment() {
             if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL COMPROMISO SOCIAL? Esta acción no se puede deshacer.')) return;
             try {
@@ -1377,9 +1297,6 @@
                 showToast('Error al vaciar compromiso social', 'error');
             }
         }
-
-=======
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
         // ─── PROJECTS ───────────────────────────────
         function openProjectModal(data) {
             const d = data || {};
@@ -1408,13 +1325,10 @@
 
         async function saveProject(e) {
             e.preventDefault();
-<<<<<<< HEAD
-=======
             if (pendingUploads > 0) {
                 showToast('⏳ Esperá, la imagen se está subiendo...', 'error');
                 return;
             }
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
             const id = document.getElementById('projId').value;
             const techStr = document.getElementById('projTech').value;
             const data = {
@@ -1463,8 +1377,6 @@
                 card.style.display = (year === 'all' || card.dataset.year == year) ? '' : 'none';
             });
         }
-<<<<<<< HEAD
-=======
         // ─── Sidebar mobile: abrir/cerrar + overlay ───────────────
         (function () {
             const sidebar = document.querySelector('.sidebar');
@@ -1498,7 +1410,6 @@
                 });
             });
         })();
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
     </script>
 </body>
 

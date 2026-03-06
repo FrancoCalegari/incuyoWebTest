@@ -59,12 +59,9 @@ router.post('/api/upload', requireAdmin, upload.single('file'), async (req, res)
     try {
         if (!req.file) return res.status(400).json({ error: 'No se envió archivo' });
         const result = await uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype);
-<<<<<<< HEAD
-=======
         // Return a proxy URL so the browser loads images through our server
         // (avoids Cross-Origin-Resource-Policy: same-origin block from Spider)
         result.url = `/admin/api/img/${result.id}`;
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
         res.json({ success: true, file: result });
     } catch (err) {
         console.error('Upload error:', err);
@@ -72,8 +69,6 @@ router.post('/api/upload', requireAdmin, upload.single('file'), async (req, res)
     }
 });
 
-<<<<<<< HEAD
-=======
 // ─── IMAGE PROXY ──────────────────────────────────────
 // Serves Spider Storage images through the local server to bypass CORP headers
 const fetch = require('node-fetch');
@@ -91,10 +86,7 @@ router.get('/api/img/:fileId', async (req, res) => {
     } catch (err) {
         res.status(500).send('Error loading image');
     }
-});
-
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
-// ─── CURRICULUM CRUD ─────────────────────────────────
+});// ─── CURRICULUM CRUD ─────────────────────────────────
 router.get('/api/curriculum', requireAdmin, async (req, res) => {
     try {
         const result = await query('SELECT * FROM curriculum ORDER BY year, order_index');
@@ -124,7 +116,6 @@ router.put('/api/curriculum/:id', requireAdmin, async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
 router.delete('/api/curriculum/all', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM curriculum`);
@@ -132,11 +123,7 @@ router.delete('/api/curriculum/all', requireAdmin, async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-});
-
-=======
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
-router.delete('/api/curriculum/:id', requireAdmin, async (req, res) => {
+}); router.delete('/api/curriculum/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM curriculum WHERE id=${parseInt(req.params.id)}`);
         res.json({ success: true });
@@ -175,7 +162,6 @@ router.put('/api/commitment/:id', requireAdmin, async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
 router.delete('/api/commitment/all', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM social_commitment`);
@@ -183,11 +169,7 @@ router.delete('/api/commitment/all', requireAdmin, async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-});
-
-=======
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
-router.delete('/api/commitment/:id', requireAdmin, async (req, res) => {
+}); router.delete('/api/commitment/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM social_commitment WHERE id=${parseInt(req.params.id)}`);
         res.json({ success: true });

@@ -130,41 +130,43 @@ document.addEventListener("DOMContentLoaded", () => {
 			const typingEl = showTyping();
 
 			try {
-<<<<<<< HEAD
 				console.log("🤖 Enviando consulta a la IA:", prompt);
-				console.log("📜 Historial de chat actual:", chatHistory.length, "mensajes");
 
-=======
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
+				// Filtramos el historial para que solo contenga roles válidos (user/model)
+				// Eliminamos entradas de "action" o roles no soportados por la API estándar
+				const cleanHistory = chatHistory.filter(h => h.role === 'user' || h.role === 'model');
+
 				const res = await fetch("/api/chat", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ prompt, history: chatHistory }),
+					body: JSON.stringify({ prompt, history: cleanHistory }),
 				});
-<<<<<<< HEAD
 
 				const data = await res.json();
 				console.log("📥 Respuesta recibida del servidor:", data);
 
 				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
 
-				if (res.status === 429 || (data.details && data.details.includes('429'))) {
-					console.warn("⏳ Límite de cuota alcanzado (429)");
-					addMessage("¡Uf! Estoy recibiendo muchos mensajes a la vez. 😅 Por favor, esperá un minuto y volvé a preguntarme.", true);
-				} else if (data.response) {
+				if (!res.ok) {
+					console.error("❌ Error en respuesta del servidor:", data);
+					if (res.status === 429 || (data.details && JSON.stringify(data.details).includes('429'))) {
+						addMessage("¡Uf! Estoy recibiendo muchos mensajes a la vez. 😅 Por favor, esperá un minuto y volvé a preguntarme.", true);
+					} else if (data.status === 400 || (data.details && JSON.stringify(data.details).includes('API key not valid'))) {
+						addMessage("⚠️ Hay un problema con la configuración del chat (Clave API inválida). Por favor, contactá al administrador.", true);
+					} else {
+						addMessage("Lo siento, hubo un error interno. Por favor intentá de nuevo más tarde.", true);
+					}
+					return;
+				}
+
+				if (data.response) {
 					console.log("✅ Renderizando respuesta de la IA");
 					chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-					// Si es función, falseamos el historial para Gemini (mandamos un function call + response mock)
-					if (data.action) {
-						chatHistory.push({ role: "model", parts: [{ functionCall: { name: data.action, args: {} } }] });
-						chatHistory.push({ role: "function", parts: [{ functionResponse: { name: data.action, response: { result: "success" } } }] });
-					} else {
-						chatHistory.push({ role: "model", parts: [{ text: data.response }] });
-					}
+					chatHistory.push({ role: "model", parts: [{ text: data.response }] });
 
 					addMessage(data.response, true);
 
-					// Ejecutar acción de UI si el bot la pidió
+					// Ejecutar acción de UI si el bot la pidió (aunque ahora el backend no las envía, mantenemos por compatibilidad futura)
 					if (data.action) {
 						console.log("⚡ Ejecutando acción de UI:", data.action);
 						setTimeout(() => {
@@ -177,30 +179,16 @@ document.addEventListener("DOMContentLoaded", () => {
 								window.location.href = "/#compromiso-social";
 								setTimeout(() => toggleChat(true), 1500);
 							}
-						}, 1200); // Pequeño delay para que el usuario lea el mensaje antes de mover la pantalla
+						}, 1200);
 					}
 				} else {
 					console.warn("⚠️ Advertencia: Respuesta parseada correctamente pero sin campo 'response'");
-					addMessage("Lo siento, hubo un error interno. Por favor intentá de nuevo más tarde.", true);
+					addMessage("El bot no pudo generar una respuesta. Por favor intentá de nuevo.", true);
 				}
 			} catch (err) {
-				console.error("❌ Error CRÍTICO de conexión o parseo en el chat:", err);
-=======
-				const data = await res.json();
-
+				console.error("❌ Error CRÍTICO de conexión:", err);
 				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
-
-				if (data.response) {
-					chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-					chatHistory.push({ role: "model", parts: [{ text: data.response }] });
-					addMessage(data.response, true);
-				} else {
-					addMessage("Lo siento, hubo un error. Por favor intentá de nuevo.", true);
-				}
-			} catch (err) {
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
-				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
-				addMessage("Error de conexión. Intentá de nuevo más tarde.", true);
+				addMessage("Error de conexión con el servidor. Asegurate de que el servicio esté activo e intentá de nuevo.", true);
 			}
 		}
 

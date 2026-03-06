@@ -126,7 +126,6 @@ TERCER AÑO:
 "📲 Escribinos por WhatsApp al +54 9 261 627-1658 y te respondemos todas tus consultas"`;
 
 app.post('/api/chat', async (req, res) => {
-<<<<<<< HEAD
     console.log('\n--- 🤖 NUEVA CONSULTA IA RECIBIDA ---');
     try {
         const { prompt, history } = req.body;
@@ -153,19 +152,10 @@ app.post('/api/chat', async (req, res) => {
                 maxOutputTokens: 500,
             },
         };
-=======
-    try {
-        const { prompt, history } = req.body;
-        const API_KEY = process.env.GEMINI_API_KEY;
-        if (!API_KEY) return res.status(500).json({ error: 'Gemini API key not configured' });
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
 
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-<<<<<<< HEAD
             body: JSON.stringify(reqPayload),
         });
 
@@ -173,9 +163,18 @@ app.post('/api/chat', async (req, res) => {
 
         if (!response.ok) {
             // Error de la API de Gemini (ej: 400 Bad Request, 403 Forbidden, 429 Too Many Requests)
-            const errorText = await response.text();
-            console.error(`❌ ERROR de la API de Gemini (HTTP ${response.status}):\n${errorText}`);
-            return res.status(500).json({ error: 'Error del servicio LLM', details: errorText });
+            let errorDetails;
+            try {
+                errorDetails = await response.json();
+            } catch (pErr) {
+                errorDetails = await response.text();
+            }
+            console.error(`❌ ERROR de la API de Gemini (HTTP ${response.status}):`, errorDetails);
+            return res.status(500).json({
+                error: 'Error del servicio LLM',
+                details: errorDetails,
+                status: response.status
+            });
         }
 
         const data = await response.json();
@@ -198,26 +197,6 @@ app.post('/api/chat', async (req, res) => {
     } catch (err) {
         console.error('❌ ERROR CRÍTICO procesando chat en servidor:', err);
         res.status(500).json({ error: 'Error al procesar la consulta', details: err.message });
-=======
-            body: JSON.stringify({
-                system_instruction: {
-                    parts: [{ text: INCUYO_SYSTEM_PROMPT }],
-                },
-                contents: (history || []).concat([{ role: 'user', parts: [{ text: prompt }] }]),
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 500,
-                },
-            }),
-        });
-
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Lo siento, no pude procesar tu pregunta. Escribinos por WhatsApp al +54 9 261 627-1658.';
-        res.json({ response: text });
-    } catch (err) {
-        console.error('Chat error:', err);
-        res.status(500).json({ error: 'Error al procesar la consulta' });
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
     }
 });
 

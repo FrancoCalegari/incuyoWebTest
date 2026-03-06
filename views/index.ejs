@@ -8,11 +8,10 @@
         content="Instituto de Estudios Superiores Nuevo Cuyo PT-169 - Tecnicatura Superior en Desarrollo de Software. Formación profesional con IA, modalidad bimodal y certificaciones laborales." />
     <meta name="keywords"
         content="tecnicatura, desarrollo software, programación, Mendoza, educación superior, IA, inteligencia artificial" />
-    <title>Instituto INCUYO - Tecnicatura en Desarrollo de Software</title>
+    <title>Instituto Nuevo Cuyo - Tecnicatura en Desarrollo de Software</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png"
-        href="https://aula.incuyo.edu.ar/pluginfile.php/1/theme_academi/logo/1756927387/logo%203.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="/css/style.css" />
@@ -184,91 +183,84 @@
         </div>
     </section>
 
-    <!-- ENROLLMENT SECTION -->
-    <section class="section section-dark enrollment" id="inscripciones">
+    
+    <!-- CURRICULUM SECTION (DYNAMIC) -->
+    <section class="section curriculum" id="curriculum">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle" style="color: var(--primary-gold)">
-                    ¡No te quedes afuera!
+                <p class="section-subtitle">Plan de Estudios</p>
+                <h2 class="section-title">Curriculum Completo</h2>
+                <p class="section-description">
+                    Plan actualizado anualmente con las últimas tendencias en desarrollo
+                    de software e inteligencia artificial
                 </p>
-                <h2 class="section-title">Inscripciones Abiertas desde Agosto</h2>
             </div>
 
-            <div class="highlight-box reveal">
-                <div class="text-center">
-                    <div class="scholarship-badge">
-                        <i class="fas fa-graduation-cap"></i> BECAS CON HASTA 40% DE DESCUENTO
+            <div class="curriculum-accordion reveal">
+                <% [1, 2, 3].forEach(function(year) { %>
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3 class="accordion-title">
+                                <%= year %>° Año
+                            </h3>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <ul class="course-list">
+                                    <% (curriculum[year] || []).forEach(function(subject) { %>
+                                        <li>
+                                            <%= subject.subject_name %>
+                                        </li>
+                                        <% }); %>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
-                        ¡Consultá por precios y promociones especiales!
-                    </p>
-                </div>
-
-                <div class="highlight-grid">
-                    <div class="highlight-item reveal">
-                        <div class="highlight-item-icon"><i class="fas fa-laptop-code"></i></div>
-                        <p class="highlight-item-text">
-                            Creá y diseñá aplicaciones para todo tipo de dispositivo
-                        </p>
-                    </div>
-
-                    <div class="highlight-item reveal">
-                        <div class="highlight-item-icon"><i class="fas fa-rocket"></i></div>
-                        <p class="highlight-item-text">
-                            Desarrollá aplicaciones con las últimas tecnologías
-                        </p>
-                    </div>
-
-                    <div class="highlight-item reveal">
-                        <div class="highlight-item-icon"><i class="fas fa-robot"></i></div>
-                        <p class="highlight-item-text">
-                            Aprendé con Inteligencia Artificial integrada en las materias
-                        </p>
-                    </div>
-                </div>
-
-                <div class="text-center" style="margin-top: 2rem">
-                    <a href="https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
-                        class="btn btn-primary btn-lg" target="_blank">
-                        <i class="fab fa-whatsapp"></i> Consultá por Inscripciones
-                    </a>
-                </div>
+                    <% }); %>
             </div>
         </div>
     </section>
 
-    <!-- SOCIAL COMMITMENT SECTION (DYNAMIC) -->
-    <section class="section social-commitment" id="compromiso">
+
+    <!-- CERTIFICATIONS SECTION -->
+    <section class="section certifications" id="certificaciones">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle">Compromiso Social</p>
-                <h2 class="section-title">Ayudando a la Comunidad</h2>
+                <p class="section-subtitle">Valor Agregado</p>
+                <h2 class="section-title">Certificaciones Laborales Adicionales</h2>
                 <p class="section-description">
-                    Los alumnos del instituto en la materia Ética organizan tareas
-                    extracurriculares para ayudar a los más necesitados
+                    La institución brinda certificaciones laborales adicionales por año
+                    al aprobar coprogramáticas
                 </p>
             </div>
 
-            <div class="image-gallery">
-<<<<<<< HEAD
-                <% commitments.forEach(function(item) { // Extraer ID de la URL vieja si existe let
-                    finalUrl=item.image_url; if (finalUrl && finalUrl.includes('/api/v1/storage/files/')) { const
-                    fileId=finalUrl.split('/api/v1/storage/files/')[1].split('?')[0];
-                    finalUrl=`/api/storage/files/${fileId}`; } %>
-                    <div class="gallery-item reveal">
-                        <img src="<%= finalUrl %>" alt="<%= item.title %>" loading="lazy" />
-=======
-                <% commitments.forEach(function(item) { %>
-                    <div class="gallery-item reveal">
-                        <img src="<%= item.image_url %>" alt="<%= item.title %>" loading="lazy" />
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
-                        <div class="gallery-item-overlay">
-                            <p class="gallery-item-title">
-                                <%= item.title %>
-                            </p>
-                        </div>
-                    </div>
-                    <% }); %>
+            <div class="cert-year-grid">
+                <div class="cert-year-card reveal">
+                    <h3 class="cert-year">1° Año</h3>
+                    <ul class="cert-list">
+                        <li>Técnico en Hardware y Software</li>
+                        <li>Programador Python (nivel Junior)</li>
+                    </ul>
+                </div>
+
+                <div class="cert-year-card reveal">
+                    <h3 class="cert-year">2° Año</h3>
+                    <ul class="cert-list">
+                        <li>Sistemas Operativos (Linux-Windows)</li>
+                        <li>Sistemas de Programación Pymes</li>
+                        <li>Análisis y Técnicas de sistemas</li>
+                    </ul>
+                </div>
+
+                <div class="cert-year-card reveal">
+                    <h3 class="cert-year">3° Año</h3>
+                    <ul class="cert-list">
+                        <li>Diseño y programación de páginas web</li>
+                        <li>WEB SITE con base de datos dinámicas</li>
+                        <li>Inteligencia Artificial en la nube</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
@@ -328,37 +320,29 @@
         </div>
     </section>
 
-    <!-- CURRICULUM SECTION (DYNAMIC) -->
-    <section class="section curriculum" id="curriculum">
+    <!-- SOCIAL COMMITMENT SECTION (DYNAMIC) -->
+    <section class="section social-commitment" id="compromiso">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle">Plan de Estudios</p>
-                <h2 class="section-title">Curriculum Completo</h2>
+                <p class="section-subtitle">Compromiso Social</p>
+                <h2 class="section-title">Ayudando a la Comunidad</h2>
                 <p class="section-description">
-                    Plan actualizado anualmente con las últimas tendencias en desarrollo
-                    de software e inteligencia artificial
+                    Los alumnos del instituto en la materia Ética organizan tareas
+                    extracurriculares para ayudar a los más necesitados
                 </p>
             </div>
 
-            <div class="curriculum-accordion reveal">
-                <% [1, 2, 3].forEach(function(year) { %>
-                    <div class="accordion-item">
-                        <div class="accordion-header">
-                            <h3 class="accordion-title">
-                                <%= year %>° Año
-                            </h3>
-                            <span class="accordion-icon">▼</span>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                <ul class="course-list">
-                                    <% (curriculum[year] || []).forEach(function(subject) { %>
-                                        <li>
-                                            <%= subject.subject_name %>
-                                        </li>
-                                        <% }); %>
-                                </ul>
-                            </div>
+            <div class="image-gallery">
+                <% commitments.forEach(function(item) { // Extraer ID de la URL vieja si existe let
+                    finalUrl=item.image_url; if (finalUrl && finalUrl.includes('/api/v1/storage/files/')) { const
+                    fileId=finalUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                    finalUrl=`/api/storage/files/${fileId}`; } %>
+                    <div class="gallery-item reveal">
+                        <img src="<%= finalUrl %>" alt="<%= item.title %>" loading="lazy" />
+                        <div class="gallery-item-overlay">
+                            <p class="gallery-item-title">
+                                <%= item.title %>
+                            </p>
                         </div>
                     </div>
                     <% }); %>
@@ -366,43 +350,54 @@
         </div>
     </section>
 
-    <!-- CERTIFICATIONS SECTION -->
-    <section class="section certifications" id="certificaciones">
+    <!-- ENROLLMENT SECTION -->
+    <section class="section section-dark enrollment" id="inscripciones">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle">Valor Agregado</p>
-                <h2 class="section-title">Certificaciones Laborales Adicionales</h2>
-                <p class="section-description">
-                    La institución brinda certificaciones laborales adicionales por año
-                    al aprobar coprogramáticas
+                <p class="section-subtitle" style="color: var(--primary-gold)">
+                    ¡No te quedes afuera!
                 </p>
+                <h2 class="section-title">Inscripciones Abiertas desde Agosto</h2>
             </div>
 
-            <div class="cert-year-grid">
-                <div class="cert-year-card reveal">
-                    <h3 class="cert-year">1° Año</h3>
-                    <ul class="cert-list">
-                        <li>Técnico en Hardware y Software</li>
-                        <li>Programador Python (nivel Junior)</li>
-                    </ul>
+            <div class="highlight-box reveal">
+                <div class="text-center">
+                    <div class="scholarship-badge">
+                        <i class="fas fa-graduation-cap"></i> BECAS CON HASTA 40% DE DESCUENTO
+                    </div>
+                    <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
+                        ¡Consultá por precios y promociones especiales!
+                    </p>
                 </div>
 
-                <div class="cert-year-card reveal">
-                    <h3 class="cert-year">2° Año</h3>
-                    <ul class="cert-list">
-                        <li>Sistemas Operativos (Linux-Windows)</li>
-                        <li>Sistemas de Programación Pymes</li>
-                        <li>Análisis y Técnicas de sistemas</li>
-                    </ul>
+                <div class="highlight-grid">
+                    <div class="highlight-item reveal">
+                        <div class="highlight-item-icon"><i class="fas fa-laptop-code"></i></div>
+                        <p class="highlight-item-text">
+                            Creá y diseñá aplicaciones para todo tipo de dispositivo
+                        </p>
+                    </div>
+
+                    <div class="highlight-item reveal">
+                        <div class="highlight-item-icon"><i class="fas fa-rocket"></i></div>
+                        <p class="highlight-item-text">
+                            Desarrollá aplicaciones con las últimas tecnologías
+                        </p>
+                    </div>
+
+                    <div class="highlight-item reveal">
+                        <div class="highlight-item-icon"><i class="fas fa-robot"></i></div>
+                        <p class="highlight-item-text">
+                            Aprendé con Inteligencia Artificial integrada en las materias
+                        </p>
+                    </div>
                 </div>
 
-                <div class="cert-year-card reveal">
-                    <h3 class="cert-year">3° Año</h3>
-                    <ul class="cert-list">
-                        <li>Diseño y programación de páginas web</li>
-                        <li>WEB SITE con base de datos dinámicas</li>
-                        <li>Inteligencia Artificial en la nube</li>
-                    </ul>
+                <div class="text-center" style="margin-top: 2rem">
+                    <a href="https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
+                        class="btn btn-primary btn-lg" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Consultá por Inscripciones
+                    </a>
                 </div>
             </div>
         </div>
@@ -434,7 +429,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Instituto INCUYO</h3>
+                    <h3>INCUYO</h3>
                     <p>Instituto de Estudios Superiores Nuevo Cuyo PT-169</p>
                     <p>
                         Formando profesionales en desarrollo de software con las últimas
@@ -472,7 +467,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2026 Instituto INCUYO - Todos los derechos reservados</p>
+                <p>&copy; 2026 Instituto Nuevo Cuyo - Todos los derechos reservados</p>
             </div>
         </div>
     </footer>
@@ -481,7 +476,8 @@
     <div class="whatsapp-float">
         <!-- AI CHATBOT BUTTON -->
         <button class="ai-chat-btn" id="aiChatBtn" aria-label="Hablar con el Asistente IA" title="Asistente INCUYO IA">
-            <i class="fas fa-robot"></i>
+            <img src="/assets/img/robbie.png" alt="Robbie"
+                style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 10px; background: white;">
         </button>
 
         <a href="https://wa.me/5492616271658?text=Hola!%20Me%20gustaría%20recibir%20más%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
@@ -495,15 +491,12 @@
         <div class="ai-chat-header">
             <div class="ai-chat-header-info">
                 <div class="ai-chat-avatar">
-                    <i class="fas fa-robot"></i>
+                    <img src="/assets/img/robbie.png" alt="Robbie"
+                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 5px; background: white;">
                 </div>
                 <div>
                     <p class="ai-chat-title">Asistente INCUYO</p>
-<<<<<<< HEAD
                     <p class="ai-chat-subtitle">Respondido por IA · Gemini</p>
-=======
-                    <p class="ai-chat-subtitle">Respondido por IA · SpiderWeb</p>
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                 </div>
             </div>
             <button class="ai-chat-close" id="aiChatClose" aria-label="Cerrar chat">
@@ -515,7 +508,7 @@
             <div class="ai-chat-msg ai-chat-msg--bot">
                 <div class="ai-chat-msg-bubble">
                     <i class="fas fa-hand-sparkles" style="color: var(--primary-gold);"></i> ¡Hola! Soy el asistente
-                    virtual del <strong>Instituto INCUYO</strong>. Puedo responder preguntas
+                    virtual del <strong>Instituto Nuevo Cuyo</strong>. Puedo responder preguntas
                     sobre la Tecnicatura en Desarrollo de Software, inscripciones, plan de estudios, certificaciones y
                     más. ¿En qué puedo ayudarte?
                 </div>

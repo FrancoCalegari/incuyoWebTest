@@ -9,8 +9,8 @@
     <title>Proyectos de Alumnos - Instituto INCUYO</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png"
-        href="https://aula.incuyo.edu.ar/pluginfile.php/1/theme_academi/logo/1756927387/logo%203.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="/css/style.css" />
@@ -309,16 +309,11 @@
                     <% projects[year].forEach(function(project) { %>
                         <div class="project-card reveal" data-year="<%= year %>">
                             <div class="project-header">
-<<<<<<< HEAD
                                 <% let photoUrl=project.student_photo_url; if (photoUrl &&
                                     photoUrl.includes('/api/v1/storage/files/')) { const
                                     fileId=photoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
                                     photoUrl=`/api/storage/files/${fileId}`; } if (photoUrl) { %>
                                     <img src="<%= photoUrl %>" alt="<%= project.student_name %>"
-=======
-                                <% if (project.student_photo_url) { %>
-                                    <img src="<%= project.student_photo_url %>" alt="<%= project.student_name %>"
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                                         class="student-photo" />
                                     <% } else { %>
                                         <div class="student-photo"
@@ -338,18 +333,12 @@
 
                             <div class="project-content">
                                 <div class="project-media">
-<<<<<<< HEAD
                                     <% let projImageUrl=project.project_image_url; if (projImageUrl &&
                                         projImageUrl.includes('/api/v1/storage/files/')) { const
                                         fileId=projImageUrl.split('/api/v1/storage/files/')[1].split('?')[0];
                                         projImageUrl=`/api/storage/files/${fileId}`; } if (projImageUrl) { %>
                                         <img src="<%= projImageUrl %>" alt="<%= project.project_name %> Screenshot"
                                             loading="lazy" />
-=======
-                                    <% if (project.project_image_url) { %>
-                                        <img src="<%= project.project_image_url %>"
-                                            alt="<%= project.project_name %> Screenshot" loading="lazy" />
->>>>>>> ccf6216356e229a72fe8d3fca6c6c880996271ba
                                         <% } else { %>
                                             <div
                                                 style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--gray-200);color:var(--gray-400);">

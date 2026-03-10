@@ -424,6 +424,29 @@ a:hover {
 	z-index: 1;
 }
 
+/* Hero Row Layout (two columns) */
+.hero-row {
+	position: relative;
+	z-index: 10;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--space-12);
+	width: 100%;
+	padding: var(--space-6) 0;
+}
+
+.hero-text-col {
+	flex: 1 1 45%;
+	text-align: left;
+}
+
+.hero-video-col {
+	flex: 1 1 55%;
+	animation: fadeInUp 0.8s ease-out 0.6s backwards;
+}
+
+/* Keep old hero-content for any other usage */
 .hero-content {
 	position: relative;
 	z-index: 10;
@@ -455,8 +478,16 @@ a:hover {
 .hero-description {
 	font-size: var(--text-xl);
 	color: var(--gray-300);
-	margin-bottom: var(--space-10);
+	margin-bottom: var(--space-8);
 	animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.hero-cta-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-4);
+	align-items: center;
+	animation: fadeInUp 0.8s ease-out 0.55s backwards;
 }
 
 .hero-video {
@@ -487,6 +518,31 @@ a:hover {
 	border: none;
 	object-fit: cover;
 }
+
+/* Hero responsive */
+@media (max-width: 900px) {
+	.hero-row {
+		flex-direction: column;
+		gap: var(--space-8);
+	}
+	.hero-text-col {
+		text-align: center;
+		flex: unset;
+		width: 100%;
+	}
+	.hero-video-col {
+		flex: unset;
+		width: 100%;
+	}
+	.hero-cta-group {
+		justify-content: center;
+	}
+	.hero-title {
+		font-size: var(--text-4xl);
+	}
+}
+
+
 
 /* ============================================
    BUTTONS
@@ -525,6 +581,32 @@ a:hover {
 
 .btn-secondary:hover {
 	background: var(--primary-blue-light);
+	transform: translateY(-2px);
+}
+
+.btn-gold {
+	background: var(--gradient-accent);
+	color: var(--gray-900);
+	box-shadow: 0 4px 18px rgba(195, 146, 21, 0.45);
+	font-weight: 700;
+}
+
+.btn-gold:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 28px rgba(195, 146, 21, 0.6);
+	color: var(--gray-900);
+}
+
+.btn-outline-white {
+	background: transparent;
+	color: var(--white);
+	border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.btn-outline-white:hover {
+	background: rgba(255, 255, 255, 0.12);
+	border-color: var(--white);
+	color: var(--white);
 	transform: translateY(-2px);
 }
 

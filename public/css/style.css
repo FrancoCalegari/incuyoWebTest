@@ -1672,37 +1672,174 @@ a:hover {
    RESPONSIVE DESIGN
    ============================================ */
 
-/* Tablets and below */
-@media (max-width: 1024px) {
+/* ─── TABLET RESPONSIVE (768px – 1100px) ─── */
+@media (min-width: 769px) and (max-width: 1100px) {
+
+	/* Typography scale-down */
 	:root {
-		--text-5xl: 2.5rem;
-		--text-4xl: 2rem;
-		--text-3xl: 1.75rem;
+		--text-6xl: 2.25rem;
+		--text-5xl: 1.875rem;
+		--text-4xl: 1.625rem;
+		--text-3xl: 1.375rem;
+		--text-2xl: 1.125rem;
+		--space-20: 4rem;
+		--space-24: 5rem;
+	}
+
+	/* Container padding */
+	.container {
+		padding: 0 var(--space-6);
+	}
+
+	/* Navbar */
+	.navbar-logo {
+		height: 36px;
+	}
+
+	.navbar-menu {
+		gap: var(--space-5);
+	}
+
+	.navbar-menu a {
+		font-size: 0.8rem;
+	}
+
+	/* Hero section — keep 2-col but better balanced */
+	.hero {
+		min-height: 85vh;
+		padding-top: var(--space-16);
+	}
+
+	.hero-row {
+		flex-direction: row;
+		align-items: center;
+		gap: var(--space-6);
+		padding: var(--space-4) 0;
+	}
+
+	.hero-text-col {
+		flex: 1 1 48%;
+		text-align: left;
+	}
+
+	.hero-video-col {
+		flex: 1 1 52%;
 	}
 
 	.hero-title {
-		font-size: var(--text-5xl);
+		font-size: 2rem;
+		margin-bottom: var(--space-4);
+		line-height: 1.15;
 	}
 
 	.hero-subtitle {
-		font-size: var(--text-base);
+		font-size: 0.75rem;
 		letter-spacing: 1.5px;
+		margin-bottom: var(--space-3);
 	}
 
 	.hero-description {
-		font-size: var(--text-lg);
+		font-size: 0.9rem;
+		margin-bottom: var(--space-6);
+		line-height: 1.6;
 	}
 
-	.video-wrapper {
-		max-width: 90%;
+	.hero-cta-group {
+		justify-content: flex-start;
+		gap: var(--space-3);
 	}
 
+	.hero-cta-group .btn {
+		font-size: 0.8rem;
+		padding: var(--space-3) var(--space-5);
+		width: auto;
+	}
+
+	.hero-video {
+		margin-top: var(--space-4);
+	}
+
+	/* Sections */
+	.section {
+		padding: var(--space-16) 0;
+	}
+
+	.section-title {
+		font-size: var(--text-3xl);
+	}
+
+	.section-description {
+		font-size: var(--text-base);
+	}
+
+	/* Grids */
 	.grid-cols-3 {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
 	.grid-cols-4 {
 		grid-template-columns: repeat(2, 1fr);
+	}
+
+	/* Card sizing */
+	.card {
+		padding: var(--space-6);
+	}
+
+	.card-title {
+		font-size: var(--text-xl);
+	}
+
+	/* Certifications */
+	.cert-year-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-6);
+	}
+
+	.cert-year-card {
+		padding: var(--space-6);
+	}
+
+	.cert-year {
+		font-size: var(--text-xl);
+	}
+
+	/* Curriculum accordion */
+	.accordion-title {
+		font-size: var(--text-xl);
+	}
+
+	.course-list {
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-3);
+	}
+
+	/* Image gallery */
+	.image-gallery {
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-4);
+	}
+
+	/* Tech Carousel */
+	.tech-icon {
+		font-size: 2.5rem;
+		width: 60px;
+		height: 60px;
+	}
+
+	/* Highlight grid */
+	.highlight-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	/* Video wrapper */
+	.video-wrapper {
+		max-width: 100%;
+	}
+
+	/* AI Chat */
+	.ai-chat-window {
+		width: 360px;
 	}
 }
 

@@ -525,18 +525,22 @@ a:hover {
 		flex-direction: column;
 		gap: var(--space-8);
 	}
+
 	.hero-text-col {
 		text-align: center;
 		flex: unset;
 		width: 100%;
 	}
+
 	.hero-video-col {
 		flex: unset;
 		width: 100%;
 	}
+
 	.hero-cta-group {
 		justify-content: center;
 	}
+
 	.hero-title {
 		font-size: var(--text-4xl);
 	}
@@ -1914,7 +1918,7 @@ a:hover {
 	}
 
 	.hero-title {
-		font-size: var(--text-4xl);
+		font-size: 3rem;
 		margin-bottom: var(--space-4);
 		line-height: 1.2;
 	}
@@ -1966,6 +1970,7 @@ a:hover {
 	.whatsapp-float {
 		bottom: var(--space-6);
 		right: var(--space-6);
+		flex-direction: row;
 	}
 
 	.whatsapp-btn {
@@ -1992,5 +1997,28 @@ a:hover {
 
 	.image-gallery {
 		grid-template-columns: 1fr;
+	}
+}
+
+/* ============================================
+   TYPEWRITER EFFECT 
+   ============================================ */
+.typewriter-cursor {
+	display: inline;
+	color: var(--primary-gold);
+	animation: blink 1s step-end infinite;
+	margin-left: 2px;
+	font-weight: 300;
+}
+
+@keyframes blink {
+
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
 	}
 }

@@ -208,5 +208,50 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
+	// --- TYPEWRITER EFFECT PARA HERO TITLE ---
+	const heroTitle = document.querySelector('.hero-title');
+	if (heroTitle) {
+		const phrases = ["Imagina tu Futuro", "Escribe tu Futuro", "Mejora tu Futuro", "Crea tu Futuro"];
+		let currentPhraseIndex = 0;
+		let isDeleting = false;
+		let currentText = phrases[0];
+		let isWaiting = true;
+
+		function typeWriter() {
+			const fullText = phrases[currentPhraseIndex];
+
+			if (isWaiting) {
+				isWaiting = false;
+				isDeleting = true;
+				setTimeout(typeWriter, 3000);
+				return;
+			}
+
+			if (isDeleting) {
+				currentText = fullText.substring(0, currentText.length - 1);
+			} else {
+				currentText = fullText.substring(0, currentText.length + 1);
+			}
+
+			heroTitle.innerHTML = currentText + '<span class="typewriter-cursor">|</span>';
+
+			let typeSpeed = isDeleting ? 50 : 100;
+
+			if (!isDeleting && currentText === fullText) {
+				isWaiting = true;
+				typeSpeed = 0;
+			} else if (isDeleting && currentText === "") {
+				isDeleting = false;
+				currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+				typeSpeed = 500;
+			}
+
+			setTimeout(typeWriter, typeSpeed);
+		}
+
+		heroTitle.innerHTML = currentText + '<span class="typewriter-cursor">|</span>';
+		setTimeout(typeWriter, 3000);
+	}
+
 	console.log("%cInstituto INCUYO 🚀", "color:#3b82f6; font-size:20px; font-weight:bold;");
 });

@@ -2001,6 +2001,123 @@ a:hover {
 }
 
 /* ============================================
+   SERVICIOS INCUYO — index.ejs banner section
+   ============================================ */
+.servicios-incuyo {
+	background: var(--gradient-primary);
+	position: relative;
+	overflow: hidden;
+}
+
+.servicios-incuyo::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(circle at 10% 70%, rgba(195, 146, 21, 0.15) 0%, transparent 50%),
+		radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 50%);
+	pointer-events: none;
+}
+
+.servicios-incuyo__inner {
+	max-width: 820px;
+	margin: 0 auto;
+	text-align: center;
+	position: relative;
+	z-index: 1;
+}
+
+.servicios-incuyo__badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: rgba(195, 146, 21, 0.18);
+	border: 1px solid rgba(195, 146, 21, 0.5);
+	color: var(--primary-gold);
+	font-size: 0.78rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+	border-radius: var(--radius-full);
+	padding: 0.4rem 1.2rem;
+	margin-bottom: 1.5rem;
+}
+
+.servicios-incuyo__title {
+	font-size: clamp(2rem, 5vw, 3.25rem);
+	color: var(--white);
+	margin-bottom: 1.5rem;
+	letter-spacing: -0.5px;
+}
+
+.servicios-incuyo__lead {
+	font-size: 1.1rem;
+	color: rgba(255, 255, 255, 0.9);
+	line-height: 1.8;
+	margin-bottom: 1rem;
+}
+
+.servicios-incuyo__text {
+	font-size: 1rem;
+	color: rgba(255, 255, 255, 0.72);
+	line-height: 1.8;
+	margin-bottom: 2.5rem;
+}
+
+.servicios-incuyo__pillars {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 3rem;
+}
+
+.servicios-incuyo__pillar {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: var(--radius-full);
+	padding: 0.55rem 1.25rem;
+	transition: all var(--transition-base);
+}
+
+.servicios-incuyo__pillar:hover {
+	background: rgba(195, 146, 21, 0.2);
+	border-color: rgba(195, 146, 21, 0.5);
+	transform: translateY(-2px);
+}
+
+.servicios-incuyo__pillar i {
+	color: var(--primary-gold);
+	font-size: 0.95rem;
+}
+
+.servicios-incuyo__pillar span {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--white);
+	letter-spacing: 0.2px;
+}
+
+.servicios-incuyo__cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+@media (max-width: 640px) {
+	.servicios-incuyo__pillars {
+		gap: 0.75rem;
+	}
+
+	.servicios-incuyo__pillar {
+		padding: 0.45rem 1rem;
+	}
+}
+
+/* ============================================
    TYPEWRITER EFFECT 
    ============================================ */
 .typewriter-cursor {
@@ -2020,5 +2137,53 @@ a:hover {
 
 	50% {
 		opacity: 0;
+	}
+}
+
+/* ============================================
+   SERVICIOS PAGE — hero section
+   ============================================ */
+.servicios-page-hero {
+	min-height: 70vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--gradient-primary);
+	position: relative;
+	overflow: hidden;
+	padding-top: var(--space-20);
+	isolation: isolate;
+}
+
+.servicios-page-hero::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(circle at 15% 60%, rgba(195, 146, 21, 0.18) 0%, transparent 55%),
+		radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.07) 0%, transparent 50%);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.servicios-page-hero__overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(34, 58, 91, 0.25);
+	z-index: 1;
+}
+
+.servicios-page-hero__content {
+	position: relative;
+	z-index: 10;
+	text-align: center;
+	max-width: 820px;
+	margin: 0 auto;
+	padding: var(--space-6) 0;
+}
+
+@media (max-width: 900px) {
+	.servicios-page-hero {
+		min-height: 55vh;
 	}
 }

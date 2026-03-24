@@ -51,6 +51,11 @@ router.get('/proyectosalumnos', async (req, res) => {
     }
 });
 
+// GET /servicios — Servicios tecnológicos integrales INCUYO
+router.get('/servicios', (req, res) => {
+    res.render('Servicios');
+});
+
 // Proxy for Cloud Storage Images to bypass CORS and hide API KEY
 router.get('/api/storage/files/:id', async (req, res) => {
     try {

@@ -209,8 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	// --- TYPEWRITER EFFECT PARA HERO TITLE ---
+	// Solo se activa si el elemento tiene el cursor typewriter como hijo (opt-in por página)
 	const heroTitle = document.querySelector('.hero-title');
-	if (heroTitle) {
+	if (heroTitle && heroTitle.querySelector('.typewriter-cursor')) {
 		const phrases = ["Imagina tu Futuro", "Escribe tu Futuro", "Mejora tu Futuro", "Crea tu Futuro"];
 		let currentPhraseIndex = 0;
 		let isDeleting = false;

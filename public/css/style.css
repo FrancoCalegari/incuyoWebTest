@@ -411,6 +411,28 @@ a:hover {
 	filter: blur(8px) brightness(0.6);
 }
 
+/* YouTube Background Video */
+.hero-youtube-bg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 100vw;
+	height: 56.25vw;
+	min-height: 100vh;
+	min-width: 177.77vh;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	z-index: 0;
+}
+.hero-youtube-bg iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
 /* Glassmorphism Overlay */
 .hero-glass-overlay {
 	position: absolute;

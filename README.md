@@ -1,4 +1,4 @@
-# Instituto INCUYO - Web Demo
+# Instituto INCUYO Web
 
 Este es el repositorio del sitio web de prueba para el **Instituto INCUYO** (Tecnicatura Superior en Desarrollo de Software). 
 

@@ -351,10 +351,12 @@ a:hover {
 .navbar-toggle.active span:nth-child(1) {
 	transform: translateY(7px) rotate(45deg);
 }
+
 .navbar-toggle.active span:nth-child(2) {
 	opacity: 0;
 	transform: scaleX(0);
 }
+
 .navbar-toggle.active span:nth-child(3) {
 	transform: translateY(-7px) rotate(-45deg);
 }
@@ -484,6 +486,7 @@ a:hover {
 	pointer-events: none;
 	z-index: 0;
 }
+
 .hero-youtube-bg iframe {
 	position: absolute;
 	top: 0;
@@ -2643,7 +2646,7 @@ a:hover {
 /* Outer: igual que .tech-carousel-container */
 .pasantias-carousel-outer {
 	margin-top: var(--space-8);
-	overflow: hidden;
+	overflow: visible;
 	position: relative;
 	width: 100%;
 	padding: var(--space-8) 0;
@@ -2654,6 +2657,7 @@ a:hover {
 	display: flex;
 	gap: var(--space-8);
 	width: max-content;
+	padding: 3rem 0; /* Add top and bottom padding to prevent mask-image from clipping scaled children */
 	animation: scroll-pasantias 22s linear infinite;
 	will-change: transform;
 	mask-image: linear-gradient(to right,
@@ -2666,6 +2670,7 @@ a:hover {
 			black 8%,
 			black 92%,
 			transparent);
+	overflow: visible;
 }
 
 .pasantias-carousel-outer .pasantias-carousel-track:hover {
@@ -2674,15 +2679,20 @@ a:hover {
 
 /* -33.33% porque el track tiene 3x el set original */
 @keyframes scroll-pasantias {
-	0%   { transform: translateX(0); }
-	100% { transform: translateX(-33.333%); }
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(-33.333%);
+	}
 }
 
 
 .pasantia-logo-item {
 	flex-shrink: 0;
-	width: 160px;
-	height: 90px;
+	width: 10vw;
+	height: 10vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -2696,7 +2706,9 @@ a:hover {
 
 .pasantia-logo-item:hover {
 	box-shadow: var(--shadow-md);
-	transform: scale(1.06);
+	transform: scale(1.8);
+	position: relative;
+	z-index: 10;
 }
 
 .pasantia-logo-item img {
@@ -2823,4 +2835,4 @@ a:hover {
 		width: 130px;
 		height: 75px;
 	}
-}
+}

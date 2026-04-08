@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
         const [currResult, scResult, diplomResult, pasResult, configResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
-            query('SELECT * FROM diplomaturas WHERE destacado=1 ORDER BY order_index LIMIT 5').catch(() => ({ result: [] })),
+            query('SELECT * FROM diplomaturas WHERE destacado=1 ORDER BY order_index LIMIT 6').catch(() => ({ result: [] })),
             query('SELECT * FROM pasantias_empresas ORDER BY order_index').catch(() => ({ result: [] })),
             query("SELECT * FROM configuracion").catch(() => ({ result: [] })),
         ]);

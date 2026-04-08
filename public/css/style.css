@@ -2646,7 +2646,7 @@ a:hover {
 /* Outer: igual que .tech-carousel-container */
 .pasantias-carousel-outer {
 	margin-top: var(--space-8);
-	overflow: visible;
+	overflow: hidden;
 	position: relative;
 	width: 100%;
 	padding: var(--space-8) 0;

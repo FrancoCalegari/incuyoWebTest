@@ -30,6 +30,54 @@ app.use(session({
 app.use('/', require('./routes/public'));
 app.use('/admin', require('./routes/admin'));
 
+// ─── Auto-init DB Tables ─────────────────────────────
+async function initDB() {
+    const { query } = require('./lib/spider');
+    const defaultHorario = JSON.stringify([
+        { dia: 'Lunes',      abierto: true,  apertura: '08:00', cierre: '20:00' },
+        { dia: 'Martes',     abierto: true,  apertura: '08:00', cierre: '20:00' },
+        { dia: 'Miércoles',  abierto: true,  apertura: '08:00', cierre: '20:00' },
+        { dia: 'Jueves',     abierto: true,  apertura: '08:00', cierre: '20:00' },
+        { dia: 'Viernes',    abierto: true,  apertura: '08:00', cierre: '20:00' },
+        { dia: 'Sábado',     abierto: true,  apertura: '09:00', cierre: '13:00' },
+        { dia: 'Domingo',    abierto: false,  apertura: '',      cierre: ''      },
+    ]).replace(/'/g, "''");
+
+    const tables = [
+        `CREATE TABLE IF NOT EXISTS diplomaturas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            descripcion_breve TEXT,
+            descripcion_completa TEXT,
+            imagen_url TEXT,
+            fecha_inicio VARCHAR(100),
+            whatsapp_msg TEXT,
+            order_index INT DEFAULT 0,
+            destacado TINYINT(1) DEFAULT 0
+        )`,
+        `CREATE TABLE IF NOT EXISTS pasantias_empresas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            logo_url TEXT,
+            order_index INT DEFAULT 0
+        )`,
+        `CREATE TABLE IF NOT EXISTS configuracion (
+            clave VARCHAR(100) PRIMARY KEY,
+            valor TEXT
+        )`,
+        `INSERT IGNORE INTO configuracion (clave, valor) VALUES ('horario', '${defaultHorario}')`,
+    ];
+
+    for (const sql of tables) {
+        try {
+            await query(sql);
+        } catch (e) {
+            console.warn('⚠️  DB init warning:', e.message.slice(0, 120));
+        }
+    }
+    console.log('✅ DB tables verified/created');
+}
+
 // ─── Gemini Chatbot Proxy ───────────────────────────
 const INCUYO_SYSTEM_PROMPT = `Sos el asistente virtual oficial del Instituto INCUYO (Instituto de Estudios Superiores Nuevo Cuyo PT-169).
 Tu nombre es "Asistente INCUYO". Respondé SIEMPRE en español argentino, de forma amigable, clara y concisa.
@@ -204,8 +252,11 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // ─── Start Server ───────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`\n🚀 Instituto INCUYO Server running at http://localhost:${PORT}`);
     console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
     console.log(`\nPress Ctrl+C to stop.\n`);
+    // Initialize DB tables (new features)
+    await initDB().catch(e => console.error('❌ initDB failed:', e.message));
 });
+

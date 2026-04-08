@@ -14,13 +14,8 @@
 </head>
 
 <body>
-    <!-- Overlay para cerrar sidebar al hacer clic afuera -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Mobile Toggle -->
-    <button class="mobile-toggle" id="mobileToggle">
-        <i class="fas fa-bars"></i>
-    </button>
+    <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
 
     <div class="dashboard">
         <!-- Sidebar -->
@@ -31,10 +26,12 @@
             </div>
 
             <ul class="sidebar-nav">
-                <li><a href="#" class="active" data-panel="curriculum"><i class="fas fa-book"></i> Plan de
-                        Estudios</a></li>
+                <li><a href="#" class="active" data-panel="curriculum"><i class="fas fa-book"></i> Plan de Estudios</a></li>
                 <li><a href="#" data-panel="commitment"><i class="fas fa-heart"></i> Compromiso Social</a></li>
                 <li><a href="#" data-panel="projects"><i class="fas fa-code"></i> Proyectos Alumnos</a></li>
+                <li><a href="#" data-panel="diplomaturas"><i class="fas fa-graduation-cap"></i> Diplomaturas</a></li>
+                <li><a href="#" data-panel="pasantias"><i class="fas fa-building"></i> Pasantías</a></li>
+                <li><a href="#" data-panel="configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
             </ul>
 
             <div class="sidebar-bottom">
@@ -66,8 +63,7 @@
                     </div>
 
                     <div class="filter-tabs">
-                        <button class="filter-tab active" data-filter="all"
-                            onclick="filterCurriculum('all', this)">Todos</button>
+                        <button class="filter-tab active" data-filter="all" onclick="filterCurriculum('all', this)">Todos</button>
                         <button class="filter-tab" data-filter="1" onclick="filterCurriculum(1, this)">1° Año</button>
                         <button class="filter-tab" data-filter="2" onclick="filterCurriculum(2, this)">2° Año</button>
                         <button class="filter-tab" data-filter="3" onclick="filterCurriculum(3, this)">3° Año</button>
@@ -87,26 +83,19 @@
                                 <tr data-id="<%= item.id %>" data-year="<%= item.year %>"
                                     data-name="<%- encodeURIComponent(item.subject_name) %>"
                                     data-order="<%= item.order_index %>">
-                                    <td><span class="year-badge y<%= item.year %>">
-                                            <%= item.year %>° Año
-                                        </span></td>
-                                    <td>
-                                        <%= item.subject_name %>
-                                    </td>
-                                    <td>
-                                        <%= item.order_index %>
-                                    </td>
+                                    <td><span class="year-badge y<%= item.year %>"><%= item.year %>° Año</span></td>
+                                    <td><%= item.subject_name %></td>
+                                    <td><%= item.order_index %></td>
                                     <td style="text-align:right">
                                         <button class="btn btn-secondary btn-sm" onclick="editCurrFromRow(this)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-danger btn-sm"
-                                            onclick="deleteCurriculum(<%= item.id %>)">
+                                        <button class="btn btn-danger btn-sm" onclick="deleteCurriculum(<%= item.id %>)">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
-                                <% }); %>
+                            <% }); %>
                         </tbody>
                     </table>
                 </div>
@@ -134,32 +123,28 @@
                                 data-desc="<%- encodeURIComponent(item.description || '') %>"
                                 data-image="<%- encodeURIComponent(item.image_url || '') %>"
                                 data-order="<%= item.order_index %>">
-                                <% let commImageUrl=item.image_url; if (commImageUrl &&
-                                    commImageUrl.includes('/api/v1/storage/files/')) { const
-                                    fileId=commImageUrl.split('/api/v1/storage/files/')[1].split('?')[0];
-                                    commImageUrl=`/api/storage/files/${fileId}`; } if (commImageUrl) { %>
+                                <% let commImageUrl = item.image_url;
+                                   if (commImageUrl && commImageUrl.includes('/api/v1/storage/files/')) {
+                                       const fileId = commImageUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                       commImageUrl = `/api/storage/files/${fileId}`;
+                                   }
+                                   if (commImageUrl) { %>
                                     <img src="<%= commImageUrl %>" alt="<%= item.title %>">
-                                    <% } %>
-                                        <div class="card-body">
-                                            <h4>
-                                                <%= item.title %>
-                                            </h4>
-                                            <p>
-                                                <%= item.description %>
-                                            </p>
-                                            <div class="card-actions">
-                                                <button class="btn btn-secondary btn-sm"
-                                                    onclick="editCommFromCard(this)">
-                                                    <i class="fas fa-edit"></i> Editar
-                                                </button>
-                                                <button class="btn btn-danger btn-sm"
-                                                    onclick="deleteCommitment(<%= item.id %>)">
-                                                    <i class="fas fa-trash"></i> Eliminar
-                                                </button>
-                                            </div>
-                                        </div>
+                                <% } %>
+                                <div class="card-body">
+                                    <h4><%= item.title %></h4>
+                                    <p><%= item.description %></p>
+                                    <div class="card-actions">
+                                        <button class="btn btn-secondary btn-sm" onclick="editCommFromCard(this)">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteCommitment(<%= item.id %>)">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <% }); %>
+                        <% }); %>
                     </div>
                 </div>
             </div>
@@ -186,28 +171,22 @@
                             <div class="admin-project-card" data-id="<%= p.id %>" data-year="<%= p.year %>"
                                 data-proj="<%- encodeURIComponent(JSON.stringify(p)) %>">
                                 <div class="admin-project-card-header">
-                                    <% let adminPhotoUrl=p.student_photo_url; if (adminPhotoUrl &&
-                                        adminPhotoUrl.includes('/api/v1/storage/files/')) { const
-                                        fileId=adminPhotoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
-                                        adminPhotoUrl=`/api/storage/files/${fileId}`; } if (adminPhotoUrl) { %>
+                                    <% let adminPhotoUrl = p.student_photo_url;
+                                       if (adminPhotoUrl && adminPhotoUrl.includes('/api/v1/storage/files/')) {
+                                           const fileId = adminPhotoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                           adminPhotoUrl = `/api/storage/files/${fileId}`;
+                                       }
+                                       if (adminPhotoUrl) { %>
                                         <img src="<%= adminPhotoUrl %>" alt="<%= p.student_name %>">
-                                        <% } else { %>
-                                            <div class="placeholder-photo"><i class="fas fa-user"></i></div>
-                                            <% } %>
-                                                <div>
-                                                    <h4>
-                                                        <%= p.project_name %>
-                                                    </h4>
-                                                    <span class="subtitle">
-                                                        <%= p.student_name %> · <span class="year-badge y<%= p.year %>">
-                                                                <%= p.year %>° Año
-                                                            </span>
-                                                    </span>
-                                                </div>
+                                    <% } else { %>
+                                        <div class="placeholder-photo"><i class="fas fa-user"></i></div>
+                                    <% } %>
+                                    <div>
+                                        <h4><%= p.project_name %></h4>
+                                        <span class="subtitle"><%= p.student_name %> · <span class="year-badge y<%= p.year %>"><%= p.year %>° Año</span></span>
+                                    </div>
                                 </div>
-                                <p class="desc">
-                                    <%= p.project_description %>
-                                </p>
+                                <p class="desc"><%= p.project_description %></p>
                                 <div class="card-actions">
                                     <button class="btn btn-secondary btn-sm" onclick="editProjFromCard(this)">
                                         <i class="fas fa-edit"></i> Editar
@@ -217,7 +196,184 @@
                                     </button>
                                 </div>
                             </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ DIPLOMATURAS PANEL ═══ -->
+            <div class="panel" id="panel-diplomaturas">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-graduation-cap"></i> Diplomaturas y Cursos</h3>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items:center;">
+                          <!--  <button class="btn btn-outline-info btn-sm" onclick="initTables()" title="Crear tablas en la base de datos si no existen">
+                                <i class="fas fa-database"></i> Inicializar BD
+                            </button>-->
+                            <button class="btn btn-gold" onclick="openDiplomModal()">
+                                <i class="fas fa-plus"></i> Nueva Diplomatura
+                            </button>
+                        </div>
+                    </div>
+
+                    <% if (diplomaturas.length === 0) { %>
+                        <div style="text-align:center; padding: 3rem; color: #999;">
+                            <i class="fas fa-graduation-cap" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+                            <p>No hay diplomaturas publicadas aún. ¡Agregá la primera!</p>
+                            <p style="font-size:0.85rem; margin-top:0.5rem;">Si es la primera vez, hacé clic en <strong>Inicializar BD</strong> primero.</p>
+                        </div>
+                    <% } else { %>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Destacado</th>
+                                    <th>Orden</th>
+                                    <th style="text-align:right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="diplomaturasTable">
+                                <% diplomaturas.forEach(function(d) { %>
+                                    <tr data-id="<%= d.id %>" data-diplom="<%- encodeURIComponent(JSON.stringify(d)) %>">
+                                        <td><strong><%= d.nombre %></strong></td>
+                                        <td><%= d.fecha_inicio || '–' %></td>
+                                        <td>
+                                            <span class="year-badge <%= d.destacado ? 'y1' : '' %>" style="<%= d.destacado ? '' : 'background:#ddd;color:#666' %>">
+                                                <%= d.destacado ? 'Sí' : 'No' %>
+                                            </span>
+                                        </td>
+                                        <td><%= d.order_index %></td>
+                                        <td style="text-align:right">
+                                            <button class="btn btn-secondary btn-sm" onclick="editDiplomFromRow(this)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteDiplomatura(<%= d.id %>)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- ═══ PASANTÍAS PANEL ═══ -->
+            <div class="panel" id="panel-pasantias">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-building"></i> Empresas de Pasantías</h3>
+                        <button class="btn btn-gold" onclick="openPasantiaModal()">
+                            <i class="fas fa-plus"></i> Agregar Empresa
+                        </button>
+                    </div>
+
+                    <% if (pasantias.length === 0) { %>
+                        <div style="text-align:center; padding: 3rem; color: #999;">
+                            <i class="fas fa-building" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+                            <p>No hay empresas agregadas aún. ¡Agregá la primera!</p>
+                        </div>
+                    <% } else { %>
+                        <div class="commitment-grid" id="pasantiasGrid">
+                            <% pasantias.forEach(function(e) {
+                                let logoUrl = e.logo_url;
+                                if (logoUrl && logoUrl.includes('/api/v1/storage/files/')) {
+                                    const fileId = logoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                    logoUrl = `/api/storage/files/${fileId}`;
+                                }
+                            %>
+                                <div class="commitment-card" data-id="<%= e.id %>"
+                                    data-nombre="<%- encodeURIComponent(e.nombre) %>"
+                                    data-logo="<%- encodeURIComponent(e.logo_url || '') %>"
+                                    data-order="<%= e.order_index %>"
+                                    style="padding:1rem; text-align:center;">
+                                    <% if (logoUrl) { %>
+                                        <img src="<%= logoUrl %>" alt="<%= e.nombre %>"
+                                            style="max-height:80px; max-width:140px; object-fit:contain; margin-bottom:0.5rem;">
+                                    <% } else { %>
+                                        <div style="height:60px; display:flex; align-items:center; justify-content:center; background:#f5f5f5; border-radius:8px; margin-bottom:0.5rem;">
+                                            <i class="fas fa-image" style="font-size:2rem; color:#ccc;"></i>
+                                        </div>
+                                    <% } %>
+                                    <div class="card-body" style="padding:0;">
+                                        <h4><%= e.nombre %></h4>
+                                        <div class="card-actions" style="margin-top:0.5rem;">
+                                            <button class="btn btn-secondary btn-sm" onclick="editPasantiaFromCard(this)">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="deletePasantia(<%= e.id %>)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             <% }); %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- ═══ CONFIGURACIÓN PANEL ═══ -->
+            <div class="panel" id="panel-configuracion">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-cog"></i> Configuración del Sitio</h3>
+                    </div>
+
+                    <!-- Horario -->
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="margin-bottom:1rem; color: var(--text-primary);"><i class="fas fa-clock"></i> Horario de Atención</h4>
+                        <p style="color:#888; font-size:0.9rem; margin-bottom:1.5rem;">
+                            Configurá el horario de apertura y cierre de la institución por día. Si un día está cerrado, marcalo como "Cerrado".
+                        </p>
+
+                        <div id="horarioEditor">
+                            <%
+                            const defaultHorario = [
+                                { dia: 'Lunes', abierto: true, apertura: '08:00', cierre: '20:00' },
+                                { dia: 'Martes', abierto: true, apertura: '08:00', cierre: '20:00' },
+                                { dia: 'Miércoles', abierto: true, apertura: '08:00', cierre: '20:00' },
+                                { dia: 'Jueves', abierto: true, apertura: '08:00', cierre: '20:00' },
+                                { dia: 'Viernes', abierto: true, apertura: '08:00', cierre: '20:00' },
+                                { dia: 'Sábado', abierto: true, apertura: '09:00', cierre: '13:00' },
+                                { dia: 'Domingo', abierto: false, apertura: '', cierre: '' }
+                            ];
+                            const horarioData = horario || defaultHorario;
+                            horarioData.forEach(function(dia, idx) {
+                            %>
+                            <div class="horario-editor-row" id="hrow-<%= idx %>">
+                                <div class="horario-editor-dia">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" class="horario-check" data-idx="<%= idx %>"
+                                            <%= dia.abierto ? 'checked' : '' %>
+                                            onchange="toggleHorarioDia(<%= idx %>)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="horario-editor-dia-name"><%= dia.dia %></span>
+                                </div>
+                                <div class="horario-editor-horas" id="horas-<%= idx %>" style="<%= dia.abierto ? '' : 'opacity:0.4; pointer-events:none;' %>">
+                                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                                        <label style="font-size:0.8rem; color:#888;">Apertura</label>
+                                        <input type="time" class="horario-time" id="apertura-<%= idx %>"
+                                            value="<%= dia.apertura || '08:00' %>">
+                                    </div>
+                                    <span style="color:#aaa;">–</span>
+                                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                                        <label style="font-size:0.8rem; color:#888;">Cierre</label>
+                                        <input type="time" class="horario-time" id="cierre-<%= idx %>"
+                                            value="<%= dia.cierre || '20:00' %>">
+                                    </div>
+                                </div>
+                                <span id="cerrado-label-<%= idx %>" style="color:#aaa; font-size:0.9rem; <%= dia.abierto ? 'display:none' : '' %>">Cerrado</span>
+                            </div>
+                            <% }); %>
+                        </div>
+
+                        <button class="btn btn-gold" style="margin-top:1.5rem;" onclick="saveHorario()">
+                            <i class="fas fa-save"></i> Guardar Horario
+                        </button>
                     </div>
                 </div>
             </div>
@@ -249,8 +405,7 @@
                     <input type="number" id="currOrder" value="0" min="0">
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary"
-                        onclick="closeModal('curriculumModal')">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('curriculumModal')">Cancelar</button>
                     <button type="submit" class="btn btn-gold">Guardar</button>
                 </div>
             </form>
@@ -291,8 +446,7 @@
                     <input type="number" id="commOrder" value="0" min="0">
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary"
-                        onclick="closeModal('commitmentModal')">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('commitmentModal')">Cancelar</button>
                     <button type="submit" class="btn btn-gold">Guardar</button>
                 </div>
             </form>
@@ -369,8 +523,102 @@
                     <input type="number" id="projOrder" value="0" min="0">
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary"
-                        onclick="closeModal('projectModal')">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('projectModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-gold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Diplomatura Modal -->
+    <div class="modal-overlay" id="diplomModal">
+        <div class="modal">
+            <h3><i class="fas fa-graduation-cap"></i> <span id="diplomModalTitle">Nueva Diplomatura</span></h3>
+            <form id="diplomForm" onsubmit="saveDiplomatura(event)">
+                <input type="hidden" id="diplomId" value="">
+                <div class="form-group">
+                    <label>Nombre del Curso / Diplomatura *</label>
+                    <input type="text" id="diplomNombre" placeholder="Ej: Diplomatura en Inteligencia Artificial" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción Breve (para la tarjeta)</label>
+                    <textarea id="diplomDescBreve" placeholder="Descripción corta que aparece en la tarjeta..." rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Descripción Completa (aparece en el detalle)</label>
+                    <textarea id="diplomDescCompleta" placeholder="Descripción detallada del curso, contenidos, modalidad, requisitos..." rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Imagen del Curso</label>
+                    <div class="file-upload-area" onclick="document.getElementById('diplomImgInput').click()">
+                        <i class="fas fa-image"></i>
+                        <p>Subir imagen del curso</p>
+                        <input type="file" id="diplomImgInput" accept="image/*"
+                            onchange="previewFile(this, 'diplomImgPreview', 'diplomImgUrl')">
+                    </div>
+                    <div class="file-preview" id="diplomImgPreview"></div>
+                    <input type="hidden" id="diplomImgUrl" value="">
+                    <input type="text" id="diplomImgUrlManual" placeholder="O pegá una URL de imagen"
+                        style="margin-top:0.35rem"
+                        onchange="document.getElementById('diplomImgUrl').value = this.value">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de Inicio</label>
+                    <input type="text" id="diplomFecha" placeholder="Ej: Marzo 2026, 1° cuatrimestre 2026">
+                </div>
+                <div class="form-group">
+                    <label>Mensaje de WhatsApp (pre-rellenado al consultar)</label>
+                    <textarea id="diplomWA" placeholder="Ej: Hola! Me interesa la Diplomatura en IA de INCUYO..." rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="diplomOrder" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer;">
+                        <input type="checkbox" id="diplomDestacado" style="width:18px; height:18px;">
+                        <span>Destacado en la página principal (aparece en el index)</span>
+                    </label>
+                    <small style="color:#888; font-size:0.8rem; margin-top:0.25rem; display:block;">Solo los cursos marcados como destacados aparecen en la página de inicio (máx. 5).</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('diplomModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-gold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pasantía Modal -->
+    <div class="modal-overlay" id="pasantiaModal">
+        <div class="modal">
+            <h3><i class="fas fa-building"></i> <span id="pasantiaModalTitle">Agregar Empresa</span></h3>
+            <form id="pasantiaForm" onsubmit="savePasantia(event)">
+                <input type="hidden" id="pasantiaId" value="">
+                <div class="form-group">
+                    <label>Nombre de la Empresa *</label>
+                    <input type="text" id="pasantiaNombre" placeholder="Ej: Accenture Argentina" required>
+                </div>
+                <div class="form-group">
+                    <label>Logo de la Empresa</label>
+                    <div class="file-upload-area" onclick="document.getElementById('pasantiaLogoInput').click()">
+                        <i class="fas fa-image"></i>
+                        <p>Subir logo (PNG o SVG recomendado)</p>
+                        <input type="file" id="pasantiaLogoInput" accept="image/*"
+                            onchange="previewFile(this, 'pasantiaLogoPreview', 'pasantiaLogoUrl')">
+                    </div>
+                    <div class="file-preview" id="pasantiaLogoPreview"></div>
+                    <input type="hidden" id="pasantiaLogoUrl" value="">
+                    <input type="text" id="pasantiaLogoUrlManual" placeholder="O pegá una URL del logo"
+                        style="margin-top:0.35rem"
+                        onchange="document.getElementById('pasantiaLogoUrl').value = this.value">
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="pasantiaOrder" value="0" min="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('pasantiaModal')">Cancelar</button>
                     <button type="submit" class="btn btn-gold">Guardar</button>
                 </div>
             </form>
@@ -389,7 +637,6 @@
                 link.classList.add('active');
                 document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
                 document.getElementById('panel-' + link.dataset.panel).classList.add('active');
-                // Close sidebar on mobile
                 document.querySelector('.sidebar').classList.remove('open');
             });
         });
@@ -403,11 +650,7 @@
         }
 
         // ─── Modal Controls ─────────────────────────
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        // Close modal on overlay click
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => {
                 if (e.target === overlay) overlay.classList.remove('active');
@@ -427,8 +670,6 @@
         async function previewFile(input, previewId, hiddenId) {
             const file = input.files[0];
             if (!file) return;
-
-            // Show local preview immediately (uses local file, no network needed)
             const preview = document.getElementById(previewId);
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -436,12 +677,8 @@
                 preview.style.display = 'block';
             };
             reader.readAsDataURL(file);
-
-            // Clear URL and track upload in progress
             document.getElementById(hiddenId).value = '';
             pendingUploads++;
-
-            // Disable all save buttons while uploading
             document.querySelectorAll('.modal-overlay.active .btn-gold[type="submit"]').forEach(btn => {
                 btn.disabled = true;
                 btn.dataset.origText = btn.textContent;
@@ -462,7 +699,6 @@
                 showToast('Error de conexión al subir imagen', 'error');
             } finally {
                 pendingUploads--;
-                // Re-enable save buttons
                 document.querySelectorAll('.modal-overlay.active .btn-gold[type="submit"]').forEach(btn => {
                     btn.disabled = false;
                     btn.textContent = btn.dataset.origText || 'Guardar';
@@ -479,38 +715,10 @@
             document.getElementById('currModalTitle').textContent = id ? 'Editar Materia' : 'Agregar Materia';
             document.getElementById('curriculumModal').classList.add('active');
         }
-
-        function editCurriculum(id, year, name, order) {
-            openCurriculumModal(id, year, name, order);
-        }
-
         function editCurrFromRow(btn) {
             const tr = btn.closest('tr');
-            openCurriculumModal(
-                tr.dataset.id,
-                tr.dataset.year,
-                decodeURIComponent(tr.dataset.name),
-                tr.dataset.order
-            );
+            openCurriculumModal(tr.dataset.id, tr.dataset.year, decodeURIComponent(tr.dataset.name), tr.dataset.order);
         }
-
-        function editCommFromCard(btn) {
-            const card = btn.closest('.commitment-card');
-            openCommitmentModal(
-                card.dataset.id,
-                decodeURIComponent(card.dataset.title),
-                decodeURIComponent(card.dataset.desc),
-                decodeURIComponent(card.dataset.image),
-                card.dataset.order
-            );
-        }
-
-        function editProjFromCard(btn) {
-            const card = btn.closest('.admin-project-card');
-            const data = JSON.parse(decodeURIComponent(card.dataset.proj));
-            openProjectModal(data);
-        }
-
         async function saveCurriculum(e) {
             e.preventDefault();
             const id = document.getElementById('currId').value;
@@ -519,42 +727,22 @@
                 subject_name: document.getElementById('currName').value,
                 order_index: parseInt(document.getElementById('currOrder').value) || 0,
             };
-
             try {
-                if (id) {
-                    await apiCall('/admin/api/curriculum/' + id, 'PUT', data);
-                    showToast('Materia actualizada');
-                } else {
-                    await apiCall('/admin/api/curriculum', 'POST', data);
-                    showToast('Materia agregada');
-                }
+                if (id) { await apiCall('/admin/api/curriculum/' + id, 'PUT', data); showToast('Materia actualizada'); }
+                else { await apiCall('/admin/api/curriculum', 'POST', data); showToast('Materia agregada'); }
                 closeModal('curriculumModal');
                 location.reload();
-            } catch (err) {
-                showToast('Error al guardar', 'error');
-            }
+            } catch (err) { showToast('Error al guardar', 'error'); }
         }
-
         async function deleteCurriculum(id) {
             if (!confirm('¿Eliminar esta materia?')) return;
-            try {
-                await apiCall('/admin/api/curriculum/' + id, 'DELETE');
-                showToast('Materia eliminada');
-                location.reload();
-            } catch (err) {
-                showToast('Error al eliminar', 'error');
-            }
+            try { await apiCall('/admin/api/curriculum/' + id, 'DELETE'); showToast('Materia eliminada'); location.reload(); }
+            catch (err) { showToast('Error al eliminar', 'error'); }
         }
-
         async function clearCurriculum() {
-            if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL PLAN DE ESTUDIOS? Esta acción no se puede deshacer.')) return;
-            try {
-                await apiCall('/admin/api/curriculum/all', 'DELETE');
-                showToast('Plan de estudios vaciado correctamente');
-                location.reload();
-            } catch (err) {
-                showToast('Error al vaciar plan de estudios', 'error');
-            }
+            if (!confirm('⚠️ ¿Eliminar TODO el plan de estudios? Esta acción no se puede deshacer.')) return;
+            try { await apiCall('/admin/api/curriculum/all', 'DELETE'); showToast('Plan de estudios vaciado'); location.reload(); }
+            catch (err) { showToast('Error', 'error'); }
         }
         function filterCurriculum(year, btn) {
             document.querySelectorAll('#panel-curriculum .filter-tab').forEach(t => t.classList.remove('active'));
@@ -576,17 +764,13 @@
             document.getElementById('commModalTitle').textContent = id ? 'Editar Compromiso' : 'Agregar Compromiso';
             document.getElementById('commitmentModal').classList.add('active');
         }
-
-        function editCommitment(id, title, desc, imageUrl, order) {
-            openCommitmentModal(id, title, desc, imageUrl, order);
+        function editCommFromCard(btn) {
+            const card = btn.closest('.commitment-card');
+            openCommitmentModal(card.dataset.id, decodeURIComponent(card.dataset.title), decodeURIComponent(card.dataset.desc), decodeURIComponent(card.dataset.image), card.dataset.order);
         }
-
         async function saveCommitment(e) {
             e.preventDefault();
-            if (pendingUploads > 0) {
-                showToast('⏳ Esperá, la imagen se está subiendo...', 'error');
-                return;
-            }
+            if (pendingUploads > 0) { showToast('⏳ Esperá, la imagen se está subiendo...', 'error'); return; }
             const id = document.getElementById('commId').value;
             const data = {
                 title: document.getElementById('commTitle').value,
@@ -594,43 +778,23 @@
                 image_url: document.getElementById('commImageUrl').value || document.getElementById('commImageUrlManual').value,
                 order_index: parseInt(document.getElementById('commOrder').value) || 0,
             };
-
             try {
-                if (id) {
-                    await apiCall('/admin/api/commitment/' + id, 'PUT', data);
-                    showToast('Compromiso actualizado');
-                } else {
-                    await apiCall('/admin/api/commitment', 'POST', data);
-                    showToast('Compromiso agregado');
-                }
-                closeModal('commitmentModal');
-                location.reload();
-            } catch (err) {
-                showToast('Error al guardar', 'error');
-            }
+                if (id) { await apiCall('/admin/api/commitment/' + id, 'PUT', data); showToast('Compromiso actualizado'); }
+                else { await apiCall('/admin/api/commitment', 'POST', data); showToast('Compromiso agregado'); }
+                closeModal('commitmentModal'); location.reload();
+            } catch (err) { showToast('Error al guardar', 'error'); }
         }
-
         async function deleteCommitment(id) {
             if (!confirm('¿Eliminar este compromiso?')) return;
-            try {
-                await apiCall('/admin/api/commitment/' + id, 'DELETE');
-                showToast('Compromiso eliminado');
-                location.reload();
-            } catch (err) {
-                showToast('Error al eliminar', 'error');
-            }
+            try { await apiCall('/admin/api/commitment/' + id, 'DELETE'); showToast('Eliminado'); location.reload(); }
+            catch (err) { showToast('Error al eliminar', 'error'); }
+        }
+        async function clearCommitment() {
+            if (!confirm('⚠️ ¿Eliminar todo el compromiso social?')) return;
+            try { await apiCall('/admin/api/commitment/all', 'DELETE'); showToast('Vaciado'); location.reload(); }
+            catch (err) { showToast('Error', 'error'); }
         }
 
-        async function clearCommitment() {
-            if (!confirm('⚠️ ¡ATENCIÓN! ¿Estás seguro de que deseas ELIMINAR TODO EL COMPROMISO SOCIAL? Esta acción no se puede deshacer.')) return;
-            try {
-                await apiCall('/admin/api/commitment/all', 'DELETE');
-                showToast('Compromiso social vaciado correctamente');
-                location.reload();
-            } catch (err) {
-                showToast('Error al vaciar compromiso social', 'error');
-            }
-        }
         // ─── PROJECTS ───────────────────────────────
         function openProjectModal(data) {
             const d = data || {};
@@ -652,17 +816,13 @@
             document.getElementById('projModalTitle').textContent = d.id ? 'Editar Proyecto' : 'Agregar Proyecto';
             document.getElementById('projectModal').classList.add('active');
         }
-
-        function editProject(data) {
-            openProjectModal(data);
+        function editProjFromCard(btn) {
+            const card = btn.closest('.admin-project-card');
+            openProjectModal(JSON.parse(decodeURIComponent(card.dataset.proj)));
         }
-
         async function saveProject(e) {
             e.preventDefault();
-            if (pendingUploads > 0) {
-                showToast('⏳ Esperá, la imagen se está subiendo...', 'error');
-                return;
-            }
+            if (pendingUploads > 0) { showToast('⏳ Esperá...', 'error'); return; }
             const id = document.getElementById('projId').value;
             const techStr = document.getElementById('projTech').value;
             const data = {
@@ -677,33 +837,17 @@
                 tech_tags: JSON.stringify(techStr.split(',').map(t => t.trim()).filter(Boolean)),
                 order_index: parseInt(document.getElementById('projOrder').value) || 0,
             };
-
             try {
-                if (id) {
-                    await apiCall('/admin/api/projects/' + id, 'PUT', data);
-                    showToast('Proyecto actualizado');
-                } else {
-                    await apiCall('/admin/api/projects', 'POST', data);
-                    showToast('Proyecto agregado');
-                }
-                closeModal('projectModal');
-                location.reload();
-            } catch (err) {
-                showToast('Error al guardar', 'error');
-            }
+                if (id) { await apiCall('/admin/api/projects/' + id, 'PUT', data); showToast('Proyecto actualizado'); }
+                else { await apiCall('/admin/api/projects', 'POST', data); showToast('Proyecto agregado'); }
+                closeModal('projectModal'); location.reload();
+            } catch (err) { showToast('Error al guardar', 'error'); }
         }
-
         async function deleteProject(id) {
             if (!confirm('¿Eliminar este proyecto?')) return;
-            try {
-                await apiCall('/admin/api/projects/' + id, 'DELETE');
-                showToast('Proyecto eliminado');
-                location.reload();
-            } catch (err) {
-                showToast('Error al eliminar', 'error');
-            }
+            try { await apiCall('/admin/api/projects/' + id, 'DELETE'); showToast('Eliminado'); location.reload(); }
+            catch (err) { showToast('Error al eliminar', 'error'); }
         }
-
         function filterProjects(year, btn) {
             document.querySelectorAll('#panel-projects .filter-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
@@ -711,40 +855,185 @@
                 card.style.display = (year === 'all' || card.dataset.year == year) ? '' : 'none';
             });
         }
-        // ─── Sidebar mobile: abrir/cerrar + overlay ───────────────
+
+        // ─── DIPLOMATURAS ────────────────────────────
+        function openDiplomModal(data) {
+            const d = data || {};
+            document.getElementById('diplomId').value = d.id || '';
+            document.getElementById('diplomNombre').value = d.nombre || '';
+            document.getElementById('diplomDescBreve').value = d.descripcion_breve || '';
+            document.getElementById('diplomDescCompleta').value = d.descripcion_completa || '';
+            document.getElementById('diplomImgUrl').value = d.imagen_url || '';
+            document.getElementById('diplomImgUrlManual').value = d.imagen_url || '';
+            document.getElementById('diplomFecha').value = d.fecha_inicio || '';
+            document.getElementById('diplomWA').value = d.whatsapp_msg || '';
+            document.getElementById('diplomOrder').value = d.order_index || 0;
+            document.getElementById('diplomDestacado').checked = !!d.destacado;
+            document.getElementById('diplomImgPreview').style.display = 'none';
+            document.getElementById('diplomModalTitle').textContent = d.id ? 'Editar Diplomatura' : 'Nueva Diplomatura';
+            document.getElementById('diplomModal').classList.add('active');
+        }
+        function editDiplomFromRow(btn) {
+            const tr = btn.closest('tr');
+            openDiplomModal(JSON.parse(decodeURIComponent(tr.dataset.diplom)));
+        }
+        async function saveDiplomatura(e) {
+            e.preventDefault();
+            if (pendingUploads > 0) { showToast('⏳ Esperá, la imagen se está subiendo...', 'error'); return; }
+            const id = document.getElementById('diplomId').value;
+            const data = {
+                nombre: document.getElementById('diplomNombre').value,
+                descripcion_breve: document.getElementById('diplomDescBreve').value,
+                descripcion_completa: document.getElementById('diplomDescCompleta').value,
+                imagen_url: document.getElementById('diplomImgUrl').value || document.getElementById('diplomImgUrlManual').value,
+                fecha_inicio: document.getElementById('diplomFecha').value,
+                whatsapp_msg: document.getElementById('diplomWA').value,
+                order_index: parseInt(document.getElementById('diplomOrder').value) || 0,
+                destacado: document.getElementById('diplomDestacado').checked ? 1 : 0,
+            };
+            try {
+                if (id) { await apiCall('/admin/api/diplomaturas/' + id, 'PUT', data); showToast('Diplomatura actualizada'); }
+                else { await apiCall('/admin/api/diplomaturas', 'POST', data); showToast('Diplomatura creada'); }
+                closeModal('diplomModal'); location.reload();
+            } catch (err) { showToast('Error al guardar', 'error'); }
+        }
+        async function deleteDiplomatura(id) {
+            if (!confirm('¿Eliminar esta diplomatura?')) return;
+            try { await apiCall('/admin/api/diplomaturas/' + id, 'DELETE'); showToast('Eliminada'); location.reload(); }
+            catch (err) { showToast('Error al eliminar', 'error'); }
+        }
+
+        // ─── PASANTÍAS ───────────────────────────────
+        function openPasantiaModal(data) {
+            const d = data || {};
+            document.getElementById('pasantiaId').value = d.id || '';
+            document.getElementById('pasantiaNombre').value = d.nombre || '';
+            document.getElementById('pasantiaLogoUrl').value = d.logo_url || '';
+            document.getElementById('pasantiaLogoUrlManual').value = d.logo_url || '';
+            document.getElementById('pasantiaOrder').value = d.order_index || 0;
+            document.getElementById('pasantiaLogoPreview').style.display = 'none';
+            document.getElementById('pasantiaModalTitle').textContent = d.id ? 'Editar Empresa' : 'Agregar Empresa';
+            document.getElementById('pasantiaModal').classList.add('active');
+        }
+        function editPasantiaFromCard(btn) {
+            const card = btn.closest('.commitment-card');
+            openPasantiaModal({
+                id: card.dataset.id,
+                nombre: decodeURIComponent(card.dataset.nombre),
+                logo_url: decodeURIComponent(card.dataset.logo),
+                order_index: card.dataset.order,
+            });
+        }
+        async function savePasantia(e) {
+            e.preventDefault();
+            if (pendingUploads > 0) { showToast('⏳ Esperá...', 'error'); return; }
+            const id = document.getElementById('pasantiaId').value;
+            const data = {
+                nombre: document.getElementById('pasantiaNombre').value,
+                logo_url: document.getElementById('pasantiaLogoUrl').value || document.getElementById('pasantiaLogoUrlManual').value,
+                order_index: parseInt(document.getElementById('pasantiaOrder').value) || 0,
+            };
+            try {
+                if (id) { await apiCall('/admin/api/pasantias/' + id, 'PUT', data); showToast('Empresa actualizada'); }
+                else { await apiCall('/admin/api/pasantias', 'POST', data); showToast('Empresa agregada'); }
+                closeModal('pasantiaModal'); location.reload();
+            } catch (err) { showToast('Error al guardar', 'error'); }
+        }
+        async function deletePasantia(id) {
+            if (!confirm('¿Eliminar esta empresa?')) return;
+            try { await apiCall('/admin/api/pasantias/' + id, 'DELETE'); showToast('Eliminada'); location.reload(); }
+            catch (err) { showToast('Error al eliminar', 'error'); }
+        }
+
+        // ─── HORARIO ─────────────────────────────────
+        function toggleHorarioDia(idx) {
+            const checked = document.getElementById('panel-configuracion').querySelector(`[data-idx="${idx}"]`).checked;
+            const horasDiv = document.getElementById('horas-' + idx);
+            const cerradoLabel = document.getElementById('cerrado-label-' + idx);
+            horasDiv.style.opacity = checked ? '1' : '0.4';
+            horasDiv.style.pointerEvents = checked ? 'all' : 'none';
+            if (cerradoLabel) cerradoLabel.style.display = checked ? 'none' : 'inline';
+        }
+
+        async function saveHorario() {
+            const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+            const horario = dias.map((dia, idx) => {
+                const check = document.querySelector(`#horarioEditor [data-idx="${idx}"]`);
+                const abierto = check ? check.checked : false;
+                const apertura = document.getElementById('apertura-' + idx)?.value || '';
+                const cierre = document.getElementById('cierre-' + idx)?.value || '';
+                return { dia, abierto, apertura, cierre };
+            });
+            try {
+                await apiCall('/admin/api/configuracion', 'PUT', { horario });
+                showToast('✓ Horario guardado correctamente');
+            } catch (err) {
+                showToast('Error al guardar horario', 'error');
+            }
+        }
+
+        // ─── INIT BD ─────────────────────────────────
+        async function initTables() {
+            if (!confirm('Esto creará las tablas necesarias en la base de datos si no existen. ¿Continuar?')) return;
+            try {
+                const res = await fetch('/admin/api/init-tables', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) { showToast('✓ Tablas creadas correctamente'); setTimeout(() => location.reload(), 1500); }
+                else showToast('Error: ' + (data.error || 'desconocido'), 'error');
+            } catch (err) { showToast('Error de conexión', 'error'); }
+        }
+
+        // ─── Sidebar mobile ───────────────────────────
         (function () {
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.getElementById('sidebarOverlay');
             const toggleBtn = document.getElementById('mobileToggle');
-
-            function openSidebar() {
-                sidebar.classList.add('open');
-                overlay.classList.add('active');
-                document.body.classList.add('sidebar-open');
-            }
-
-            function closeSidebar() {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('active');
-                document.body.classList.remove('sidebar-open');
-            }
-
-            toggleBtn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
-            });
-
-            // Cerrar al hacer clic en el overlay
+            function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.classList.add('sidebar-open'); }
+            function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.classList.remove('sidebar-open'); }
+            toggleBtn.addEventListener('click', function (e) { e.stopPropagation(); sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
             overlay.addEventListener('click', closeSidebar);
-
-            // Cerrar al navegar (click en link del sidebar en mobile)
             sidebar.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    if (window.innerWidth <= 768) closeSidebar();
-                });
+                link.addEventListener('click', function () { if (window.innerWidth <= 768) closeSidebar(); });
             });
         })();
     </script>
-</body>
 
+    <style>
+        /* Horario editor styles */
+        .horario-editor-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+        }
+        .horario-editor-row:last-child { border-bottom: none; }
+        .horario-editor-dia { display: flex; align-items: center; gap: 0.75rem; min-width: 130px; }
+        .horario-editor-dia-name { font-weight: 600; font-size: 0.9rem; }
+        .horario-editor-horas { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; transition: opacity 0.2s; }
+        .horario-time {
+            border: 1px solid #ddd; border-radius: 6px; padding: 0.35rem 0.5rem;
+            font-size: 0.9rem; font-family: inherit; background: #f9f9f9;
+        }
+        .toggle-label { position: relative; display: inline-block; width: 42px; height: 24px; cursor: pointer; }
+        .toggle-label input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; inset: 0; background: #ccc; border-radius: 24px;
+            transition: 0.3s;
+        }
+        .toggle-slider::before {
+            content: ''; position: absolute; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background: white; border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-label input:checked + .toggle-slider { background: #c39215; }
+        .toggle-label input:checked + .toggle-slider::before { transform: translateX(18px); }
+        .btn-outline-info {
+            background: transparent; border: 1px solid #3b82f6; color: #3b82f6;
+            font-size: 0.8rem; padding: 0.4rem 0.75rem;
+        }
+        .btn-outline-info:hover { background: #3b82f6; color: white; }
+    </style>
+</body>
 </html>

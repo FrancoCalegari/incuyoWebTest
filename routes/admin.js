@@ -32,25 +32,39 @@ router.get('/logout', (req, res) => {
 // ─── DASHBOARD ───────────────────────────────────────
 router.get('/', requireAdmin, async (req, res) => {
     try {
-        const [currResult, scResult, projResult] = await Promise.all([
+        const [currResult, scResult, projResult, diplomResult, pasResult, configResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM student_projects ORDER BY year, order_index'),
+            query('SELECT * FROM diplomaturas ORDER BY order_index').catch(() => ({ result: [] })),
+            query('SELECT * FROM pasantias_empresas ORDER BY order_index').catch(() => ({ result: [] })),
+            query("SELECT * FROM configuracion").catch(() => ({ result: [] })),
         ]);
 
         const curriculum = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
         const commitments = scResult?.result || scResult?.results || (Array.isArray(scResult) ? scResult : []);
         const projects = projResult?.result || projResult?.results || (Array.isArray(projResult) ? projResult : []);
+        const diplomaturas = diplomResult?.result || diplomResult?.results || (Array.isArray(diplomResult) ? diplomResult : []);
+        const pasantias = pasResult?.result || pasResult?.results || (Array.isArray(pasResult) ? pasResult : []);
+        const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
 
         // Parse tech_tags
         projects.forEach((p) => {
             try { p.tech_tags_arr = JSON.parse(p.tech_tags || '[]'); } catch (e) { p.tech_tags_arr = []; }
         });
 
-        res.render('admin/dashboard', { curriculum, commitments, projects });
+        // Build config map
+        const config = {};
+        configRows.forEach(r => { config[r.clave] = r.valor; });
+
+        // Parse horario JSON
+        let horario = null;
+        try { horario = JSON.parse(config.horario || 'null'); } catch (e) { horario = null; }
+
+        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario });
     } catch (err) {
         console.error('Dashboard error:', err);
-        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [] });
+        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null });
     }
 });
 
@@ -59,8 +73,6 @@ router.post('/api/upload', requireAdmin, upload.single('file'), async (req, res)
     try {
         if (!req.file) return res.status(400).json({ error: 'No se envió archivo' });
         const result = await uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype);
-        // Return a proxy URL so the browser loads images through our server
-        // (avoids Cross-Origin-Resource-Policy: same-origin block from Spider)
         result.url = `/admin/api/img/${result.id}`;
         res.json({ success: true, file: result });
     } catch (err) {
@@ -70,7 +82,6 @@ router.post('/api/upload', requireAdmin, upload.single('file'), async (req, res)
 });
 
 // ─── IMAGE PROXY ──────────────────────────────────────
-// Serves Spider Storage images through the local server to bypass CORP headers
 const fetch = require('node-fetch');
 router.get('/api/img/:fileId', async (req, res) => {
     try {
@@ -86,7 +97,50 @@ router.get('/api/img/:fileId', async (req, res) => {
     } catch (err) {
         res.status(500).send('Error loading image');
     }
-});// ─── CURRICULUM CRUD ─────────────────────────────────
+});
+
+// ─── INIT TABLES ─────────────────────────────────────
+router.post('/api/init-tables', requireAdmin, async (req, res) => {
+    try {
+        await query(`CREATE TABLE IF NOT EXISTS diplomaturas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            descripcion_breve TEXT,
+            descripcion_completa TEXT,
+            imagen_url TEXT,
+            fecha_inicio VARCHAR(100),
+            whatsapp_msg TEXT,
+            order_index INT DEFAULT 0,
+            destacado TINYINT(1) DEFAULT 0
+        )`);
+        await query(`CREATE TABLE IF NOT EXISTS pasantias_empresas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            logo_url TEXT,
+            order_index INT DEFAULT 0
+        )`);
+        await query(`CREATE TABLE IF NOT EXISTS configuracion (
+            clave VARCHAR(100) PRIMARY KEY,
+            valor TEXT
+        )`);
+        // Insert default horario if not exists
+        await query(`INSERT IGNORE INTO configuracion (clave, valor) VALUES ('horario', '${JSON.stringify([
+            { dia: 'Lunes', abierto: true, apertura: '08:00', cierre: '20:00' },
+            { dia: 'Martes', abierto: true, apertura: '08:00', cierre: '20:00' },
+            { dia: 'Miércoles', abierto: true, apertura: '08:00', cierre: '20:00' },
+            { dia: 'Jueves', abierto: true, apertura: '08:00', cierre: '20:00' },
+            { dia: 'Viernes', abierto: true, apertura: '08:00', cierre: '20:00' },
+            { dia: 'Sábado', abierto: true, apertura: '09:00', cierre: '13:00' },
+            { dia: 'Domingo', abierto: false, apertura: '', cierre: '' },
+        ]).replace(/'/g, "''")}' )`);
+        res.json({ success: true, message: 'Tablas creadas correctamente' });
+    } catch (err) {
+        console.error('Init tables error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── CURRICULUM CRUD ─────────────────────────────────
 router.get('/api/curriculum', requireAdmin, async (req, res) => {
     try {
         const result = await query('SELECT * FROM curriculum ORDER BY year, order_index');
@@ -223,6 +277,120 @@ router.put('/api/projects/:id', requireAdmin, async (req, res) => {
 router.delete('/api/projects/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM student_projects WHERE id=${parseInt(req.params.id)}`);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── DIPLOMATURAS CRUD ───────────────────────────────
+router.get('/api/diplomaturas', requireAdmin, async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM diplomaturas ORDER BY order_index');
+        res.json(result?.result || result?.results || (Array.isArray(result) ? result : []));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/api/diplomaturas', requireAdmin, async (req, res) => {
+    try {
+        const { nombre, descripcion_breve, descripcion_completa, imagen_url, fecha_inicio, whatsapp_msg, order_index, destacado } = req.body;
+        await query(
+            `INSERT INTO diplomaturas (nombre, descripcion_breve, descripcion_completa, imagen_url, fecha_inicio, whatsapp_msg, order_index, destacado) VALUES (?, ?, ?, ?, ?, ?, ${parseInt(order_index || 0)}, ${destacado ? 1 : 0})`,
+            [nombre, descripcion_breve || '', descripcion_completa || '', imagen_url || '', fecha_inicio || '', whatsapp_msg || '']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/api/diplomaturas/:id', requireAdmin, async (req, res) => {
+    try {
+        const { nombre, descripcion_breve, descripcion_completa, imagen_url, fecha_inicio, whatsapp_msg, order_index, destacado } = req.body;
+        await query(
+            `UPDATE diplomaturas SET nombre=?, descripcion_breve=?, descripcion_completa=?, imagen_url=?, fecha_inicio=?, whatsapp_msg=?, order_index=${parseInt(order_index || 0)}, destacado=${destacado ? 1 : 0} WHERE id=${parseInt(req.params.id)}`,
+            [nombre, descripcion_breve || '', descripcion_completa || '', imagen_url || '', fecha_inicio || '', whatsapp_msg || '']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/api/diplomaturas/:id', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM diplomaturas WHERE id=${parseInt(req.params.id)}`);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── PASANTÍAS EMPRESAS CRUD ─────────────────────────
+router.get('/api/pasantias', requireAdmin, async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM pasantias_empresas ORDER BY order_index');
+        res.json(result?.result || result?.results || (Array.isArray(result) ? result : []));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/api/pasantias', requireAdmin, async (req, res) => {
+    try {
+        const { nombre, logo_url, order_index } = req.body;
+        await query(
+            `INSERT INTO pasantias_empresas (nombre, logo_url, order_index) VALUES (?, ?, ${parseInt(order_index || 0)})`,
+            [nombre, logo_url || '']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/api/pasantias/:id', requireAdmin, async (req, res) => {
+    try {
+        const { nombre, logo_url, order_index } = req.body;
+        await query(
+            `UPDATE pasantias_empresas SET nombre=?, logo_url=?, order_index=${parseInt(order_index || 0)} WHERE id=${parseInt(req.params.id)}`,
+            [nombre, logo_url || '']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/api/pasantias/:id', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM pasantias_empresas WHERE id=${parseInt(req.params.id)}`);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── CONFIGURACIÓN (HORARIO) ─────────────────────────
+router.get('/api/configuracion', requireAdmin, async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM configuracion');
+        const rows = result?.result || result?.results || (Array.isArray(result) ? result : []);
+        const config = {};
+        rows.forEach(r => { config[r.clave] = r.valor; });
+        res.json(config);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/api/configuracion', requireAdmin, async (req, res) => {
+    try {
+        const { horario } = req.body;
+        const horarioStr = typeof horario === 'string' ? horario : JSON.stringify(horario);
+        await query(`INSERT INTO configuracion (clave, valor) VALUES ('horario', ?) ON DUPLICATE KEY UPDATE valor=?`, [horarioStr, horarioStr]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

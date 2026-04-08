@@ -70,6 +70,7 @@
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#inscripciones">Inscripciones</a></li>
                 <li><a href="/proyectosalumnos">Proyectos</a></li>
+                <li><a href="/diplomaturas">Diplomaturas</a></li>
                 <li>
                     <a href="https://aula.incuyo.edu.ar/" target="_blank" class="campus-link">Campus Virtual</a>
                 </li>
@@ -293,6 +294,136 @@
     </section>
 
 
+    <!-- DIPLOMATURAS SECTION -->
+    <section class="section diplomaturas-section" id="diplomaturas">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-subtitle">Formación Continua</p>
+                <h2 class="section-title">Diplomaturas y Cursos</h2>
+                <p class="section-description">
+                    Ampliá tus conocimientos con nuestras diplomaturas y cursos especializados en tecnología e inteligencia artificial
+                </p>
+            </div>
+
+            <% if (diplomaturas.length === 0) { %>
+                <div class="diplom-empty-index">
+                    <i class="fas fa-graduation-cap"></i>
+                    <p>Próximamente publicaremos nuestras diplomaturas y cursos</p>
+                </div>
+            <% } else { %>
+                <div class="diplom-index-grid reveal">
+                    <% diplomaturas.forEach(function(d, idx) { %>
+                        <article class="diplom-index-card" onclick="openIndexDiplomModal(<%= idx %>)">
+                            <% if (d.imagen_url) { %>
+                                <div class="diplom-index-card__img">
+                                    <img src="<%= d.imagen_url %>" alt="<%= d.nombre %>" loading="lazy" />
+                                </div>
+                            <% } else { %>
+                                <div class="diplom-index-card__img diplom-index-card__img--placeholder">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                            <% } %>
+                            <div class="diplom-index-card__body">
+                                <% if (d.fecha_inicio) { %>
+                                    <span class="diplom-badge-inicio">
+                                        <i class="fas fa-calendar-alt"></i> Inicio: <%= d.fecha_inicio %>
+                                    </span>
+                                <% } %>
+                                <h3 class="diplom-index-card__title"><%= d.nombre %></h3>
+                                <p class="diplom-index-card__desc"><%= d.descripcion_breve %></p>
+                                <span class="diplom-ver-link"><i class="fas fa-arrow-right"></i> Ver diplomatura</span>
+                            </div>
+                        </article>
+                    <% }); %>
+                </div>
+            <% } %>
+
+            <div class="text-center" style="margin-top: 3rem;">
+                <a href="/diplomaturas" class="btn btn-gold btn-lg">
+                    <i class="fas fa-graduation-cap"></i> Ver todas las Diplomaturas
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODALES DE DETALLE (index) -->
+    <% diplomaturas.forEach(function(d, idx) { %>
+        <div class="diplom-modal-overlay" id="idx-modal-<%= idx %>" onclick="closeIndexDiplomModal(<%= idx %>)">
+            <div class="diplom-modal" onclick="event.stopPropagation()">
+                <button class="diplom-modal-close" onclick="closeIndexDiplomModal(<%= idx %>)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <% if (d.imagen_url) { %>
+                    <div class="diplom-modal-img">
+                        <img src="<%= d.imagen_url %>" alt="<%= d.nombre %>" />
+                    </div>
+                <% } %>
+                <div class="diplom-modal-body">
+                    <% if (d.fecha_inicio) { %>
+                        <span class="diplom-badge-inicio">
+                            <i class="fas fa-calendar-alt"></i> Inicio: <%= d.fecha_inicio %>
+                        </span>
+                    <% } %>
+                    <h2 class="diplom-modal-title"><%= d.nombre %></h2>
+                    <div class="diplom-modal-desc">
+                        <%- (d.descripcion_completa || d.descripcion_breve || '').replace(/\n/g, '<br>') %>
+                    </div>
+                    <a href="https://wa.me/5492616271658?text=<%= encodeURIComponent(d.whatsapp_msg || 'Hola! Me interesa la diplomatura: ' + d.nombre) %>"
+                        class="btn btn-whatsapp btn-lg" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+
+    <!-- PASANTÍAS SECTION -->
+    <% if (pasantias.length > 0) { %>
+    <section class="section pasantias-section" id="pasantias">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-subtitle">Vinculación Laboral</p>
+                <h2 class="section-title">Empresas con las que hemos trabajado</h2>
+                <p class="section-description">
+                    Nuestros alumnos desarrollan experiencia real en empresas líderes a través de pasantías y proyectos profesionales
+                </p>
+            </div>
+        </div>
+        <!-- Carrusel igual que tech-carousel: mask-image + triple set para cubrir 1920px -->
+        <div class="pasantias-carousel-outer">
+            <div class="pasantias-carousel-track">
+                <%/* Set 1 */%> <% pasantias.forEach(function(empresa) { %>
+                    <div class="pasantia-logo-item">
+                        <% if (empresa.logo_url) { %>
+                            <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>" title="<%= empresa.nombre %>" loading="lazy" />
+                        <% } else { %>
+                            <span class="pasantia-logo-text"><%= empresa.nombre %></span>
+                        <% } %>
+                    </div>
+                <% }); %>
+                <%/* Set 2 (copia) */%> <% pasantias.forEach(function(empresa) { %>
+                    <div class="pasantia-logo-item">
+                        <% if (empresa.logo_url) { %>
+                            <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>" title="<%= empresa.nombre %>" loading="lazy" />
+                        <% } else { %>
+                            <span class="pasantia-logo-text"><%= empresa.nombre %></span>
+                        <% } %>
+                    </div>
+                <% }); %>
+                <%/* Set 3 (copia) */%> <% pasantias.forEach(function(empresa) { %>
+                    <div class="pasantia-logo-item">
+                        <% if (empresa.logo_url) { %>
+                            <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>" title="<%= empresa.nombre %>" loading="lazy" />
+                        <% } else { %>
+                            <span class="pasantia-logo-text"><%= empresa.nombre %></span>
+                        <% } %>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
     <!-- CERTIFICATIONS SECTION -->
     <section class="section certifications" id="certificaciones">
         <div class="container">
@@ -483,6 +614,32 @@
                     <i class="fas fa-map-marker-alt"></i> La Rioja 614 - Ciudad de
                     Mendoza - Argentina
                 </p>
+
+                <!-- HORARIO -->
+                <% if (horario && horario.length > 0) { %>
+                <div class="horario-widget reveal">
+                    <div class="horario-widget__header">
+                        <i class="fas fa-clock"></i>
+                        <span>Horario de Atención</span>
+                    </div>
+                    <div class="horario-grid">
+                        <% horario.forEach(function(dia) { %>
+                            <div class="horario-row <%= dia.abierto ? '' : 'horario-row--cerrado' %>">
+                                <span class="horario-dia"><%= dia.dia %></span>
+                                <span class="horario-hs">
+                                    <% if (dia.abierto) { %>
+                                        <i class="fas fa-circle horario-dot horario-dot--open"></i>
+                                        <%= dia.apertura %> – <%= dia.cierre %>
+                                    <% } else { %>
+                                        <i class="fas fa-circle horario-dot horario-dot--closed"></i>
+                                        Cerrado
+                                    <% } %>
+                                </span>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+                <% } %>
             </div>
 
             <div class="map-wrapper reveal">
@@ -596,6 +753,29 @@
 
     <!-- JavaScript -->
     <script src="/js/script.js"></script>
+    <script>
+        // ─── Index Diplomatura Modals ────────────────
+        function openIndexDiplomModal(idx) {
+            document.getElementById('idx-modal-' + idx).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeIndexDiplomModal(idx) {
+            document.getElementById('idx-modal-' + idx).classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.diplom-modal-overlay.active').forEach(function(m) {
+                    m.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+        });
+
+        // ─── Pasantías Carousel (CSS, igual que tech-carousel) ───
+        // No requiere JS — animado por CSS con keyframes
+
+    </script>
 </body>
 
 </html>

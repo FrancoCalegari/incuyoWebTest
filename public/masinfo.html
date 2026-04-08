@@ -26,8 +26,8 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 20% 60%, rgba(255,255,255,.06) 0%, transparent 55%),
-                        radial-gradient(circle at 80% 30%, rgba(195,146,21,.12) 0%, transparent 50%);
+            background: radial-gradient(circle at 20% 60%, rgba(255, 255, 255, .06) 0%, transparent 55%),
+                radial-gradient(circle at 80% 30%, rgba(195, 146, 21, .12) 0%, transparent 50%);
             pointer-events: none;
         }
 
@@ -48,7 +48,7 @@
         }
 
         .mi-hero p {
-            color: rgba(255,255,255,.78);
+            color: rgba(255, 255, 255, .78);
             font-size: var(--text-lg);
             max-width: 650px;
             margin: 0 auto var(--space-6);
@@ -67,8 +67,8 @@
             display: inline-flex;
             align-items: center;
             gap: .45rem;
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.25);
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .25);
             color: var(--white);
             padding: .45rem 1.1rem;
             border-radius: var(--radius-full);
@@ -77,7 +77,9 @@
             backdrop-filter: blur(6px);
         }
 
-        .mi-chip i { color: var(--primary-gold); }
+        .mi-chip i {
+            color: var(--primary-gold);
+        }
 
         /* ── Años banner ── */
         .years-banner {
@@ -98,9 +100,13 @@
             transition: background var(--transition-base);
         }
 
-        .year-item:last-child { border-right: none; }
+        .year-item:last-child {
+            border-right: none;
+        }
 
-        .year-item:hover { background: var(--gray-100); }
+        .year-item:hover {
+            background: var(--gray-100);
+        }
 
         .year-badge {
             display: inline-block;
@@ -159,8 +165,14 @@
             border-bottom-color: var(--primary-gold);
         }
 
-        .curr-panel { display: none; }
-        .curr-panel.active { display: block; animation: fadeInUp .3s ease; }
+        .curr-panel {
+            display: none;
+        }
+
+        .curr-panel.active {
+            display: block;
+            animation: fadeInUp .3s ease;
+        }
 
         /* ── Subject grid ── */
         .subject-grid {
@@ -257,7 +269,9 @@
             font-weight: 500;
         }
 
-        .cert-item:last-child { border-bottom: none; }
+        .cert-item:last-child {
+            border-bottom: none;
+        }
 
         .cert-item i {
             color: var(--primary-gold);
@@ -283,10 +297,13 @@
             align-items: center;
             justify-content: center;
             font-size: 6rem;
-            color: rgba(255,255,255,.2);
+            color: rgba(255, 255, 255, .2);
         }
 
-        .modality-features { list-style: none; margin: var(--space-6) 0 0; }
+        .modality-features {
+            list-style: none;
+            margin: var(--space-6) 0 0;
+        }
 
         .modality-features li {
             display: flex;
@@ -328,7 +345,7 @@
         }
 
         .ingreso-content p {
-            color: rgba(255,255,255,.82);
+            color: rgba(255, 255, 255, .82);
             margin-bottom: var(--space-2);
         }
 
@@ -359,17 +376,43 @@
 
         /* ── Responsive ── */
         @media (max-width: 768px) {
-            .years-banner { grid-template-columns: 1fr; }
-            .year-item { border-right: none; border-bottom: 1px solid var(--gray-200); }
-            .cert-grid { grid-template-columns: 1fr; }
-            .modality-split { grid-template-columns: 1fr; }
-            .ingreso-box { flex-direction: column; gap: var(--space-6); }
-            .mi-hero h1 { font-size: var(--text-4xl); }
+            .years-banner {
+                grid-template-columns: 1fr;
+            }
+
+            .year-item {
+                border-right: none;
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .cert-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modality-split {
+                grid-template-columns: 1fr;
+            }
+
+            .ingreso-box {
+                flex-direction: column;
+                gap: var(--space-6);
+            }
+
+            .mi-hero h1 {
+                font-size: var(--text-4xl);
+            }
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(18px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -417,7 +460,8 @@
                 <p class="section-subtitle">Al finalizar cada año</p>
                 <h2 class="section-title">Los títulos que obtenés</h2>
                 <p class="section-description">
-                    Cada año de la carrera te otorga un título oficial e intermedio habilitante
+                    Títulos intermedios desde 2do año, 3ro título final más 8 certificaciones laborales desde primer
+                    año.
                 </p>
             </div>
 
@@ -472,47 +516,134 @@
             <!-- 1° Año -->
             <div class="curr-panel active" id="year1">
                 <div class="subject-grid">
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-code"></i></div><p class="subject-name">Programación 1 + IA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-calculator"></i></div><p class="subject-name">Matemática Aplicada</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-search"></i></div><p class="subject-name">Elementos de Investigación</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-project-diagram"></i></div><p class="subject-name">Ingeniería de Software 1</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-database"></i></div><p class="subject-name">Base de Datos 1</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-globe"></i></div><p class="subject-name">Programación Web Frontend + IA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-code-branch"></i></div><p class="subject-name">Programación 2</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-server"></i></div><p class="subject-name">Base de Datos 2</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-language"></i></div><p class="subject-name">Inglés Técnico 1</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-briefcase"></i></div><p class="subject-name">Práctica Profesionalizante 1</p></div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-code"></i></div>
+                        <p class="subject-name">Programación 1 + IA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                        <p class="subject-name">Matemática Aplicada</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-search"></i></div>
+                        <p class="subject-name">Elementos de Investigación</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-project-diagram"></i></div>
+                        <p class="subject-name">Ingeniería de Software 1</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-database"></i></div>
+                        <p class="subject-name">Base de Datos 1</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-globe"></i></div>
+                        <p class="subject-name">Programación Web Frontend + IA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-code-branch"></i></div>
+                        <p class="subject-name">Programación 2</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-server"></i></div>
+                        <p class="subject-name">Base de Datos 2</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-language"></i></div>
+                        <p class="subject-name">Inglés Técnico 1</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-briefcase"></i></div>
+                        <p class="subject-name">Práctica Profesionalizante 1</p>
+                    </div>
                 </div>
             </div>
 
             <!-- 2° Año -->
             <div class="curr-panel" id="year2">
                 <div class="subject-grid">
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-server"></i></div><p class="subject-name">Programación Backend + IA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-network-wired"></i></div><p class="subject-name">Redes y Comunicaciones</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-language"></i></div><p class="subject-name">Inglés Técnico 2</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-chart-bar"></i></div><p class="subject-name">Ciencia de Datos e IA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-mobile-alt"></i></div><p class="subject-name">Programación Mobile + IA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-infinity"></i></div><p class="subject-name">DevOps</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-briefcase"></i></div><p class="subject-name">Práctica Profesionalizante 2</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-vial"></i></div><p class="subject-name">Testing y QA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-shield-alt"></i></div><p class="subject-name">Seguridad Informática</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-lightbulb"></i></div><p class="subject-name">Emprendedorismo y Gestión</p></div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-server"></i></div>
+                        <p class="subject-name">Programación Backend + IA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-network-wired"></i></div>
+                        <p class="subject-name">Redes y Comunicaciones</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-language"></i></div>
+                        <p class="subject-name">Inglés Técnico 2</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-chart-bar"></i></div>
+                        <p class="subject-name">Ciencia de Datos e IA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <p class="subject-name">Programación Mobile + IA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-infinity"></i></div>
+                        <p class="subject-name">DevOps</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-briefcase"></i></div>
+                        <p class="subject-name">Práctica Profesionalizante 2</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-vial"></i></div>
+                        <p class="subject-name">Testing y QA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-shield-alt"></i></div>
+                        <p class="subject-name">Seguridad Informática</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-lightbulb"></i></div>
+                        <p class="subject-name">Emprendedorismo y Gestión</p>
+                    </div>
                 </div>
             </div>
 
             <!-- 3° Año -->
             <div class="curr-panel" id="year3">
                 <div class="subject-grid">
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-cloud"></i></div><p class="subject-name">Cloud Computing + IA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-sitemap"></i></div><p class="subject-name">Arquitectura de Software</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-microchip"></i></div><p class="subject-name">Desarrollo con IA e IoT</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-briefcase"></i></div><p class="subject-name">Práctica Profesionalizante 3</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-link"></i></div><p class="subject-name">Blockchain y Web3</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-robot"></i></div><p class="subject-name">Automatización con IA</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-brain"></i></div><p class="subject-name">Machine Learning Aplicado</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-users"></i></div><p class="subject-name">Liderazgo y Gestión de Equipos</p></div>
-                    <div class="subject-card"><div class="subject-icon"><i class="fas fa-flag-checkered"></i></div><p class="subject-name">Práctica Profesionalizante Final</p></div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-cloud"></i></div>
+                        <p class="subject-name">Cloud Computing + IA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-sitemap"></i></div>
+                        <p class="subject-name">Arquitectura de Software</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-microchip"></i></div>
+                        <p class="subject-name">Desarrollo con IA e IoT</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-briefcase"></i></div>
+                        <p class="subject-name">Práctica Profesionalizante 3</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-link"></i></div>
+                        <p class="subject-name">Blockchain y Web3</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-robot"></i></div>
+                        <p class="subject-name">Automatización con IA</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-brain"></i></div>
+                        <p class="subject-name">Machine Learning Aplicado</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-users"></i></div>
+                        <p class="subject-name">Liderazgo y Gestión de Equipos</p>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon"><i class="fas fa-flag-checkered"></i></div>
+                        <p class="subject-name">Práctica Profesionalizante Final</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -549,7 +680,8 @@
                     <div class="cert-card-body">
                         <div class="cert-item"><i class="fab fa-linux"></i> Sistemas Operativos (Linux-Windows)</div>
                         <div class="cert-item"><i class="fas fa-building"></i> Sistemas de Programación Pymes</div>
-                        <div class="cert-item"><i class="fas fa-project-diagram"></i> Análisis y Técnicas de Sistemas</div>
+                        <div class="cert-item"><i class="fas fa-project-diagram"></i> Análisis y Técnicas de Sistemas
+                        </div>
                     </div>
                 </div>
 
@@ -559,8 +691,10 @@
                         <span class="year-label">Año</span>
                     </div>
                     <div class="cert-card-body">
-                        <div class="cert-item"><i class="fas fa-paint-brush"></i> Diseño y Programación de Páginas Web</div>
-                        <div class="cert-item"><i class="fas fa-database"></i> WEB SITE con Bases de Datos Dinámicas</div>
+                        <div class="cert-item"><i class="fas fa-paint-brush"></i> Diseño y Programación de Páginas Web
+                        </div>
+                        <div class="cert-item"><i class="fas fa-database"></i> WEB SITE con Bases de Datos Dinámicas
+                        </div>
                         <div class="cert-item"><i class="fas fa-cloud"></i> Inteligencia Artificial en la Nube</div>
                     </div>
                 </div>
@@ -590,7 +724,8 @@
                     <ul class="modality-features">
                         <li><i class="fas fa-check-circle"></i> Asistí presencial en La Rioja 614, Mendoza</li>
                         <li><i class="fas fa-video"></i> Conectate por Zoom en tiempo real desde cualquier lugar</li>
-                        <li><i class="fas fa-play-circle"></i> Todas las clases quedan grabadas para consultar cuando quieras</li>
+                        <li><i class="fas fa-play-circle"></i> Todas las clases quedan grabadas para consultar cuando
+                            quieras</li>
                         <li><i class="fas fa-robot"></i> Inteligencia Artificial integrada en todas las materias</li>
                         <li><i class="fas fa-chalkboard-teacher"></i> Docentes con experiencia real en la industria</li>
                         <li><i class="fas fa-users"></i> Proyectos reales desde el primer año</li>
@@ -617,7 +752,8 @@
                     <p><i class="fas fa-check" style="color:var(--primary-gold); margin-right:.5rem;"></i>
                         Haber aprobado el nivel Secundario o Ciclo Polimodal.</p>
                     <p><i class="fas fa-check" style="color:var(--primary-gold); margin-right:.5rem;"></i>
-                        Ser mayor de <strong>25 años</strong> sin secundario completo (Art. 7° de la Ley de Educación Superior N° 24.521).</p>
+                        Ser mayor de <strong>25 años</strong> sin secundario completo (Art. 7° de la Ley de Educación
+                        Superior N° 24.521).</p>
                     <p style="margin-top:var(--space-4); color:rgba(255,255,255,.7); font-size:var(--text-sm);">
                         <i class="fas fa-calendar-check"></i>&nbsp;
                         Inscripciones abiertas desde agosto de cada año. Podés pre-inscribirte en cualquier momento.
@@ -645,7 +781,8 @@
     </section>
 
     <!-- FOOTER mínimo -->
-    <footer style="background: var(--gradient-dark); color: rgba(255,255,255,.6); text-align:center; padding: var(--space-6);">
+    <footer
+        style="background: var(--gradient-dark); color: rgba(255,255,255,.6); text-align:center; padding: var(--space-6);">
         <p style="margin:0; color: rgba(255,255,255,.5); font-size:var(--text-sm);">
             © 2026 Instituto Nuevo Cuyo · La Rioja 614, Mendoza ·
             <a href="tel:+5492616271658" style="color:var(--primary-gold);">+54 9 261 627-1658</a>

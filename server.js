@@ -44,7 +44,7 @@ Tu nombre es "Asistente INCUYO". Respondé SIEMPRE en español argentino, de for
 
 🏫 DATOS DEL INSTITUTO:
 - Nombre: Instituto de Estudios Superiores Nuevo Cuyo (INCUYO) PT-169
-- Resolución DGE: 2024-6079-E-GDEMZA-DGE
+- Resolución DGE: 6079/DGE
 - Dirección: La Rioja 614, Ciudad de Mendoza, Argentina
 - Teléfono/WhatsApp: +54 9 261 627-1658
 - Email: incuyo@gmail.com
@@ -65,48 +65,51 @@ Tu nombre es "Asistente INCUYO". Respondé SIEMPRE en español argentino, de for
 📚 PLAN DE ESTUDIOS:
 
 PRIMER AÑO:
-- Programación 1 + IA
+- Programación 1 (python) + IA
 - Matemática aplicada
-- Elementos de Investigación
-- Ingeniería de Software 1
 - Base de Datos 1
-- Programación Web Front-End + IA
-- Programación 2
-- Base de datos 2
 - Inglés Técnico 1
 - Práctica Profesionalizante 1
+- Arquitectura de Dispositivos
+- Alfabetización académica 
+- Lógica Computacional
+- Sistemas Operativos 1
+- Seminario Nuevas Tecnologías 2026
 
 SEGUNDO AÑO:
-- Programación Backend + IA
-- Redes y Comunicaciones
+- Programación 2 (python + programacion orientada a objetos) + IA
 - Inglés Técnico 2
-- Ciencia de Datos e IA
-- Programación Mobile + IA
-- DevOps
 - Práctica Profesionalizante 2
-- Testing y QA
-- Seguridad Informática
-- Emprendedorismo y Gestión
+- Base de datos 2
+- Modelado de software
+- Comunicación y redes
+- Matemática discreta
+- Sistemas operativos 2
+- Análisis Matemático
 
 TERCER AÑO:
-- Cloud Computing + IA
-- Arquitectura de Software
-- Desarrollo con IA e IoT
+- Programación 3
 - Práctica Profesionalizante 3
-- Blockchain y Web3
-- Automatización con IA
-- Machine Learning aplicado
-- Liderazgo y Gestión de equipos
+- Arquitectura y diseño de interfaces: UI y UX
+- Base de datos 3
+- Metodologías ágiles
 - Práctica Profesionalizante Final
+- Gestión de proyectos de software
+- Estadística y probabilidades para el desarrollo de software
+- Legislación Informática y ética profesional
+- Auditoría y Calidad de Sistemas
+- Ciberseguridad
+- Inglés técnico 3
+- Práctica Profesionalizante 3
 
 🏅 CERTIFICACIONES LABORALES ADICIONALES (incluidas en la carrera):
-- 1° Año: Desarrollador Frontend, Administrador de Bases de Datos
-- 2° Año: Desarrollador Backend, Desarrollador Mobile
-- 3° Año: Especialista en Cloud, Especialista en IA
+- 1° Año: Técnico en Hardware y Software, Programador Python (nivel Junior)
+- 2° Año: Sistemas Operativos (Linux-Windows), Sistemas de Programación Pymes, Análisis y Técnicas de sistemas
+- 3° Año: Diseño y programación de páginas web, WEB SITE con base de datos dinámicas, Inteligencia Artificial en la nube
 
 📋 CONDICIONES DE INGRESO:
 - Tener aprobado el nivel secundario completo
-- O ser mayor de 25 años sin secundario completo (Art. 7° Ley 24.521 de Educación Superior)
+- O ser mayor de 25 años sin secundario completo (Art. 7° Ley 24.521 de Educación Superior) rinde examen pero no el ingreso
 
 💰 BECAS Y PRECIOS:
 - ¡Becas disponibles de hasta 40% de descuento!

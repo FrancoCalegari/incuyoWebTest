@@ -194,17 +194,17 @@
                         <i class="fas fa-info-circle"></i> Información General
                     </h3>
                     <p class="card-text">
-                        <strong>Duración:</strong> 6 cuatrimestres (3 años)
+                        <strong>Duración:</strong> 6 cuatrimestres (3 años).
                     </p>
                     <p class="card-text">
-                        <strong>Modalidad:</strong> Presencial - Bimodal
+                        <strong>Modalidad:</strong> Presencial - Bimodal.
                     </p>
                     <p class="card-text" style="font-size: 0.875rem; margin-top: 1rem">
                         <i class="fas fa-video"></i> Podrás cursar por Zoom y todas las
-                        clases se graban para consultas
+                        clases se graban para consultas.
                     </p>
                     <p class="card-text" style="font-size: 0.875rem">
-                        <i class="fas fa-file-alt"></i> Resolución 6079/DGE
+                        <i class="fas fa-file-alt"></i> Resolución 6079/DGE.
                     </p>
                 </div>
             </div>
@@ -220,12 +220,12 @@
                 </h3>
                 <p class="card-text" style="color: rgba(255, 255, 255, 0.9)">
                     • Haber aprobado el nivel Secundario o Ciclo Polimodal, en este caso se deberá rendir un examen de
-                    ingreso con 3 recuperatorios<br />
+                    ingreso con 3 recuperatorios.<br />
                     • Si sos mayor de 25 años según lo establecido en el Art. 7° de la
                     Ley de Educación Superior N° 24.521, se rinde examen pero no el de ingreso en marzo presentando la
                     documentación
-                    anticipada <br />
-                    • Si tenés ya un título de nivel superior, no deberás rendir examen de ingreso
+                    anticipada. <br />
+                    • Si tenés ya un título de nivel superior, no deberás rendir examen de ingreso.
                 </p>
             </div>
         </div>
@@ -239,7 +239,7 @@
                 <h2 class="section-title">Plan de Estudios</h2>
                 <p class="section-description">
                     Actualizado anualmente con las últimas tendencias en desarrollo
-                    de software e inteligencia artificial
+                    de software e inteligencia artificial.
                 </p>
             </div>
 
@@ -301,48 +301,55 @@
                 <p class="section-subtitle">Formación Continua</p>
                 <h2 class="section-title">Diplomaturas y Cursos</h2>
                 <p class="section-description">
-                    Ampliá tus conocimientos con nuestras diplomaturas y cursos especializados en tecnología e inteligencia artificial
+                    Ampliá tus conocimientos con nuestras diplomaturas y cursos especializados en tecnología e
+                    inteligencia artificial.
                 </p>
             </div>
 
-            <% if (diplomaturas.length === 0) { %>
+            <% if (diplomaturas.length===0) { %>
                 <div class="diplom-empty-index">
                     <i class="fas fa-graduation-cap"></i>
-                    <p>Próximamente publicaremos nuestras diplomaturas y cursos</p>
+                    <p>Próximamente publicaremos nuestras diplomaturas y cursos.</p>
                 </div>
-            <% } else { %>
-                <div class="diplom-index-grid reveal">
-                    <% diplomaturas.forEach(function(d, idx) { %>
-                        <article class="diplom-index-card" onclick="openIndexDiplomModal(<%= idx %>)">
-                            <% if (d.imagen_url) { %>
-                                <div class="diplom-index-card__img">
-                                    <img src="<%= d.imagen_url %>" alt="<%= d.nombre %>" loading="lazy" />
-                                </div>
-                            <% } else { %>
-                                <div class="diplom-index-card__img diplom-index-card__img--placeholder">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
-                            <% } %>
-                            <div class="diplom-index-card__body">
-                                <% if (d.fecha_inicio) { %>
-                                    <span class="diplom-badge-inicio">
-                                        <i class="fas fa-calendar-alt"></i> Inicio: <%= d.fecha_inicio %>
-                                    </span>
-                                <% } %>
-                                <h3 class="diplom-index-card__title"><%= d.nombre %></h3>
-                                <p class="diplom-index-card__desc"><%= d.descripcion_breve %></p>
-                                <span class="diplom-ver-link"><i class="fas fa-arrow-right"></i> Ver diplomatura</span>
-                            </div>
-                        </article>
-                    <% }); %>
-                </div>
-            <% } %>
+                <% } else { %>
+                    <div class="diplom-index-grid reveal">
+                        <% diplomaturas.forEach(function(d, idx) { %>
+                            <article class="diplom-index-card" onclick="openIndexDiplomModal(<%= idx %>)">
+                                <% if (d.imagen_url) { %>
+                                    <div class="diplom-index-card__img">
+                                        <img src="<%= d.imagen_url %>" alt="<%= d.nombre %>" loading="lazy" />
+                                    </div>
+                                    <% } else { %>
+                                        <div class="diplom-index-card__img diplom-index-card__img--placeholder">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                        <% } %>
+                                            <div class="diplom-index-card__body">
+                                                <% if (d.fecha_inicio) { %>
+                                                    <span class="diplom-badge-inicio">
+                                                        <i class="fas fa-calendar-alt"></i> Inicio: <%= d.fecha_inicio
+                                                            %>
+                                                    </span>
+                                                    <% } %>
+                                                        <h3 class="diplom-index-card__title">
+                                                            <%= d.nombre %>
+                                                        </h3>
+                                                        <p class="diplom-index-card__desc">
+                                                            <%= d.descripcion_breve %>
+                                                        </p>
+                                                        <span class="diplom-ver-link"><i class="fas fa-arrow-right"></i>
+                                                            Ver diplomatura</span>
+                                            </div>
+                            </article>
+                            <% }); %>
+                    </div>
+                    <% } %>
 
-            <div class="text-center" style="margin-top: 3rem;">
-                <a href="/diplomaturas" class="btn btn-gold btn-lg">
-                    <i class="fas fa-graduation-cap"></i> Ver todas las Diplomaturas
-                </a>
-            </div>
+                        <div class="text-center" style="margin-top: 3rem;">
+                            <a href="/diplomaturas" class="btn btn-gold btn-lg">
+                                <i class="fas fa-graduation-cap"></i> Ver todas las Diplomaturas
+                            </a>
+                        </div>
         </div>
     </section>
 
@@ -357,425 +364,450 @@
                     <div class="diplom-modal-img">
                         <img src="<%= d.imagen_url %>" alt="<%= d.nombre %>" />
                     </div>
-                <% } %>
-                <div class="diplom-modal-body">
-                    <% if (d.fecha_inicio) { %>
-                        <span class="diplom-badge-inicio">
-                            <i class="fas fa-calendar-alt"></i> Inicio: <%= d.fecha_inicio %>
-                        </span>
                     <% } %>
-                    <h2 class="diplom-modal-title"><%= d.nombre %></h2>
-                    <div class="diplom-modal-desc">
-                        <%- (d.descripcion_completa || d.descripcion_breve || '').replace(/\n/g, '<br>') %>
-                    </div>
-                    <a href="https://wa.me/5492616271658?text=<%= encodeURIComponent(d.whatsapp_msg || 'Hola! Me interesa la diplomatura: ' + d.nombre) %>"
-                        class="btn btn-whatsapp btn-lg" target="_blank">
-                        <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
-                    </a>
-                </div>
-            </div>
-        </div>
-    <% }); %>
-
-    <!-- PASANTÍAS SECTION -->
-    <% if (pasantias.length > 0) { %>
-    <section class="section pasantias-section" id="pasantias">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle">Vinculación Laboral</p>
-                <h2 class="section-title">Empresas con las que hemos trabajado</h2>
-                <p class="section-description">
-                    Nuestros alumnos desarrollan experiencia real en empresas líderes a través de pasantías y proyectos profesionales
-                </p>
-            </div>
-        </div>
-        <!-- Carrusel igual que tech-carousel: mask-image + triple set para cubrir 1920px -->
-        <div class="pasantias-carousel-outer">
-            <div class="pasantias-carousel-track">
-                <%/* Set 1 */%> <% pasantias.forEach(function(empresa) { %>
-                    <div class="pasantia-logo-item">
-                        <% if (empresa.logo_url) { %>
-                            <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>" title="<%= empresa.nombre %>" loading="lazy" />
-                        <% } else { %>
-                            <span class="pasantia-logo-text"><%= empresa.nombre %></span>
-                        <% } %>
-                    </div>
-                <% }); %>
-                <%/* Set 2 (copia) */%> <% pasantias.forEach(function(empresa) { %>
-                    <div class="pasantia-logo-item">
-                        <% if (empresa.logo_url) { %>
-                            <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>" title="<%= empresa.nombre %>" loading="lazy" />
-                        <% } else { %>
-                            <span class="pasantia-logo-text"><%= empresa.nombre %></span>
-                        <% } %>
-                    </div>
-                <% }); %>
-                <%/* Set 3 (copia) */%> <% pasantias.forEach(function(empresa) { %>
-                    <div class="pasantia-logo-item">
-                        <% if (empresa.logo_url) { %>
-                            <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>" title="<%= empresa.nombre %>" loading="lazy" />
-                        <% } else { %>
-                            <span class="pasantia-logo-text"><%= empresa.nombre %></span>
-                        <% } %>
-                    </div>
-                <% }); %>
-            </div>
-        </div>
-    </section>
-    <% } %>
-
-    <!-- CERTIFICATIONS SECTION -->
-    <section class="section certifications" id="certificaciones">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle">Valor Agregado</p>
-                <h2 class="section-title">Certificaciones Laborales Adicionales</h2>
-                <p class="section-description">
-                    La institución brinda certificaciones laborales adicionales por año
-                    al aprobar coprogramáticas
-                </p>
-            </div>
-
-            <div class="cert-year-grid">
-                <div class="cert-year-card reveal">
-                    <h3 class="cert-year">1° Año</h3>
-                    <ul class="cert-list">
-                        <li>Técnico en Hardware y Software</li>
-                        <li>Programador Python (nivel Junior)</li>
-                    </ul>
-                </div>
-
-                <div class="cert-year-card reveal">
-                    <h3 class="cert-year">2° Año</h3>
-                    <ul class="cert-list">
-                        <li>Sistemas Operativos (Linux-Windows)</li>
-                        <li>Sistemas de Programación Pymes</li>
-                        <li>Análisis y Técnicas de sistemas</li>
-                    </ul>
-                </div>
-
-                <div class="cert-year-card reveal">
-                    <h3 class="cert-year">3° Año</h3>
-                    <ul class="cert-list">
-                        <li>Diseño y programación de páginas web</li>
-                        <li>WEB SITE con base de datos dinámicas</li>
-                        <li>Inteligencia Artificial en la nube</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- STUDENT PROJECTS SECTION -->
-    <section class="section section-dark" id="proyectos">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle" style="color: var(--primary-cyan)">
-                    Proyectos Reales
-                </p>
-                <h2 class="section-title">Creando desde el Primer Año</h2>
-                <p class="section-description">
-                    "Nuestros alumnos son capaces desde el primer año de crear sistemas
-                    personalizados de acuerdo a las necesidades de la actualidad"
-                </p>
-            </div>
-
-            <div class="text-center reveal" style="margin-top: 3rem">
-                <a href="/proyectosalumnos" class="btn btn-primary btn-lg">
-                    <i class="fas fa-code"></i> Ver Sistemas Creados por Alumnos
-                </a>
-
-                <!-- Tech Stack Infinite Carousel -->
-                <div class="tech-carousel-container">
-                    <div class="tech-carousel">
-                        <div class="tech-carousel-track">
-                            <div class="tech-icon"><i class="fab fa-python"></i></div>
-                            <div class="tech-icon"><i class="fab fa-js"></i></div>
-                            <div class="tech-icon"><i class="fab fa-react"></i></div>
-                            <div class="tech-icon"><i class="fab fa-node"></i></div>
-                            <div class="tech-icon"><i class="fab fa-html5"></i></div>
-                            <div class="tech-icon"><i class="fab fa-css3-alt"></i></div>
-                            <div class="tech-icon"><i class="fab fa-java"></i></div>
-                            <div class="tech-icon"><i class="fab fa-php"></i></div>
-                            <div class="tech-icon"><i class="fab fa-angular"></i></div>
-                            <div class="tech-icon"><i class="fab fa-vuejs"></i></div>
-                            <div class="tech-icon"><i class="fab fa-docker"></i></div>
-                            <div class="tech-icon"><i class="fab fa-git-alt"></i></div>
-                            <!-- Duplicate set for seamless loop -->
-                            <div class="tech-icon"><i class="fab fa-python"></i></div>
-                            <div class="tech-icon"><i class="fab fa-js"></i></div>
-                            <div class="tech-icon"><i class="fab fa-react"></i></div>
-                            <div class="tech-icon"><i class="fab fa-node"></i></div>
-                            <div class="tech-icon"><i class="fab fa-html5"></i></div>
-                            <div class="tech-icon"><i class="fab fa-css3-alt"></i></div>
-                            <div class="tech-icon"><i class="fab fa-java"></i></div>
-                            <div class="tech-icon"><i class="fab fa-php"></i></div>
-                            <div class="tech-icon"><i class="fab fa-angular"></i></div>
-                            <div class="tech-icon"><i class="fab fa-vuejs"></i></div>
-                            <div class="tech-icon"><i class="fab fa-docker"></i></div>
-                            <div class="tech-icon"><i class="fab fa-git-alt"></i></div>
+                        <div class="diplom-modal-body">
+                            <% if (d.fecha_inicio) { %>
+                                <span class="diplom-badge-inicio">
+                                    <i class="fas fa-calendar-alt"></i> Inicio: <%= d.fecha_inicio %>
+                                </span>
+                                <% } %>
+                                    <h2 class="diplom-modal-title">
+                                        <%= d.nombre %>
+                                    </h2>
+                                    <div class="diplom-modal-desc">
+                                        <%- (d.descripcion_completa || d.descripcion_breve || '' ).replace(/\n/g, '<br>'
+                                            ) %>
+                                    </div>
+                                    <a href="https://wa.me/5492616271658?text=<%= encodeURIComponent(d.whatsapp_msg || 'Hola! Me interesa la diplomatura: ' + d.nombre) %>"
+                                        class="btn btn-whatsapp btn-lg" target="_blank">
+                                        <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
+                                    </a>
                         </div>
-                    </div>
-                </div>
             </div>
         </div>
-    </section>
+        <% }); %>
 
-    <!-- SOCIAL COMMITMENT SECTION (DYNAMIC) -->
-    <section class="section social-commitment" id="compromiso">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle">Compromiso Social</p>
-                <h2 class="section-title">Ayudando a la Comunidad</h2>
-                <p class="section-description">
-                    Los alumnos del instituto en la materia Ética organizan tareas
-                    extracurriculares para ayudar a los más necesitados
-                </p>
-            </div>
-
-            <div class="image-gallery">
-                <% commitments.forEach(function(item) { // Extraer ID de la URL vieja si existe let
-                    finalUrl=item.image_url; if (finalUrl && finalUrl.includes('/api/v1/storage/files/')) { const
-                    fileId=finalUrl.split('/api/v1/storage/files/')[1].split('?')[0];
-                    finalUrl=`/api/storage/files/${fileId}`; } %>
-                    <div class="gallery-item reveal">
-                        <img src="<%= finalUrl %>" alt="<%= item.title %>" loading="lazy" />
-                        <div class="gallery-item-overlay">
-                            <p class="gallery-item-title">
-                                <%= item.title %>
+            <!-- PASANTÍAS SECTION -->
+            <% if (pasantias.length> 0) { %>
+                <section class="section pasantias-section" id="pasantias">
+                    <div class="container">
+                        <div class="section-header">
+                            <p class="section-subtitle">Vinculación Laboral</p>
+                            <h2 class="section-title">Empresas con las que hemos trabajado</h2>
+                            <p class="section-description">
+                                Nuestros alumnos desarrollan experiencia real en empresas líderes a través de pasantías
+                                y proyectos profesionales.
                             </p>
                         </div>
                     </div>
-                    <% }); %>
-            </div>
-        </div>
-    </section>
-
-    <!-- ENROLLMENT SECTION -->
-    <section class="section section-dark enrollment" id="inscripciones">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle" style="color: var(--primary-gold)">
-                    ¡No te quedes afuera!
-                </p>
-                <h2 class="section-title">Inscripciones Abiertas desde Agosto</h2>
-            </div>
-
-            <div class="highlight-box reveal">
-                <div class="text-center">
-                    <div class="scholarship-badge">
-                        <i class="fas fa-graduation-cap"></i> BECAS CON HASTA 40% DE DESCUENTO
+                    <!-- Carrusel igual que tech-carousel: mask-image + triple set para cubrir 1920px -->
+                    <div class="pasantias-carousel-outer">
+                        <div class="pasantias-carousel-track">
+                            <% /* Set 1 */%>
+                                <% pasantias.forEach(function(empresa) { %>
+                                    <div class="pasantia-logo-item">
+                                        <% if (empresa.logo_url) { %>
+                                            <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>"
+                                                title="<%= empresa.nombre %>" loading="lazy" />
+                                            <% } else { %>
+                                                <span class="pasantia-logo-text">
+                                                    <%= empresa.nombre %>
+                                                </span>
+                                                <% } %>
+                                    </div>
+                                    <% }); %>
+                                        <% /* Set 2 (copia) */%>
+                                            <% pasantias.forEach(function(empresa) { %>
+                                                <div class="pasantia-logo-item">
+                                                    <% if (empresa.logo_url) { %>
+                                                        <img src="<%= empresa.logo_url %>" alt="<%= empresa.nombre %>"
+                                                            title="<%= empresa.nombre %>" loading="lazy" />
+                                                        <% } else { %>
+                                                            <span class="pasantia-logo-text">
+                                                                <%= empresa.nombre %>
+                                                            </span>
+                                                            <% } %>
+                                                </div>
+                                                <% }); %>
+                                                    <% /* Set 3 (copia) */%>
+                                                        <% pasantias.forEach(function(empresa) { %>
+                                                            <div class="pasantia-logo-item">
+                                                                <% if (empresa.logo_url) { %>
+                                                                    <img src="<%= empresa.logo_url %>"
+                                                                        alt="<%= empresa.nombre %>"
+                                                                        title="<%= empresa.nombre %>" loading="lazy" />
+                                                                    <% } else { %>
+                                                                        <span class="pasantia-logo-text">
+                                                                            <%= empresa.nombre %>
+                                                                        </span>
+                                                                        <% } %>
+                                                            </div>
+                                                            <% }); %>
+                        </div>
                     </div>
-                    <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
-                        ¡Consultá por precios y promociones especiales!
-                    </p>
-                </div>
-
-                <div class="highlight-grid">
-                    <div class="highlight-item reveal">
-                        <div class="highlight-item-icon"><i class="fas fa-laptop-code"></i></div>
-                        <p class="highlight-item-text">
-                            Creá y diseñá aplicaciones para todo tipo de dispositivo
-                        </p>
-                    </div>
-
-                    <div class="highlight-item reveal">
-                        <div class="highlight-item-icon"><i class="fas fa-rocket"></i></div>
-                        <p class="highlight-item-text">
-                            Desarrollá aplicaciones con las últimas tecnologías
-                        </p>
-                    </div>
-
-                    <div class="highlight-item reveal">
-                        <div class="highlight-item-icon"><i class="fas fa-robot"></i></div>
-                        <p class="highlight-item-text">
-                            Aprendé con Inteligencia Artificial integrada en las materias
-                        </p>
-                    </div>
-                </div>
-
-                <div class="text-center" style="margin-top: 2rem">
-                    <a href="https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
-                        class="btn btn-primary btn-lg" target="_blank">
-                        <i class="fab fa-whatsapp"></i> Consultá por Inscripciones
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- LOCATION SECTION -->
-    <section class="section location" id="ubicacion">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle">Visitanos</p>
-                <h2 class="section-title">Nuestra Ubicación</h2>
-                <p class="section-description">
-                    <i class="fas fa-map-marker-alt"></i> La Rioja 614 - Ciudad de
-                    Mendoza - Argentina
-                </p>
-
-                <!-- HORARIO -->
-                <% if (horario && horario.length > 0) { %>
-                <div class="horario-widget reveal">
-                    <div class="horario-widget__header">
-                        <i class="fas fa-clock"></i>
-                        <span>Horario de Atención</span>
-                    </div>
-                    <div class="horario-grid">
-                        <% horario.forEach(function(dia) { %>
-                            <div class="horario-row <%= dia.abierto ? '' : 'horario-row--cerrado' %>">
-                                <span class="horario-dia"><%= dia.dia %></span>
-                                <span class="horario-hs">
-                                    <% if (dia.abierto) { %>
-                                        <i class="fas fa-circle horario-dot horario-dot--open"></i>
-                                        <%= dia.apertura %> – <%= dia.cierre %>
-                                    <% } else { %>
-                                        <i class="fas fa-circle horario-dot horario-dot--closed"></i>
-                                        Cerrado
-                                    <% } %>
-                                </span>
-                            </div>
-                        <% }); %>
-                    </div>
-                </div>
+                </section>
                 <% } %>
-            </div>
 
-            <div class="map-wrapper reveal">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3350.3647285662!2d-68.8467!3d-32.8895!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x967e0912f1e73969%3A0x1234567890abcdef!2sLa%20Rioja%20614%2C%20M5500%20Mendoza!5e0!3m2!1ses!2sar!4v1234567890123!5m2!1ses!2sar"
-                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
-            </div>
-        </div>
-    </section>
+                    <!-- CERTIFICATIONS SECTION -->
+                    <section class="section certifications" id="certificaciones">
+                        <div class="container">
+                            <div class="section-header">
+                                <p class="section-subtitle">Valor Agregado</p>
+                                <h2 class="section-title">Certificaciones Laborales Adicionales</h2>
+                                <p class="section-description">
+                                    La institución brinda certificaciones laborales adicionales por año
+                                    al aprobar coprogramáticas.
+                                </p>
+                            </div>
 
-    <!-- FOOTER -->
-    <footer class="footer" id="contacto">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>INCUYO</h3>
-                    <p>Instituto de Estudios Superiores Nuevo Cuyo PT-169</p>
-                    <p>
-                        Formando profesionales en desarrollo de software con las últimas
-                        tecnologías e inteligencia artificial.
-                    </p>
-                </div>
+                            <div class="cert-year-grid">
+                                <div class="cert-year-card reveal">
+                                    <h3 class="cert-year">1° Año</h3>
+                                    <ul class="cert-list">
+                                        <li>Técnico en Hardware y Software</li>
+                                        <li>Programador Python (nivel Junior)</li>
+                                    </ul>
+                                </div>
 
-                <div class="footer-section">
-                    <h3>Enlaces Rápidos</h3>
-                    <p><a href="#inicio">Inicio</a></p>
-                    <p><a href="#programa">Programa</a></p>
-                    <p><a href="#curriculum">Curriculum</a></p>
-                    <p><a href="#certificaciones">Certificaciones</a></p>
-                    <p><a href="/proyectosalumnos">Proyectos Alumnos</a></p>
-                    <p>
-                        <a href="https://aula.incuyo.edu.ar/" target="_blank">Campus Virtual</a>
-                    </p>
-                </div>
+                                <div class="cert-year-card reveal">
+                                    <h3 class="cert-year">2° Año</h3>
+                                    <ul class="cert-list">
+                                        <li>Sistemas Operativos (Linux-Windows)</li>
+                                        <li>Sistemas de Programación Pymes</li>
+                                        <li>Análisis y Técnicas de sistemas</li>
+                                    </ul>
+                                </div>
 
-                <div class="footer-section">
-                    <h3>Contacto</h3>
-                    <div class="contact-item">
-                        <i class="fas fa-phone contact-icon"></i>
-                        <a href="tel:+5492616271658">(+054) 261 6271658</a>
+                                <div class="cert-year-card reveal">
+                                    <h3 class="cert-year">3° Año</h3>
+                                    <ul class="cert-list">
+                                        <li>Diseño y programación de páginas web</li>
+                                        <li>WEB SITE con base de datos dinámicas</li>
+                                        <li>Inteligencia Artificial en la nube</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- STUDENT PROJECTS SECTION -->
+                    <section class="section section-dark" id="proyectos">
+                        <div class="container">
+                            <div class="section-header">
+                                <p class="section-subtitle" style="color: var(--primary-cyan)">
+                                    Proyectos Reales
+                                </p>
+                                <h2 class="section-title">Creando desde el Primer Año</h2>
+                                <p class="section-description">
+                                    "Nuestros alumnos son capaces desde el primer año de crear sistemas
+                                    personalizados de acuerdo a las necesidades de la actualidad".
+                                </p>
+                            </div>
+
+                            <div class="text-center reveal" style="margin-top: 3rem">
+                                <a href="/proyectosalumnos" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-code"></i> Ver Sistemas Creados por Alumnos
+                                </a>
+
+                                <!-- Tech Stack Infinite Carousel -->
+                                <div class="tech-carousel-container">
+                                    <div class="tech-carousel">
+                                        <div class="tech-carousel-track">
+                                            <div class="tech-icon"><i class="fab fa-python"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-js"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-react"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-node"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-html5"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-css3-alt"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-java"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-php"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-angular"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-vuejs"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-docker"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-git-alt"></i></div>
+                                            <!-- Duplicate set for seamless loop -->
+                                            <div class="tech-icon"><i class="fab fa-python"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-js"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-react"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-node"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-html5"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-css3-alt"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-java"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-php"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-angular"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-vuejs"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-docker"></i></div>
+                                            <div class="tech-icon"><i class="fab fa-git-alt"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SOCIAL COMMITMENT SECTION (DYNAMIC) -->
+                    <section class="section social-commitment" id="compromiso">
+                        <div class="container">
+                            <div class="section-header">
+                                <p class="section-subtitle">Compromiso Social</p>
+                                <h2 class="section-title">Ayudando a la Comunidad</h2>
+                                <p class="section-description">
+                                    Los alumnos del instituto en la materia Ética organizan tareas
+                                    extracurriculares para ayudar a los más necesitados.
+                                </p>
+                            </div>
+
+                            <div class="image-gallery">
+                                <% commitments.forEach(function(item) { // Extraer ID de la URL vieja si existe let
+                                    finalUrl=item.image_url; if (finalUrl &&
+                                    finalUrl.includes('/api/v1/storage/files/')) { const
+                                    fileId=finalUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                    finalUrl=`/api/storage/files/${fileId}`; } %>
+                                    <div class="gallery-item reveal">
+                                        <img src="<%= finalUrl %>" alt="<%= item.title %>" loading="lazy" />
+                                        <div class="gallery-item-overlay">
+                                            <p class="gallery-item-title">
+                                                <%= item.title %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ENROLLMENT SECTION -->
+                    <section class="section section-dark enrollment" id="inscripciones">
+                        <div class="container">
+                            <div class="section-header">
+                                <p class="section-subtitle" style="color: var(--primary-gold)">
+                                    ¡No te quedes afuera!
+                                </p>
+                                <h2 class="section-title">Inscripciones Abiertas desde Agosto</h2>
+                            </div>
+
+                            <div class="highlight-box reveal">
+                                <div class="text-center">
+                                    <div class="scholarship-badge">
+                                        <i class="fas fa-graduation-cap"></i> BECAS CON HASTA 40% DE DESCUENTO
+                                    </div>
+                                    <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
+                                        ¡Consultá por precios y promociones especiales!
+                                    </p>
+                                </div>
+
+                                <div class="highlight-grid">
+                                    <div class="highlight-item reveal">
+                                        <div class="highlight-item-icon"><i class="fas fa-laptop-code"></i></div>
+                                        <p class="highlight-item-text">
+                                            Creá y diseñá aplicaciones para todo tipo de dispositivo
+                                        </p>
+                                    </div>
+
+                                    <div class="highlight-item reveal">
+                                        <div class="highlight-item-icon"><i class="fas fa-rocket"></i></div>
+                                        <p class="highlight-item-text">
+                                            Desarrollá aplicaciones con las últimas tecnologías
+                                        </p>
+                                    </div>
+
+                                    <div class="highlight-item reveal">
+                                        <div class="highlight-item-icon"><i class="fas fa-robot"></i></div>
+                                        <p class="highlight-item-text">
+                                            Aprendé con Inteligencia Artificial integrada en las materias
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="text-center" style="margin-top: 2rem">
+                                    <a href="https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
+                                        class="btn btn-primary btn-lg" target="_blank">
+                                        <i class="fab fa-whatsapp"></i> Consultá por Inscripciones
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LOCATION SECTION -->
+                    <section class="section location" id="ubicacion">
+                        <div class="container">
+                            <div class="section-header">
+                                <p class="section-subtitle">Visitanos</p>
+                                <h2 class="section-title">Nuestra Ubicación</h2>
+                                <p class="section-description">
+                                    <i class="fas fa-map-marker-alt"></i> La Rioja 614 - Ciudad de
+                                    Mendoza - Argentina
+                                </p>
+
+                                <!-- HORARIO -->
+                                <% if (horario && horario.length> 0) { %>
+                                    <div class="horario-widget reveal">
+                                        <div class="horario-widget__header">
+                                            <i class="fas fa-clock"></i>
+                                            <span>Horario de Atención</span>
+                                        </div>
+                                        <div class="horario-grid">
+                                            <% horario.forEach(function(dia) { %>
+                                                <div
+                                                    class="horario-row <%= dia.abierto ? '' : 'horario-row--cerrado' %>">
+                                                    <span class="horario-dia">
+                                                        <%= dia.dia %>
+                                                    </span>
+                                                    <span class="horario-hs">
+                                                        <% if (dia.abierto) { %>
+                                                            <i class="fas fa-circle horario-dot horario-dot--open"></i>
+                                                            <%= dia.apertura %> – <%= dia.cierre %>
+                                                                    <% } else { %>
+                                                                        <i
+                                                                            class="fas fa-circle horario-dot horario-dot--closed"></i>
+                                                                        Cerrado
+                                                                        <% } %>
+                                                    </span>
+                                                </div>
+                                                <% }); %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                            </div>
+
+                            <div class="map-wrapper reveal">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3350.3647285662!2d-68.8467!3d-32.8895!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x967e0912f1e73969%3A0x1234567890abcdef!2sLa%20Rioja%20614%2C%20M5500%20Mendoza!5e0!3m2!1ses!2sar!4v1234567890123!5m2!1ses!2sar"
+                                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- FOOTER -->
+                    <footer class="footer" id="contacto">
+                        <div class="container">
+                            <div class="footer-content">
+                                <div class="footer-section">
+                                    <h3>INCUYO</h3>
+                                    <p>Instituto de Estudios Superiores Nuevo Cuyo PT-169</p>
+                                    <p>
+                                        Formando profesionales en desarrollo de software con las últimas
+                                        tecnologías e inteligencia artificial.
+                                    </p>
+                                </div>
+
+                                <div class="footer-section">
+                                    <h3>Enlaces Rápidos</h3>
+                                    <p><a href="#inicio">Inicio</a></p>
+                                    <p><a href="#programa">Programa</a></p>
+                                    <p><a href="#curriculum">Curriculum</a></p>
+                                    <p><a href="#certificaciones">Certificaciones</a></p>
+                                    <p><a href="/proyectosalumnos">Proyectos Alumnos</a></p>
+                                    <p>
+                                        <a href="https://aula.incuyo.edu.ar/" target="_blank">Campus Virtual</a>
+                                    </p>
+                                </div>
+
+                                <div class="footer-section">
+                                    <h3>Contacto</h3>
+                                    <div class="contact-item">
+                                        <i class="fas fa-phone contact-icon"></i>
+                                        <a href="tel:+5492616271658">(+054) 261 6271658</a>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope contact-icon"></i>
+                                        <a href="mailto:incuyo@gmail.com">incuyo@gmail.com</a>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-map-marker-alt contact-icon"></i>
+                                        <span>La Rioja 614, Mendoza, Argentina</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="footer-bottom">
+                                <p>&copy; 2026 Instituto Nuevo Cuyo - Todos los derechos reservados</p>
+                            </div>
+                        </div>
+                    </footer>
+
+                    <!-- WHATSAPP FLOATING BUTTON -->
+                    <div class="whatsapp-float">
+                        <!-- AI CHATBOT BUTTON -->
+                        <button class="ai-chat-btn" id="aiChatBtn" aria-label="Hablar con el Asistente IA"
+                            title="Asistente INCUYO IA">
+                            <img src="/assets/img/robbie.png" alt="Robbie"
+                                style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 10px; background: white;">
+                        </button>
+
+                        <a href="https://wa.me/5492616271658?text=Hola!%20Me%20gustaría%20recibir%20más%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
+                            class="whatsapp-btn" target="_blank" aria-label="Contactar por WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope contact-icon"></i>
-                        <a href="mailto:incuyo@gmail.com">incuyo@gmail.com</a>
+
+                    <!-- AI CHATBOT WINDOW -->
+                    <div class="ai-chat-window" id="aiChatWindow" aria-hidden="true">
+                        <div class="ai-chat-header">
+                            <div class="ai-chat-header-info">
+                                <div class="ai-chat-avatar">
+                                    <img src="/assets/img/robbie.png" alt="Robbie"
+                                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 5px; background: white;">
+                                </div>
+                                <div>
+                                    <p class="ai-chat-title">Asistente INCU</p>
+                                    <p class="ai-chat-subtitle">Respondido por IA · SpiderWeb</p>
+                                </div>
+                            </div>
+                            <button class="ai-chat-close" id="aiChatClose" aria-label="Cerrar chat">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="ai-chat-messages" id="aiChatMessages">
+                            <div class="ai-chat-msg ai-chat-msg--bot">
+                                <div class="ai-chat-msg-bubble">
+                                    <i class="fas fa-hand-sparkles" style="color: var(--primary-gold);"></i> ¡Hola! Soy
+                                    el asistente
+                                    virtual del <strong>Instituto Nuevo Cuyo</strong>. Puedo responder preguntas
+                                    sobre la Tecnicatura en Desarrollo de Software, inscripciones, plan de estudios,
+                                    certificaciones y
+                                    más. ¿En qué puedo ayudarte?
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ai-chat-input-area">
+                            <textarea class="ai-chat-input" id="aiChatInput" placeholder="Escribí tu pregunta..."
+                                rows="1" maxlength="500" aria-label="Mensaje para el asistente"></textarea>
+                            <button class="ai-chat-send" id="aiChatSend" aria-label="Enviar mensaje">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt contact-icon"></i>
-                        <span>La Rioja 614, Mendoza, Argentina</span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="footer-bottom">
-                <p>&copy; 2026 Instituto Nuevo Cuyo - Todos los derechos reservados</p>
-            </div>
-        </div>
-    </footer>
+                    <!-- JavaScript -->
+                    <script src="/js/script.js"></script>
+                    <script>
+                        // ─── Index Diplomatura Modals ────────────────
+                        function openIndexDiplomModal(idx) {
+                            document.getElementById('idx-modal-' + idx).classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        }
+                        function closeIndexDiplomModal(idx) {
+                            document.getElementById('idx-modal-' + idx).classList.remove('active');
+                            document.body.style.overflow = '';
+                        }
+                        document.addEventListener('keydown', function (e) {
+                            if (e.key === 'Escape') {
+                                document.querySelectorAll('.diplom-modal-overlay.active').forEach(function (m) {
+                                    m.classList.remove('active');
+                                    document.body.style.overflow = '';
+                                });
+                            }
+                        });
 
-    <!-- WHATSAPP FLOATING BUTTON -->
-    <div class="whatsapp-float">
-        <!-- AI CHATBOT BUTTON -->
-        <button class="ai-chat-btn" id="aiChatBtn" aria-label="Hablar con el Asistente IA" title="Asistente INCUYO IA">
-            <img src="/assets/img/robbie.png" alt="Robbie"
-                style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 10px; background: white;">
-        </button>
+                        // ─── Pasantías Carousel (CSS, igual que tech-carousel) ───
+                        // No requiere JS — animado por CSS con keyframes
 
-        <a href="https://wa.me/5492616271658?text=Hola!%20Me%20gustaría%20recibir%20más%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
-            class="whatsapp-btn" target="_blank" aria-label="Contactar por WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-    </div>
-
-    <!-- AI CHATBOT WINDOW -->
-    <div class="ai-chat-window" id="aiChatWindow" aria-hidden="true">
-        <div class="ai-chat-header">
-            <div class="ai-chat-header-info">
-                <div class="ai-chat-avatar">
-                    <img src="/assets/img/robbie.png" alt="Robbie"
-                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 5px; background: white;">
-                </div>
-                <div>
-                    <p class="ai-chat-title">Asistente INCU</p>
-                    <p class="ai-chat-subtitle">Respondido por IA · SpiderWeb</p>
-                </div>
-            </div>
-            <button class="ai-chat-close" id="aiChatClose" aria-label="Cerrar chat">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="ai-chat-messages" id="aiChatMessages">
-            <div class="ai-chat-msg ai-chat-msg--bot">
-                <div class="ai-chat-msg-bubble">
-                    <i class="fas fa-hand-sparkles" style="color: var(--primary-gold);"></i> ¡Hola! Soy el asistente
-                    virtual del <strong>Instituto Nuevo Cuyo</strong>. Puedo responder preguntas
-                    sobre la Tecnicatura en Desarrollo de Software, inscripciones, plan de estudios, certificaciones y
-                    más. ¿En qué puedo ayudarte?
-                </div>
-            </div>
-        </div>
-
-        <div class="ai-chat-input-area">
-            <textarea class="ai-chat-input" id="aiChatInput" placeholder="Escribí tu pregunta..." rows="1"
-                maxlength="500" aria-label="Mensaje para el asistente"></textarea>
-            <button class="ai-chat-send" id="aiChatSend" aria-label="Enviar mensaje">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
-    <script src="/js/script.js"></script>
-    <script>
-        // ─── Index Diplomatura Modals ────────────────
-        function openIndexDiplomModal(idx) {
-            document.getElementById('idx-modal-' + idx).classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeIndexDiplomModal(idx) {
-            document.getElementById('idx-modal-' + idx).classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.diplom-modal-overlay.active').forEach(function(m) {
-                    m.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-            }
-        });
-
-        // ─── Pasantías Carousel (CSS, igual que tech-carousel) ───
-        // No requiere JS — animado por CSS con keyframes
-
-    </script>
+                    </script>
 </body>
 
 </html>

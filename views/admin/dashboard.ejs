@@ -49,55 +49,116 @@
 
             <!-- ═══ CURRICULUM PANEL ═══ -->
             <div class="panel active" id="panel-curriculum">
-                <div class="panel-section">
-                    <div class="panel-title">
-                        <h3><i class="fas fa-book"></i> Plan de Estudios</h3>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <button class="btn btn-danger" onclick="clearCurriculum()">
-                                <i class="fas fa-trash-alt"></i> Limpiar Todo
-                            </button>
-                            <button class="btn btn-gold" onclick="openCurriculumModal()">
-                                <i class="fas fa-plus"></i> Agregar Materia
+                <!-- Sub-tabs -->
+                <div class="curr-sub-tabs" style="display:flex; gap:0; margin-bottom:1.5rem; border-bottom:2px solid var(--border-color, #e5e7eb);">
+                    <button class="curr-sub-tab active" data-subtab="materias" onclick="switchCurrTab('materias', this)" style="padding:0.7rem 1.5rem; background:none; border:none; border-bottom:3px solid transparent; font-weight:600; cursor:pointer; color:#888; transition:all 0.2s;">
+                        <i class="fas fa-book"></i> Materias
+                    </button>
+                    <button class="curr-sub-tab" data-subtab="certificaciones" onclick="switchCurrTab('certificaciones', this)" style="padding:0.7rem 1.5rem; background:none; border:none; border-bottom:3px solid transparent; font-weight:600; cursor:pointer; color:#888; transition:all 0.2s;">
+                        <i class="fas fa-award"></i> Certificaciones Laborales
+                    </button>
+                </div>
+
+                <!-- Sub-panel: Materias -->
+                <div class="curr-subpanel" id="subpanel-materias">
+                    <div class="panel-section">
+                        <div class="panel-title">
+                            <h3><i class="fas fa-book"></i> Plan de Estudios</h3>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button class="btn btn-danger" onclick="clearCurriculum()">
+                                    <i class="fas fa-trash-alt"></i> Limpiar Todo
+                                </button>
+                                <button class="btn btn-gold" onclick="openCurriculumModal()">
+                                    <i class="fas fa-plus"></i> Agregar Materia
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-filter="all" onclick="filterCurriculum('all', this)">Todos</button>
+                            <button class="filter-tab" data-filter="1" onclick="filterCurriculum(1, this)">1° Año</button>
+                            <button class="filter-tab" data-filter="2" onclick="filterCurriculum(2, this)">2° Año</button>
+                            <button class="filter-tab" data-filter="3" onclick="filterCurriculum(3, this)">3° Año</button>
+                        </div>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Año</th>
+                                    <th>Materia</th>
+                                    <th>Semestre</th>
+                                    <th>Orden</th>
+                                    <th style="text-align:right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="curriculumTable">
+                                <% curriculum.forEach(function(item) { %>
+                                    <tr data-id="<%= item.id %>" data-year="<%= item.year %>"
+                                        data-name="<%- encodeURIComponent(item.subject_name) %>"
+                                        data-order="<%= item.order_index %>"
+                                        data-semestre="<%= item.semestre || '' %>">
+                                        <td><span class="year-badge y<%= item.year %>"><%= item.year %>° Año</span></td>
+                                        <td><%= item.subject_name %></td>
+                                        <td><% if (item.semestre) { %><span style="font-size:0.8rem; background:#f0f4ff; color:#4f6ef7; padding:2px 8px; border-radius:99px;"><%= item.semestre === 'anual' ? 'Anual' : item.semestre + '° Semestre' %></span><% } else { %><span style="color:#ccc; font-size:0.8rem;">—</span><% } %></td>
+                                        <td><%= item.order_index %></td>
+                                        <td style="text-align:right">
+                                            <button class="btn btn-secondary btn-sm" onclick="editCurrFromRow(this)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteCurriculum(<%= item.id %>)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sub-panel: Certificaciones Laborales -->
+                <div class="curr-subpanel" id="subpanel-certificaciones" style="display:none;">
+                    <div class="panel-section">
+                        <div class="panel-title">
+                            <h3><i class="fas fa-award"></i> Certificaciones Laborales</h3>
+                            <button class="btn btn-gold" onclick="openCertModal()">
+                                <i class="fas fa-plus"></i> Agregar Certificación
                             </button>
                         </div>
-                    </div>
+                        <p style="color:#888; font-size:0.88rem; margin-bottom:1.5rem;">Máximo 10 certificaciones por año. Se obtienen al aprobar coprogramáticas.</p>
 
-                    <div class="filter-tabs">
-                        <button class="filter-tab active" data-filter="all" onclick="filterCurriculum('all', this)">Todos</button>
-                        <button class="filter-tab" data-filter="1" onclick="filterCurriculum(1, this)">1° Año</button>
-                        <button class="filter-tab" data-filter="2" onclick="filterCurriculum(2, this)">2° Año</button>
-                        <button class="filter-tab" data-filter="3" onclick="filterCurriculum(3, this)">3° Año</button>
+                        <% [1,2,3].forEach(function(yr) {
+                            const certs = certificaciones.filter(c => c.year == yr);
+                        %>
+                        <div style="margin-bottom:2rem;">
+                            <h4 style="margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
+                                <span class="year-badge y<%= yr %>"><%= yr %>° Año</span>
+                                <span style="font-size:0.82rem; color:#aaa;">(<%= certs.length %>/10)</span>
+                            </h4>
+                            <% if (certs.length === 0) { %>
+                                <p style="color:#bbb; font-size:0.9rem; padding-left:0.5rem;">Sin certificaciones cargadas.</p>
+                            <% } else { %>
+                            <table class="data-table">
+                                <thead><tr><th>Nombre</th><th>Orden</th><th style="text-align:right">Acciones</th></tr></thead>
+                                <tbody>
+                                <% certs.forEach(function(cert) { %>
+                                    <tr data-id="<%= cert.id %>" data-year="<%= cert.year %>"
+                                        data-nombre="<%- encodeURIComponent(cert.nombre) %>"
+                                        data-order="<%= cert.order_index %>">
+                                        <td><%= cert.nombre %></td>
+                                        <td><%= cert.order_index %></td>
+                                        <td style="text-align:right">
+                                            <button class="btn btn-secondary btn-sm" onclick="editCertFromRow(this)"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteCert(<%= cert.id %>)"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                                </tbody>
+                            </table>
+                            <% } %>
+                        </div>
+                        <% }); %>
                     </div>
-
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Año</th>
-                                <th>Materia</th>
-                                <th>Orden</th>
-                                <th style="text-align:right">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="curriculumTable">
-                            <% curriculum.forEach(function(item) { %>
-                                <tr data-id="<%= item.id %>" data-year="<%= item.year %>"
-                                    data-name="<%- encodeURIComponent(item.subject_name) %>"
-                                    data-order="<%= item.order_index %>">
-                                    <td><span class="year-badge y<%= item.year %>"><%= item.year %>° Año</span></td>
-                                    <td><%= item.subject_name %></td>
-                                    <td><%= item.order_index %></td>
-                                    <td style="text-align:right">
-                                        <button class="btn btn-secondary btn-sm" onclick="editCurrFromRow(this)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteCurriculum(<%= item.id %>)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            <% }); %>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
@@ -401,11 +462,50 @@
                     <input type="text" id="currName" placeholder="Ej: Programación 1 + IA" required>
                 </div>
                 <div class="form-group">
+                    <label>Semestre <small style="color:#aaa;">(opcional)</small></label>
+                    <select id="currSemestre">
+                        <option value="">Sin especificar</option>
+                        <option value="1">1° Semestre</option>
+                        <option value="2">2° Semestre</option>
+                        <option value="anual">Anual</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Orden</label>
                     <input type="number" id="currOrder" value="0" min="0">
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('curriculumModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-gold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Certificaciones Modal -->
+    <div class="modal-overlay" id="certModal">
+        <div class="modal">
+            <h3><i class="fas fa-award"></i> <span id="certModalTitle">Agregar Certificación</span></h3>
+            <form id="certForm" onsubmit="saveCert(event)">
+                <input type="hidden" id="certId" value="">
+                <div class="form-group">
+                    <label>Año</label>
+                    <select id="certYear" required>
+                        <option value="1">1° Año</option>
+                        <option value="2">2° Año</option>
+                        <option value="3">3° Año</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de la Certificación</label>
+                    <input type="text" id="certNombre" placeholder="Ej: Programador Python (nivel Junior)" required>
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="certOrder" value="0" min="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('certModal')">Cancelar</button>
                     <button type="submit" class="btn btn-gold">Guardar</button>
                 </div>
             </form>
@@ -706,18 +806,38 @@
             }
         }
 
+        // ─── CURRICULUM TABS ─────────────────────────────
+        function switchCurrTab(tab, btn) {
+            document.querySelectorAll('.curr-sub-tab').forEach(t => {
+                t.classList.remove('active');
+                t.style.borderBottomColor = 'transparent';
+                t.style.color = '#888';
+            });
+            btn.classList.add('active');
+            btn.style.borderBottomColor = 'var(--primary-gold, #f59e0b)';
+            btn.style.color = 'var(--text-primary, #111)';
+            document.querySelectorAll('.curr-subpanel').forEach(p => p.style.display = 'none');
+            document.getElementById('subpanel-' + tab).style.display = '';
+        }
+        // Init first tab active style
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstTab = document.querySelector('.curr-sub-tab.active');
+            if (firstTab) { firstTab.style.borderBottomColor = 'var(--primary-gold, #f59e0b)'; firstTab.style.color = 'var(--text-primary, #111)'; }
+        });
+
         // ─── CURRICULUM ─────────────────────────────
-        function openCurriculumModal(id, year, name, order) {
+        function openCurriculumModal(id, year, name, order, semestre) {
             document.getElementById('currId').value = id || '';
             document.getElementById('currYear').value = year || 1;
             document.getElementById('currName').value = name || '';
             document.getElementById('currOrder').value = order || 0;
+            document.getElementById('currSemestre').value = semestre || '';
             document.getElementById('currModalTitle').textContent = id ? 'Editar Materia' : 'Agregar Materia';
             document.getElementById('curriculumModal').classList.add('active');
         }
         function editCurrFromRow(btn) {
             const tr = btn.closest('tr');
-            openCurriculumModal(tr.dataset.id, tr.dataset.year, decodeURIComponent(tr.dataset.name), tr.dataset.order);
+            openCurriculumModal(tr.dataset.id, tr.dataset.year, decodeURIComponent(tr.dataset.name), tr.dataset.order, tr.dataset.semestre);
         }
         async function saveCurriculum(e) {
             e.preventDefault();
@@ -726,6 +846,7 @@
                 year: parseInt(document.getElementById('currYear').value),
                 subject_name: document.getElementById('currName').value,
                 order_index: parseInt(document.getElementById('currOrder').value) || 0,
+                semestre: document.getElementById('currSemestre').value || null,
             };
             try {
                 if (id) { await apiCall('/admin/api/curriculum/' + id, 'PUT', data); showToast('Materia actualizada'); }
@@ -745,11 +866,49 @@
             catch (err) { showToast('Error', 'error'); }
         }
         function filterCurriculum(year, btn) {
-            document.querySelectorAll('#panel-curriculum .filter-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('#subpanel-materias .filter-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
             document.querySelectorAll('#curriculumTable tr').forEach(tr => {
                 tr.style.display = (year === 'all' || tr.dataset.year == year) ? '' : 'none';
             });
+        }
+
+        // ─── CERTIFICACIONES ─────────────────────────────
+        function openCertModal(id, year, nombre, order) {
+            document.getElementById('certId').value = id || '';
+            document.getElementById('certYear').value = year || 1;
+            document.getElementById('certNombre').value = nombre || '';
+            document.getElementById('certOrder').value = order || 0;
+            document.getElementById('certModalTitle').textContent = id ? 'Editar Certificación' : 'Agregar Certificación';
+            document.getElementById('certModal').classList.add('active');
+        }
+        function editCertFromRow(btn) {
+            const tr = btn.closest('tr');
+            openCertModal(tr.dataset.id, tr.dataset.year, decodeURIComponent(tr.dataset.nombre), tr.dataset.order);
+        }
+        async function saveCert(e) {
+            e.preventDefault();
+            const id = document.getElementById('certId').value;
+            const data = {
+                year: parseInt(document.getElementById('certYear').value),
+                nombre: document.getElementById('certNombre').value,
+                order_index: parseInt(document.getElementById('certOrder').value) || 0,
+            };
+            try {
+                if (id) { await apiCall('/admin/api/certificaciones/' + id, 'PUT', data); showToast('Certificación actualizada'); }
+                else {
+                    const res = await apiCall('/admin/api/certificaciones', 'POST', data);
+                    if (res.error) { showToast(res.error, 'error'); return; }
+                    showToast('Certificación agregada');
+                }
+                closeModal('certModal');
+                location.reload();
+            } catch (err) { showToast('Error al guardar', 'error'); }
+        }
+        async function deleteCert(id) {
+            if (!confirm('¿Eliminar esta certificación?')) return;
+            try { await apiCall('/admin/api/certificaciones/' + id, 'DELETE'); showToast('Certificación eliminada'); location.reload(); }
+            catch (err) { showToast('Error al eliminar', 'error'); }
         }
 
         // ─── COMMITMENT ─────────────────────────────

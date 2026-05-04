@@ -18,12 +18,13 @@ function normalizeImgUrl(url) {
 // GET / — Landing page
 router.get('/', async (req, res) => {
     try {
-        const [currResult, scResult, diplomResult, pasResult, configResult] = await Promise.all([
+        const [currResult, scResult, diplomResult, pasResult, configResult, certResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM diplomaturas WHERE destacado=1 ORDER BY order_index LIMIT 6').catch(() => ({ result: [] })),
             query('SELECT * FROM pasantias_empresas ORDER BY order_index').catch(() => ({ result: [] })),
             query("SELECT * FROM configuracion").catch(() => ({ result: [] })),
+            query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
         ]);
 
         const currRows = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
@@ -47,7 +48,13 @@ router.get('/', async (req, res) => {
         let horario = null;
         try { horario = JSON.parse(configMap.horario || 'null'); } catch (e) { horario = null; }
 
-        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario });
+        const certRows = certResult?.result || certResult?.results || (Array.isArray(certResult) ? certResult : []);
+        const certificaciones = { 1: [], 2: [], 3: [] };
+        certRows.forEach((row) => {
+            if (certificaciones[row.year]) certificaciones[row.year].push(row);
+        });
+
+        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario, certificaciones });
     } catch (err) {
         console.error('Error loading landing page:', err);
         res.render('index', {
@@ -56,6 +63,7 @@ router.get('/', async (req, res) => {
             diplomaturas: [],
             pasantias: [],
             horario: null,
+            certificaciones: { 1: [], 2: [], 3: [] },
         });
     }
 });
@@ -99,6 +107,35 @@ router.get('/proyectosalumnos', async (req, res) => {
 router.get('/servicios', (req, res) => {
     res.render('Servicios');
 });
+
+// GET /sabermas
+router.get('/sabermas', async (req, res) => {
+    try {
+        const [currResult, certResult] = await Promise.all([
+            query('SELECT * FROM curriculum ORDER BY year, order_index'),
+            query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
+        ]);
+        const currRows = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
+        const curriculum = { 1: [], 2: [], 3: [] };
+        currRows.forEach((row) => {
+            if (curriculum[row.year]) curriculum[row.year].push(row);
+        });
+
+        const certRows = certResult?.result || certResult?.results || (Array.isArray(certResult) ? certResult : []);
+        const certificaciones = { 1: [], 2: [], 3: [] };
+        certRows.forEach((row) => {
+            if (certificaciones[row.year]) certificaciones[row.year].push(row);
+        });
+
+        res.render('masinfo', { curriculum, certificaciones });
+    } catch (err) {
+        console.error('Error loading sabermas:', err);
+        res.render('masinfo', { curriculum: { 1: [], 2: [], 3: [] }, certificaciones: { 1: [], 2: [], 3: [] } });
+    }
+});
+
+// Redirigir /masinfo.html a /sabermas por compatibilidad
+router.get('/masinfo.html', (req, res) => res.redirect('/sabermas'));
 
 // Proxy for Cloud Storage Images to bypass CORS and hide API KEY
 router.get('/api/storage/files/:id', async (req, res) => {

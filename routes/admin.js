@@ -32,13 +32,14 @@ router.get('/logout', (req, res) => {
 // ─── DASHBOARD ───────────────────────────────────────
 router.get('/', requireAdmin, async (req, res) => {
     try {
-        const [currResult, scResult, projResult, diplomResult, pasResult, configResult] = await Promise.all([
+        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM student_projects ORDER BY year, order_index'),
             query('SELECT * FROM diplomaturas ORDER BY order_index').catch(() => ({ result: [] })),
             query('SELECT * FROM pasantias_empresas ORDER BY order_index').catch(() => ({ result: [] })),
             query("SELECT * FROM configuracion").catch(() => ({ result: [] })),
+            query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
         ]);
 
         const curriculum = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
@@ -47,6 +48,7 @@ router.get('/', requireAdmin, async (req, res) => {
         const diplomaturas = diplomResult?.result || diplomResult?.results || (Array.isArray(diplomResult) ? diplomResult : []);
         const pasantias = pasResult?.result || pasResult?.results || (Array.isArray(pasResult) ? pasResult : []);
         const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
+        const certificaciones = certResult?.result || certResult?.results || (Array.isArray(certResult) ? certResult : []);
 
         // Parse tech_tags
         projects.forEach((p) => {
@@ -61,10 +63,10 @@ router.get('/', requireAdmin, async (req, res) => {
         let horario = null;
         try { horario = JSON.parse(config.horario || 'null'); } catch (e) { horario = null; }
 
-        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario });
+        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones });
     } catch (err) {
         console.error('Dashboard error:', err);
-        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null });
+        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [] });
     }
 });
 
@@ -123,6 +125,15 @@ router.post('/api/init-tables', requireAdmin, async (req, res) => {
             clave VARCHAR(100) PRIMARY KEY,
             valor TEXT
         )`);
+        // Agregar columna semestre a curriculum (ignora error si ya existe)
+        await query(`ALTER TABLE curriculum ADD COLUMN semestre VARCHAR(20) NULL DEFAULT NULL`).catch(() => {});
+        // Crear tabla de certificaciones laborales (ignora error si ya existe)
+        await query(`CREATE TABLE certificaciones_laborales (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            year INT NOT NULL,
+            nombre VARCHAR(255) NOT NULL,
+            order_index INT DEFAULT 0
+        )`).catch(() => {});
         // Insert default horario if not exists
         await query(`INSERT IGNORE INTO configuracion (clave, valor) VALUES ('horario', '${JSON.stringify([
             { dia: 'Lunes', abierto: true, apertura: '08:00', cierre: '20:00' },
@@ -152,8 +163,9 @@ router.get('/api/curriculum', requireAdmin, async (req, res) => {
 
 router.post('/api/curriculum', requireAdmin, async (req, res) => {
     try {
-        const { year, subject_name, order_index } = req.body;
-        await query(`INSERT INTO curriculum (year, subject_name, order_index) VALUES (${parseInt(year)}, ?, ${parseInt(order_index || 0)})`, [subject_name]);
+        const { year, subject_name, order_index, semestre } = req.body;
+        const sem = semestre || null;
+        await query(`INSERT INTO curriculum (year, subject_name, order_index, semestre) VALUES (${parseInt(year)}, ?, ${parseInt(order_index || 0)}, ?)`, [subject_name, sem]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -162,8 +174,9 @@ router.post('/api/curriculum', requireAdmin, async (req, res) => {
 
 router.put('/api/curriculum/:id', requireAdmin, async (req, res) => {
     try {
-        const { year, subject_name, order_index } = req.body;
-        await query(`UPDATE curriculum SET year=${parseInt(year)}, subject_name=?, order_index=${parseInt(order_index || 0)} WHERE id=${parseInt(req.params.id)}`, [subject_name]);
+        const { year, subject_name, order_index, semestre } = req.body;
+        const sem = semestre || null;
+        await query(`UPDATE curriculum SET year=${parseInt(year)}, subject_name=?, order_index=${parseInt(order_index || 0)}, semestre=? WHERE id=${parseInt(req.params.id)}`, [subject_name, sem]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -177,9 +190,55 @@ router.delete('/api/curriculum/all', requireAdmin, async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-}); router.delete('/api/curriculum/:id', requireAdmin, async (req, res) => {
+});
+
+router.delete('/api/curriculum/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM curriculum WHERE id=${parseInt(req.params.id)}`);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── CERTIFICACIONES LABORALES CRUD ──────────────────
+router.get('/api/certificaciones', requireAdmin, async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index');
+        res.json(result?.result || result?.results || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/api/certificaciones', requireAdmin, async (req, res) => {
+    try {
+        const { year, nombre, order_index } = req.body;
+        const yr = parseInt(year);
+        // Validar límite de 10 por año
+        const countResult = await query(`SELECT COUNT(*) as total FROM certificaciones_laborales WHERE year=${yr}`);
+        const total = countResult?.result?.[0]?.total || countResult?.results?.[0]?.total || 0;
+        if (total >= 10) return res.status(400).json({ error: `Límite de 10 certificaciones por año alcanzado para el año ${yr}` });
+        await query(`INSERT INTO certificaciones_laborales (year, nombre, order_index) VALUES (${yr}, ?, ${parseInt(order_index || 0)})`, [nombre]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/api/certificaciones/:id', requireAdmin, async (req, res) => {
+    try {
+        const { year, nombre, order_index } = req.body;
+        await query(`UPDATE certificaciones_laborales SET year=${parseInt(year)}, nombre=?, order_index=${parseInt(order_index || 0)} WHERE id=${parseInt(req.params.id)}`, [nombre]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/api/certificaciones/:id', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM certificaciones_laborales WHERE id=${parseInt(req.params.id)}`);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

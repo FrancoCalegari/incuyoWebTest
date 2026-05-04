@@ -110,139 +110,24 @@
                 <button class="curr-tab" data-tab="year3">3° Año</button>
             </div>
 
-            <!-- 1° Año -->
-            <div class="curr-panel active" id="year1">
-                <div class="subject-grid">
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-code"></i></div>
-                        <p class="subject-name">Programación 1 + IA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
-                        <p class="subject-name">Matemática Aplicada</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-search"></i></div>
-                        <p class="subject-name">Elementos de Investigación</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-project-diagram"></i></div>
-                        <p class="subject-name">Ingeniería de Software 1</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-database"></i></div>
-                        <p class="subject-name">Base de Datos 1</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-globe"></i></div>
-                        <p class="subject-name">Programación Web Frontend + IA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-code-branch"></i></div>
-                        <p class="subject-name">Programación 2</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-server"></i></div>
-                        <p class="subject-name">Base de Datos 2</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-language"></i></div>
-                        <p class="subject-name">Inglés Técnico 1</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-briefcase"></i></div>
-                        <p class="subject-name">Práctica Profesionalizante 1</p>
+            <% [1, 2, 3].forEach(function(year) { %>
+                <!-- <%= year %>° Año -->
+                <div class="curr-panel <%= year === 1 ? 'active' : '' %>" id="year<%= year %>">
+                    <div class="subject-grid">
+                        <% (curriculum[year] || []).forEach(function(subject) { %>
+                            <div class="subject-card">
+                                <div class="subject-icon"><i class="fas fa-book"></i></div>
+                                <p class="subject-name"><%= subject.subject_name %></p>
+                                <% if (subject.semestre) { %>
+                                    <p class="subject-semestre" style="font-size:0.75rem; margin-top:0.3rem; color:#a0a9c0; letter-spacing:0.02em;">
+                                        <% if (subject.semestre === 'anual') { %>Anual<% } else { %><%= subject.semestre %>° Semestre<% } %>
+                                    </p>
+                                <% } %>
+                            </div>
+                        <% }); %>
                     </div>
                 </div>
-            </div>
-
-            <!-- 2° Año -->
-            <div class="curr-panel" id="year2">
-                <div class="subject-grid">
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-server"></i></div>
-                        <p class="subject-name">Programación Backend + IA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-network-wired"></i></div>
-                        <p class="subject-name">Redes y Comunicaciones</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-language"></i></div>
-                        <p class="subject-name">Inglés Técnico 2</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-chart-bar"></i></div>
-                        <p class="subject-name">Ciencia de Datos e IA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-mobile-alt"></i></div>
-                        <p class="subject-name">Programación Mobile + IA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-infinity"></i></div>
-                        <p class="subject-name">DevOps</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-briefcase"></i></div>
-                        <p class="subject-name">Práctica Profesionalizante 2</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-vial"></i></div>
-                        <p class="subject-name">Testing y QA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-shield-alt"></i></div>
-                        <p class="subject-name">Seguridad Informática</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-lightbulb"></i></div>
-                        <p class="subject-name">Emprendedorismo y Gestión</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3° Año -->
-            <div class="curr-panel" id="year3">
-                <div class="subject-grid">
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-cloud"></i></div>
-                        <p class="subject-name">Cloud Computing + IA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-sitemap"></i></div>
-                        <p class="subject-name">Arquitectura de Software</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-microchip"></i></div>
-                        <p class="subject-name">Desarrollo con IA e IoT</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-briefcase"></i></div>
-                        <p class="subject-name">Práctica Profesionalizante 3</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-link"></i></div>
-                        <p class="subject-name">Blockchain y Web3</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-robot"></i></div>
-                        <p class="subject-name">Automatización con IA</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-brain"></i></div>
-                        <p class="subject-name">Machine Learning Aplicado</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-users"></i></div>
-                        <p class="subject-name">Liderazgo y Gestión de Equipos</p>
-                    </div>
-                    <div class="subject-card">
-                        <div class="subject-icon"><i class="fas fa-flag-checkered"></i></div>
-                        <p class="subject-name">Práctica Profesionalizante Final</p>
-                    </div>
-                </div>
-            </div>
+            <% }); %>
         </div>
     </section>
 

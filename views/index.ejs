@@ -124,29 +124,6 @@
         </div>
     </section>
 
-    <!-- PROGRAM INFO SECTION -->
-    <section class="section program-info" id="programa">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle">Nuestra Propuesta</p>
-                <h2 class="section-title">
-                    Técnicatura Superior en Desarrollo de Software
-                </h2>
-                <p class="section-description">
-                    Una formación sólida y abarcativa que te prepara para una industria
-                    en constante expansión
-                </p>
-            </div>
-
-            <div class="text-center reveal" style="margin-top: 2rem;">
-                <a href="/sabermas" class="btn btn-primary btn-lg">
-                    <i class="fas fa-info-circle"></i> Saber más
-                </a>
-            </div>
-        </div>
-    </section>
-
-
     <!-- CURRICULUM SECTION (DYNAMIC) -->
     <section class="section curriculum" id="curriculum">
         <div class="container">
@@ -173,6 +150,11 @@
                                     <% (curriculum[year] || []).forEach(function(subject) { %>
                                         <li>
                                             <%= subject.subject_name %>
+                                            <% if (subject.semestre) { %>
+                                                <span style="display:block; font-size:0.75rem; color:#a0a9c0; margin-top:0.2rem;">
+                                                    <% if (subject.semestre === 'anual') { %>Anual<% } else { %><%= subject.semestre %>° Semestre<% } %>
+                                                </span>
+                                            <% } %>
                                         </li>
                                         <% }); %>
                                 </ul>
@@ -377,17 +359,21 @@
 
                             <div class="cert-year-grid">
                                 <% [1, 2, 3].forEach(function(year) { %>
-                                    <% if (certificaciones[year] && certificaciones[year].length > 0) { %>
+                                    <% if (certificaciones[year] && certificaciones[year].length> 0) { %>
                                         <div class="cert-year-card reveal">
-                                            <h3 class="cert-year"><%= year %>° Año</h3>
+                                            <h3 class="cert-year">
+                                                <%= year %>° Año
+                                            </h3>
                                             <ul class="cert-list">
                                                 <% certificaciones[year].forEach(function(cert) { %>
-                                                    <li><%= cert.nombre %></li>
-                                                <% }); %>
+                                                    <li>
+                                                        <%= cert.nombre %>
+                                                    </li>
+                                                    <% }); %>
                                             </ul>
                                         </div>
-                                    <% } %>
-                                <% }); %>
+                                        <% } %>
+                                            <% }); %>
                             </div>
                         </div>
                     </section>
@@ -548,7 +534,8 @@
                                         <div class="horario-row">
                                             <span class="horario-dia">Lunes a Viernes</span>
                                             <span class="horario-hs">
-                                                <i class="fas fa-circle horario-dot horario-dot--open"></i> 16:00 – 20:00
+                                                <i class="fas fa-circle horario-dot horario-dot--open"></i> 16:00 –
+                                                20:00
                                             </span>
                                         </div>
                                     </div>

@@ -24,7 +24,6 @@
             <ul class="navbar-menu">
                 <li><a href="/">Inicio</a></li>
                 <li><a href="/#inscripciones">Inscripciones</a></li>
-                <li><a href="/proyectosalumnos">Proyectos</a></li>
                 <li>
                     <a href="https://aula.incuyo.edu.ar/" target="_blank" class="campus-link">Campus Virtual</a>
                 </li>
@@ -43,9 +42,9 @@
                 <span class="mi-chip"><i class="fas fa-calendar-alt"></i> 3 Años (6 cuatrimestres)</span>
                 <span class="mi-chip"><i class="fas fa-laptop"></i> Modalidad Bimodal</span>
                 <span class="mi-chip"><i class="fas fa-robot"></i> IA en todas las materias</span>
-                <span class="mi-chip"><i class="fas fa-certificate"></i> 2 Títulos oficiales</span>
+                <span class="mi-chip"><i class="fas fa-certificate"></i> 3 Títulos oficiales</span>
                 <span class="mi-chip"><i class="fas fa-award"></i> Certificaciones laborales</span>
-                <span class="mi-chip"><i class="fas fa-graduation-cap"></i> Becas hasta 40%</span>
+                <span class="mi-chip"><i class="fas fa-graduation-cap"></i> Becas hasta 40% En Agosto</span>
             </div>
         </div>
     </section>
@@ -73,7 +72,7 @@
                 <div class="year-item">
                     <div class="year-badge">2</div>
                     <p class="year-title-degree">Al terminar 2° Año</p>
-                    <p class="year-degree">Desarrollador Full Stack Junior</p>
+                    <p class="year-degree">Programador Junior</p>
                 </div>
                 <div class="year-item">
                     <div class="year-badge">3</div>
@@ -117,17 +116,21 @@
                         <% (curriculum[year] || []).forEach(function(subject) { %>
                             <div class="subject-card">
                                 <div class="subject-icon"><i class="fas fa-book"></i></div>
-                                <p class="subject-name"><%= subject.subject_name %></p>
+                                <p class="subject-name">
+                                    <%= subject.subject_name %>
+                                </p>
                                 <% if (subject.semestre) { %>
-                                    <p class="subject-semestre" style="font-size:0.75rem; margin-top:0.3rem; color:#a0a9c0; letter-spacing:0.02em;">
-                                        <% if (subject.semestre === 'anual') { %>Anual<% } else { %><%= subject.semestre %>° Semestre<% } %>
+                                    <p class="subject-semestre"
+                                        style="font-size:0.75rem; margin-top:0.3rem; color:#a0a9c0; letter-spacing:0.02em;">
+                                        <% if (subject.semestre==='anual' ) { %>Anual<% } else { %>
+                                                <%= subject.semestre %>° Semestre<% } %>
                                     </p>
-                                <% } %>
+                                    <% } %>
                             </div>
-                        <% }); %>
+                            <% }); %>
                     </div>
                 </div>
-            <% }); %>
+                <% }); %>
         </div>
     </section>
 
@@ -232,7 +235,7 @@
                 <div class="ingreso-content">
                     <h2>Acceso amplio e inclusivo</h2>
                     <p><i class="fas fa-check" style="color:var(--primary-gold); margin-right:.5rem;"></i>
-                        Haber aprobado el nivel Secundario o Ciclo Polimodal.</p>
+                        Haber aprobado el nivel Secundario o estar cursando el último año.</p>
                     <p><i class="fas fa-check" style="color:var(--primary-gold); margin-right:.5rem;"></i>
                         Ser mayor de <strong>25 años</strong> sin secundario completo (Art. 7° de la Ley de Educación
                         Superior N° 24.521).</p>

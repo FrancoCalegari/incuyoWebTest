@@ -69,7 +69,6 @@
             <ul class="navbar-menu" id="navbarMenu">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#inscripciones">Inscripciones</a></li>
-                <li><a href="/proyectosalumnos">Proyectos</a></li>
                 <li><a href="/diplomaturas">Diplomaturas</a></li>
                 <li>
                     <a href="https://aula.incuyo.edu.ar/" target="_blank" class="campus-link">Campus Virtual</a>
@@ -150,11 +149,13 @@
                                     <% (curriculum[year] || []).forEach(function(subject) { %>
                                         <li>
                                             <%= subject.subject_name %>
-                                            <% if (subject.semestre) { %>
-                                                <span style="display:block; font-size:0.75rem; color:#a0a9c0; margin-top:0.2rem;">
-                                                    <% if (subject.semestre === 'anual') { %>Anual<% } else { %><%= subject.semestre %>° Semestre<% } %>
-                                                </span>
-                                            <% } %>
+                                                <% if (subject.semestre) { %>
+                                                    <span
+                                                        style="display:block; font-size:0.75rem; color:#a0a9c0; margin-top:0.2rem;">
+                                                        <% if (subject.semestre==='anual' ) { %>Anual<% } else { %>
+                                                                <%= subject.semestre %>° Semestre<% } %>
+                                                    </span>
+                                                    <% } %>
                                         </li>
                                         <% }); %>
                                 </ul>
@@ -390,6 +391,8 @@
                                     "Nuestros alumnos son capaces desde el primer año de crear sistemas
                                     personalizados de acuerdo a las necesidades de la actualidad".
                                 </p>
+                                <a href="/proyectosalumnos" class="btn btn-primary reveal" style="margin-top: 20px;">Ver
+                                    Demo's</a>
                             </div>
 
                             <div class="text-center reveal" style="margin-top: 3rem">
@@ -473,7 +476,7 @@
                             <div class="highlight-box reveal">
                                 <div class="text-center">
                                     <div class="scholarship-badge">
-                                        <i class="fas fa-graduation-cap"></i> BECAS CON HASTA 40% DE DESCUENTO
+                                        <i class="fas fa-graduation-cap"></i> BECAS CON HASTA 40% DE DESCUENTO EN AGOSTO
                                     </div>
                                     <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
                                         ¡Consultá por precios y promociones especiales!

@@ -1,0 +1,261 @@
+/* Additional styles for projects page */
+.projects-hero {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-dark);
+    position: relative;
+    padding: var(--space-24) 0 var(--space-16);
+}
+
+.projects-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 50%, rgba(195, 146, 21, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.projects-hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--primary-gold);
+    font-weight: 600;
+    margin-bottom: var(--space-6);
+    transition: all var(--transition-base);
+}
+
+.back-link:hover {
+    transform: translateX(-5px);
+}
+
+/* Year Tabs */
+.year-tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-12);
+    flex-wrap: wrap;
+}
+
+.year-tab {
+    padding: var(--space-3) var(--space-8);
+    border-radius: var(--radius-full);
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border: 2px solid var(--gray-300);
+    background: var(--white);
+    color: var(--gray-600);
+}
+
+.year-tab:hover {
+    border-color: var(--primary-gold);
+    color: var(--primary-gold);
+}
+
+.year-tab.active {
+    background: var(--gradient-accent);
+    color: var(--white);
+    border-color: var(--primary-gold);
+    box-shadow: 0 4px 12px rgba(195, 146, 21, 0.3);
+}
+
+.year-section {
+    display: none;
+}
+
+.year-section.active {
+    display: block;
+}
+
+.no-projects {
+    text-align: center;
+    padding: var(--space-16) var(--space-8);
+    color: var(--gray-400);
+    font-size: var(--text-lg);
+}
+
+.no-projects i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-4);
+}
+
+/* Project Card Styles */
+.project-card {
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition-base);
+    margin-bottom: var(--space-12);
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.project-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    align-items: center;
+    background: linear-gradient(135deg, var(--gray-100) 0%, var(--off-white) 100%);
+    border-bottom: 3px solid var(--primary-gold);
+}
+
+.student-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+    border: 3px solid var(--primary-gold);
+    box-shadow: var(--shadow-md);
+}
+
+.student-info h3 {
+    color: var(--gray-900);
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-2);
+}
+
+.student-year {
+    display: inline-block;
+    background: var(--gradient-accent);
+    color: var(--white);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.project-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+    padding: var(--space-8);
+}
+
+.project-media {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    box-shadow: var(--shadow-md);
+}
+
+.project-media img,
+.project-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease;
+}
+
+.project-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.media-container.video-playing .project-image {
+    opacity: 0;
+}
+
+.media-container.video-playing .project-video {
+    opacity: 1;
+}
+
+.project-details h4 {
+    color: var(--gray-900);
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.project-description {
+    color: var(--gray-600);
+    line-height: 1.8;
+    margin-bottom: var(--space-6);
+}
+
+.project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+}
+
+.tech-tag {
+    background: var(--gray-100);
+    color: var(--gray-800);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 500;
+}
+
+.project-actions {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.btn-demo {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+@media (max-width: 768px) {
+    .project-content {
+        grid-template-columns: 1fr;
+    }
+
+    .project-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .student-photo {
+        margin: 0 auto;
+    }
+}

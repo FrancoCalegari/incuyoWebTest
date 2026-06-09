@@ -720,6 +720,45 @@
                         // ─── Pasantías Carousel (CSS, igual que tech-carousel) ───
                         // No requiere JS — animado por CSS con keyframes
 
+                        // ─── WhatsApp Visibility & Video Optimization ───
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const whatsappBtn = document.querySelector('.whatsapp-float');
+                            const heroSection = document.getElementById('inicio');
+                            
+                            // WhatsApp Observer
+                            if (whatsappBtn && heroSection) {
+                                const heroObserver = new IntersectionObserver((entries) => {
+                                    entries.forEach(entry => {
+                                        if (entry.isIntersecting) {
+                                            // El hero es visible, ocultar whatsapp
+                                            whatsappBtn.classList.add('whatsapp-hidden');
+                                        } else {
+                                            // Fuera del hero, mostrar whatsapp
+                                            whatsappBtn.classList.remove('whatsapp-hidden');
+                                        }
+                                    });
+                                }, { threshold: 0.1 });
+                                heroObserver.observe(heroSection);
+                            }
+
+                            // Video Observer
+                            const videos = document.querySelectorAll('video');
+                            if (videos.length > 0) {
+                                const videoObserver = new IntersectionObserver((entries) => {
+                                    entries.forEach(entry => {
+                                        if (entry.isIntersecting) {
+                                            entry.target.play().catch(e => console.log('Autoplay prevent:', e));
+                                        } else {
+                                            entry.target.pause();
+                                        }
+                                    });
+                                }, { threshold: 0.1 });
+                                
+                                videos.forEach(video => {
+                                    videoObserver.observe(video);
+                                });
+                            }
+                        });
                     </script>
 </body>
 

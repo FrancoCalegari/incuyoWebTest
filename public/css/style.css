@@ -2106,7 +2106,7 @@ a:hover {
 }
 
 .servicios-incuyo__inner {
-	max-width: 820px;
+	max-width: 960px;
 	margin: 0 auto;
 	text-align: center;
 	position: relative;
@@ -2137,10 +2137,83 @@ a:hover {
 }
 
 .servicios-incuyo__lead {
-	font-size: 1.1rem;
-	color: rgba(255, 255, 255, 0.9);
+	font-size: 1.15rem;
+	color: rgba(255, 255, 255, 0.95);
 	line-height: 1.8;
-	margin-bottom: 1rem;
+	margin-bottom: 2.5rem;
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.servicios-incuyo__beneficios {
+	margin-bottom: 3rem;
+}
+
+.servicios-incuyo__beneficios-title {
+	font-size: 1.125rem;
+	color: var(--primary-gold);
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+	margin-bottom: 1.75rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.servicios-incuyo__grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1.5rem;
+	text-align: left;
+}
+
+.servicios-incuyo__card {
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: var(--radius-xl);
+	padding: 1.25rem 1.5rem;
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+	transition: transform var(--transition-base), background var(--transition-base), border-color var(--transition-base);
+}
+
+.servicios-incuyo__card:hover {
+	transform: translateY(-4px);
+	background: rgba(255, 255, 255, 0.12);
+	border-color: rgba(195, 146, 21, 0.5);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.servicios-incuyo__card-icon {
+	background: rgba(195, 146, 21, 0.2);
+	border: 1px solid rgba(195, 146, 21, 0.5);
+	color: var(--primary-gold);
+	width: 36px;
+	height: 36px;
+	border-radius: var(--radius-lg);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.1rem;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.servicios-incuyo__card-text {
+	font-size: 0.95rem;
+	color: rgba(255, 255, 255, 0.9);
+	line-height: 1.6;
+	margin: 0;
+}
+
+@media (max-width: 768px) {
+	.servicios-incuyo__grid {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
 }
 
 .servicios-incuyo__text {

@@ -59,25 +59,147 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 	lb.onclick = () => lb.style.display = "none";
 
-	// --- CHATBOT GEMINI (Lógica Core) ---
-	const chatLogic = (() => {
-		const API_KEY = window.INCUYO_CONFIG?.GEMINI_API_KEY || "";
-		const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-		const history = [];
+	// --- CHATBOT BACKEND (usa /api/chat del servidor) ---
+	const chatBtn    = document.getElementById("aiChatBtn");
+	const chatWindow = document.getElementById("aiChatWindow");
+	const chatClose  = document.getElementById("aiChatClose");
+	const chatInput  = document.getElementById("aiChatInput");
+	const chatSend   = document.getElementById("aiChatSend");
+	const chatMsgs   = document.getElementById("aiChatMessages");
 
-		async function askGemini(prompt) {
-			const res = await fetch(URL, {
-				method: "POST",
-				body: JSON.stringify({
-					system_instruction: { parts: [{ text: "Contexto del Instituto INCUYO..." }] },
-					contents: history.concat([{ role: "user", parts: [{ text: prompt }] }])
-				})
-			});
-			const data = await res.json();
-			return data.candidates[0].content.parts[0].text;
+	if (!chatBtn || !chatWindow) return; // seguridad
+
+	// historial multi-turno (formato para el backend)
+	const chatHistory = [];
+
+	// Abrir / Cerrar ventana
+	chatBtn.onclick = () => {
+		const isOpen = chatWindow.classList.toggle("active");
+		chatWindow.setAttribute("aria-hidden", String(!isOpen));
+		chatBtn.classList.toggle("active", isOpen);
+		if (isOpen) chatInput.focus();
+	};
+	chatClose.onclick = () => {
+		chatWindow.classList.remove("active");
+		chatWindow.setAttribute("aria-hidden", "true");
+		chatBtn.classList.remove("active");
+	};
+
+	// Auto-resize del textarea
+	chatInput.addEventListener("input", () => {
+		chatInput.style.height = "auto";
+		chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + "px";
+	});
+
+	// Enviar con Enter (Shift+Enter = nueva línea)
+	chatInput.addEventListener("keydown", (e) => {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault();
+			sendMessage();
 		}
-		// ... (Interacción con el DOM del chat se mantiene similar)
-	})();
+	});
+	chatSend.onclick = sendMessage;
+
+	/** Agrega un mensaje al DOM del chat */
+	function appendMessage(role, textContent, richContent) {
+		const wrapper = document.createElement("div");
+		wrapper.className = `ai-chat-msg ai-chat-msg--${role === "user" ? "user" : "bot"}`;
+
+		const bubble = document.createElement("div");
+		bubble.className = "ai-chat-msg-bubble";
+
+		// Rich content (tablas / cards) va ANTES del texto
+		if (richContent) {
+			const richDiv = document.createElement("div");
+			richDiv.className = "ai-chat-rich";
+			richDiv.innerHTML = richContent; // HTML generado en el server
+			bubble.appendChild(richDiv);
+		}
+
+		// Texto de la IA (con soporte básico de **negrita** y saltos de línea)
+		if (textContent) {
+			const textDiv = document.createElement("div");
+			textDiv.className = "ai-chat-text";
+			textDiv.innerHTML = formatText(textContent);
+			bubble.appendChild(textDiv);
+		}
+
+		wrapper.appendChild(bubble);
+		chatMsgs.appendChild(wrapper);
+		chatMsgs.scrollTop = chatMsgs.scrollHeight;
+		return wrapper;
+	}
+
+	/** Formato básico: **negrita**, \n → <br> */
+	function formatText(text) {
+		return text
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+			.replace(/\n/g, "<br>");
+	}
+
+	/** Indicador de "escribiendo..." */
+	function showTyping() {
+		const el = document.createElement("div");
+		el.className = "ai-chat-msg ai-chat-msg--bot ai-chat-typing";
+		el.innerHTML = `<div class="ai-chat-msg-bubble">
+			<span class="typing-dot"></span>
+			<span class="typing-dot"></span>
+			<span class="typing-dot"></span>
+		</div>`;
+		chatMsgs.appendChild(el);
+		chatMsgs.scrollTop = chatMsgs.scrollHeight;
+		return el;
+	}
+
+	async function sendMessage() {
+		const prompt = chatInput.value.trim();
+		if (!prompt) return;
+
+		// Mostrar mensaje del usuario
+		appendMessage("user", prompt);
+		chatInput.value = "";
+		chatInput.style.height = "auto";
+		chatSend.disabled = true;
+
+		const typingEl = showTyping();
+
+		try {
+			const res = await fetch("/api/chat", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ prompt, history: chatHistory }),
+			});
+
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			const data = await res.json();
+
+			typingEl.remove();
+
+			const botText = data.response || "Lo siento, no pude procesar tu consulta.";
+			const richContent = data.richContent || "";
+
+			// Mostrar respuesta
+			appendMessage("bot", botText, richContent);
+
+			// Actualizar historial multi-turno
+			chatHistory.push({ role: "user",  parts: [{ text: prompt }] });
+			chatHistory.push({ role: "model", parts: [{ text: botText }] });
+
+			// Mantener historial acotado (últimos 10 turnos = 20 mensajes)
+			if (chatHistory.length > 20) chatHistory.splice(0, chatHistory.length - 20);
+
+		} catch (err) {
+			typingEl.remove();
+			appendMessage("bot", "❌ Hubo un error al conectar con el asistente. Intentá de nuevo en unos segundos.");
+			console.error("[Chat] Error:", err);
+		} finally {
+			chatSend.disabled = false;
+			chatInput.focus();
+		}
+	}
 
 	console.log("%cInstituto INCUYO 🚀", "color:#3b82f6; font-size:20px; font-weight:bold;");
 });

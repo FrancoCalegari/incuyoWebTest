@@ -146,7 +146,7 @@
 }
 
 .project-content {
-    display: grid;
+    
     grid-template-columns: 1fr 1fr;
     gap: var(--space-8);
     padding: var(--space-8);
@@ -188,17 +188,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-}
-
-.media-container.video-playing .project-image {
-    opacity: 0;
-}
-
-.media-container.video-playing .project-video {
-    opacity: 1;
 }
 
 .project-details h4 {

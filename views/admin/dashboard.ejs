@@ -29,9 +29,12 @@
                 <li><a href="#" class="active" data-panel="curriculum"><i class="fas fa-book"></i> Plan de Estudios</a></li>
                 <li><a href="#" data-panel="commitment"><i class="fas fa-heart"></i> Compromiso Social</a></li>
                 <li><a href="#" data-panel="projects"><i class="fas fa-code"></i> Proyectos Alumnos</a></li>
+                <li><a href="#" data-panel="testimonios"><i class="fas fa-video"></i> Testimonios</a></li>
                 <li><a href="#" data-panel="diplomaturas"><i class="fas fa-graduation-cap"></i> Diplomaturas</a></li>
                 <li><a href="#" data-panel="pasantias"><i class="fas fa-building"></i> Pasantías</a></li>
                 <li><a href="#" data-panel="configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="#" data-panel="ia"><i class="fas fa-robot"></i> Estado IA</a></li>
+                <li><a href="#" data-panel="livechat" id="livechatSidebarLink"><i class="fas fa-comments"></i> Chat en Vivo <span class="livechat-badge" id="livechatBadge" style="display:none;"></span></a></li>
             </ul>
 
             <div class="sidebar-bottom">
@@ -262,6 +265,39 @@
                 </div>
             </div>
 
+            <!-- ═══ TESTIMONIOS PANEL ═══ -->
+            <div class="panel" id="panel-testimonios">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-video"></i> Testimonios de Ex Alumnos</h3>
+                        <button class="btn btn-gold" onclick="openTestimonioModal()">
+                            <i class="fas fa-plus"></i> Agregar Testimonio
+                        </button>
+                    </div>
+
+                    <div class="admin-project-grid" id="testimoniosGrid">
+                        <% testimonios.forEach(function(t) { %>
+                            <div class="admin-project-card" data-id="<%= t.id %>" data-testi="<%- encodeURIComponent(JSON.stringify(t)) %>">
+                                <div class="admin-project-card-header">
+                                    <div class="placeholder-photo"><i class="fas fa-user-graduate"></i></div>
+                                    <div>
+                                        <h4><%= t.student_name %></h4>
+                                        <span class="subtitle"><%= t.student_role %></span>
+                                    </div>
+                                    <div style="margin-left: auto;">
+                                        <button class="btn btn-secondary btn-sm" onclick="editTestimonio(this.closest('.admin-project-card'))" title="Editar"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteTestimonio('<%= t.id %>')" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div>
+                                <% if(t.video_url) { %>
+                                    <div style="font-size:0.8rem;color:#888;margin-top:10px;"><i class="fas fa-play-circle"></i> <%= t.video_url %></div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+
             <!-- ═══ DIPLOMATURAS PANEL ═══ -->
             <div class="panel" id="panel-diplomaturas">
                 <div class="panel-section">
@@ -438,6 +474,121 @@
                     </div>
                 </div>
             </div>
+            <!-- ═══ IA PANEL ═══ -->
+            <div class="panel" id="panel-ia">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-robot"></i> Estado de SpiderIA</h3>
+                        <button class="btn btn-gold" onclick="loadSpiderStatus()">
+                            <i class="fas fa-sync-alt" id="spiderRefreshIcon"></i> Actualizar
+                        </button>
+                    </div>
+
+                    <div id="spiderStatusBox">
+                        <div style="text-align:center; padding:3rem; color:#aaa;">
+                            <i class="fas fa-robot" style="font-size:3rem; display:block; margin-bottom:1rem; opacity:0.3;"></i>
+                            <p>Hacé clic en <strong>Actualizar</strong> para consultar el estado de la IA.</p>
+                        </div>
+                    </div>
+
+                    <!-- Selector de modelo activo -->
+                    <div class="spider-model-selector-section" id="modelSelectorSection" style="display:none;">
+                        <h4><i class="fas fa-sliders-h"></i> Modelo activo del chatbot</h4>
+                        <p style="color:#888; font-size:0.88rem; margin-bottom:1rem;">
+                            El modelo seleccionado se usará para todas las consultas del chatbot. La selección se persiste en la base de datos.
+                        </p>
+                        <div id="modelSelectorGrid"></div>
+                        <div style="margin-top:1rem; display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                            <button class="btn btn-gold" onclick="saveModelSelection()" id="saveModelBtn">
+                                <i class="fas fa-save"></i> Guardar selección
+                            </button>
+                            <button class="btn btn-secondary" onclick="selectModelAuto()">
+                                <i class="fas fa-magic"></i> Auto (primer modelo)
+                            </button>
+                            <span id="modelSavedBadge" style="display:none; font-size:0.82rem; color:#059669; font-weight:600;">
+                                <i class="fas fa-check-circle"></i> Guardado
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Prueba de chat -->
+                    <div class="spider-test-section">
+                        <h4><i class="fas fa-vial"></i> Prueba de chat</h4>
+                        <p style="color:#888; font-size:0.88rem; margin-bottom:1rem;">Envía un mensaje directo a SpiderIA y verás la respuesta o el error exacto que devuelve el servidor.</p>
+                        <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:flex-start;">
+                            <textarea id="spiderTestPrompt" rows="2"
+                                placeholder="Ej: Hola, ¿cómo estás?"
+                                style="flex:1; min-width:220px; font-family:inherit; font-size:0.9rem; border:1px solid #ddd; border-radius:8px; padding:0.6rem 0.8rem; resize:vertical;">Hola, ¿cómo estás?</textarea>
+                            <button class="btn btn-gold" onclick="runSpiderTest()" id="spiderTestBtn">
+                                <i class="fas fa-paper-plane"></i> Probar
+                            </button>
+                        </div>
+                        <div id="spiderTestResult" style="margin-top:1.25rem;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ LIVE CHAT PANEL ═══ -->
+            <div class="panel" id="panel-livechat">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-comments"></i> Chat en Vivo</h3>
+                        <div style="display:flex;gap:0.5rem;align-items:center;">
+                            <!-- <button class="btn btn-secondary btn-sm" id="lcInitTablesBtn" onclick="lcInitTables()" title="Inicializar tablas en la DB si es la primera vez">
+                                <i class="fas fa-database"></i> Inicializar BD
+                            </button> -->
+                            <button class="btn btn-gold" onclick="lcLoadSessions()">
+                                <i class="fas fa-sync-alt" id="lcRefreshIcon"></i> Actualizar
+                            </button>
+                        </div>
+                    </div>
+                    <p style="color:#888;font-size:0.88rem;margin-bottom:1.5rem;">
+                        Las sesiones con borde naranja son solicitudes pendientes de asistencia. El panel se actualiza automáticamente cada 10 segundos.
+                    </p>
+
+                    <div id="lcSessionsList">
+                        <div style="text-align:center;padding:3rem;color:#aaa;">
+                            <i class="fas fa-comments" style="font-size:3rem;display:block;margin-bottom:1rem;opacity:0.3;"></i>
+                            <p>Hacé clic en <strong>Actualizar</strong> para cargar las sesiones activas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── Chat Detail Panel ─── -->
+                <div id="lcChatDetail" style="display:none;">
+                    <div class="panel-section" style="border-top:2px solid var(--border-color,#e5e7eb);margin-top:1.5rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                            <h4 style="margin:0;"><i class="fas fa-comment-dots"></i> Conversación <span id="lcDetailSessionId" style="font-size:0.8rem;color:#aaa;font-weight:400;"></span></h4>
+                            <div style="display:flex;gap:0.5rem;">
+                                <button class="btn btn-gold btn-sm" id="lcTakeControlBtn" onclick="lcTakeControl()">
+                                    <i class="fas fa-hand-paper"></i> Tomar control
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="lcCloseSession()">
+                                    <i class="fas fa-times-circle"></i> Cerrar sesión
+                                </button>
+                                <button class="btn btn-secondary btn-sm" style="background-color: #dc3545; color: white; border: none;" onclick="lcDeleteSession()" title="Borrar chat permanentemente">
+                                    <i class="fas fa-trash-alt"></i> Borrar
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="lcHideDetail()">
+                                    <i class="fas fa-chevron-up"></i> Ocultar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Messages area -->
+                        <div class="lc-messages-area" id="lcMessagesArea"></div>
+
+                        <!-- Admin input -->
+                        <div class="lc-admin-input-area" id="lcAdminInputArea">
+                            <textarea id="lcAdminInput" rows="2" placeholder="Escribí tu respuesta al visitante..." style="flex:1;font-family:inherit;font-size:0.9rem;border:1px solid #ddd;border-radius:8px;padding:0.6rem 0.8rem;resize:vertical;"></textarea>
+                            <button class="btn btn-gold" onclick="lcSendAdminMessage()" id="lcAdminSendBtn">
+                                <i class="fas fa-paper-plane"></i> Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -631,6 +782,41 @@
         </div>
     </div>
 
+    <!-- Testimonios Modal -->
+    <div class="modal-overlay" id="testimonioModal">
+        <div class="modal">
+            <h3><i class="fas fa-video"></i> <span id="testimonioModalTitle">Agregar Testimonio</span></h3>
+            <form id="testimonioForm" onsubmit="saveTestimonio(event)">
+                <input type="hidden" id="testimonioId" value="">
+                <div class="form-group">
+                    <label>Nombre del Alumno/Egresado</label>
+                    <input type="text" id="testimonioName" required>
+                </div>
+                <div class="form-group">
+                    <label>Rol o Carrera (Ej: Desarrollador, Egresado 2023)</label>
+                    <input type="text" id="testimonioRole" required>
+                </div>
+                <div class="form-group">
+                    <label>URL del Video o Archivo</label>
+                    <div style="display:flex;gap:10px;">
+                        <input type="text" id="testimonioVideoUrl" placeholder="https://..." style="flex:1;" required>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('testimonioUpload').click()">Subir Archivo</button>
+                    </div>
+                    <input type="file" id="testimonioUpload" style="display:none;" accept="video/*" onchange="uploadTestimonioVideo(event)">
+                    <small id="testimonioUploadStatus" style="display:none; color:var(--primary-gold); margin-top:5px;"></small>
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="testimonioOrder" value="0" min="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('testimonioModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-gold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Diplomatura Modal -->
     <div class="modal-overlay" id="diplomModal">
         <div class="modal">
@@ -739,6 +925,27 @@
                 document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
                 document.getElementById('panel-' + link.dataset.panel).classList.add('active');
                 document.querySelector('.sidebar').classList.remove('open');
+                // Live chat: cargar sesiones automáticamente al navegar al panel
+                if (link.dataset.panel === 'livechat') {
+                    setTimeout(function() {
+                        if (typeof lcLoadSessions === 'function') {
+                            lcLoadSessions();
+                            // Iniciar auto-polling cada 10s
+                            if (typeof lcPollListInterval !== 'undefined' && !lcPollListInterval) {
+                                lcPollListInterval = setInterval(lcLoadSessions, 10000);
+                            }
+                            if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+                                Notification.requestPermission();
+                            }
+                        }
+                    }, 50);
+                } else {
+                    // Detener polling si salimos del panel live chat
+                    if (typeof lcPollListInterval !== 'undefined' && lcPollListInterval) {
+                        clearInterval(lcPollListInterval);
+                        lcPollListInterval = null;
+                    }
+                }
             });
         });
 
@@ -1011,9 +1218,99 @@
         function filterProjects(year, btn) {
             document.querySelectorAll('#panel-projects .filter-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
-            document.querySelectorAll('.admin-project-card').forEach(card => {
+            // Sólo filtrar en el panel-projects, no en testimonios
+            document.querySelectorAll('#panel-projects .admin-project-card').forEach(card => {
                 card.style.display = (year === 'all' || card.dataset.year == year) ? '' : 'none';
             });
+        }
+
+        // ─── TESTIMONIOS ────────────────────────────────────
+        function openTestimonioModal() {
+            document.getElementById('testimonioModalTitle').textContent = 'Agregar Testimonio';
+            document.getElementById('testimonioForm').reset();
+            document.getElementById('testimonioId').value = '';
+            document.getElementById('testimonioUploadStatus').style.display = 'none';
+            document.getElementById('testimonioModal').classList.add('active');
+        }
+
+        function editTestimonio(card) {
+            const data = JSON.parse(decodeURIComponent(card.dataset.testi));
+            document.getElementById('testimonioModalTitle').textContent = 'Editar Testimonio';
+            document.getElementById('testimonioId').value = data.id;
+            document.getElementById('testimonioName').value = data.student_name || '';
+            document.getElementById('testimonioRole').value = data.student_role || '';
+            document.getElementById('testimonioVideoUrl').value = data.video_url || '';
+            document.getElementById('testimonioOrder').value = data.order_index || 0;
+            document.getElementById('testimonioUploadStatus').style.display = 'none';
+            document.getElementById('testimonioModal').classList.add('active');
+        }
+
+        async function saveTestimonio(e) {
+            e.preventDefault();
+            const id = document.getElementById('testimonioId').value;
+            const data = {
+                student_name: document.getElementById('testimonioName').value,
+                student_role: document.getElementById('testimonioRole').value,
+                video_url: document.getElementById('testimonioVideoUrl').value,
+                order_index: document.getElementById('testimonioOrder').value
+            };
+            const url = id ? `/admin/api/testimonios/${id}` : '/admin/api/testimonios';
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if(result.success) {
+                    closeModal('testimonioModal');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch(err) {
+                alert('Error guardando testimonio: ' + err.message);
+            }
+        }
+
+        async function deleteTestimonio(id) {
+            if(!confirm('¿Eliminar este testimonio?')) return;
+            try {
+                const res = await fetch(`/admin/api/testimonios/${id}/delete`, { method: 'POST' });
+                const result = await res.json();
+                if(result.success) location.reload();
+                else alert('Error: ' + result.error);
+            } catch(err) {
+                alert('Error eliminando: ' + err.message);
+            }
+        }
+
+        async function uploadTestimonioVideo(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const status = document.getElementById('testimonioUploadStatus');
+            status.style.display = 'block';
+            status.textContent = 'Subiendo video...';
+
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const res = await fetch('/admin/api/upload', { method: 'POST', body: formData });
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(text);
+                }
+                const data = await res.json();
+                if(data.success && data.file && data.file.url) {
+                    document.getElementById('testimonioVideoUrl').value = data.file.url;
+                    status.textContent = '¡Video subido correctamente!';
+                    setTimeout(() => { status.style.display = 'none'; }, 3000);
+                } else {
+                    status.textContent = 'Error: ' + (data.error || 'Fallo en la subida');
+                }
+            } catch(err) {
+                status.textContent = 'Error: ' + err.message;
+            }
         }
 
         // ─── DIPLOMATURAS ────────────────────────────
@@ -1156,6 +1453,233 @@
                 link.addEventListener('click', function () { if (window.innerWidth <= 768) closeSidebar(); });
             });
         })();
+
+        // ─── SpiderIA Status ──────────────────────────
+        let _selectedModelId = null; // modelo seleccionado en la UI (null = auto)
+
+        async function loadSpiderStatus() {
+            const box = document.getElementById('spiderStatusBox');
+            const icon = document.getElementById('spiderRefreshIcon');
+            const selectorSection = document.getElementById('modelSelectorSection');
+            icon.classList.add('fa-spin');
+            box.innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i><p style="margin-top:0.75rem;">Consultando SpiderIA...</p></div>';
+            selectorSection.style.display = 'none';
+
+            try {
+                // Cargar estado de SpiderIA y modelo activo en paralelo
+                const [data, selectedData] = await Promise.all([
+                    apiCall('/admin/api/spideria-status'),
+                    apiCall('/admin/api/spideria-selected-model'),
+                ]);
+                _selectedModelId = selectedData.model_id ?? null;
+
+                if (!data.ok) {
+                    box.innerHTML = `
+                        <div class="spider-status-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>SpiderIA no disponible</strong>
+                                <p>${data.error || 'No se pudo conectar al servidor de IA.'}</p>
+                                <p style="font-size:0.8rem;color:#aaa;margin-top:0.4rem;">URL consultada: <code>${data.url || '?'}</code></p>
+                            </div>
+                        </div>`;
+                    icon.classList.remove('fa-spin');
+                    return;
+                }
+
+                const models = data.models || [];
+                const usage = data.usage || null;
+
+                let usageHtml = '';
+                if (usage) {
+                    const history = usage.history || [];
+                    const callsToday = usage.calls_today ?? '?';
+                    const quotaDaily = usage.quota_daily ?? null;
+                    const pct = (quotaDaily && quotaDaily !== null) ? Math.round((callsToday / quotaDaily) * 100) : null;
+
+                    // Calcular tokens del día actual
+                    const today = new Date().toISOString().split('T')[0];
+                    const todayRows = history.filter(h => h.usage_date && h.usage_date.startsWith(today));
+                    const tokensToday = todayRows.reduce((acc, h) => acc + (h.tokens_approx || 0), 0);
+
+                    let historyHtml = history.length === 0 ? '<p style="color:#aaa;font-size:0.82rem;">Sin historial disponible.</p>' :
+                        `<table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-top:0.5rem;">
+                            <thead><tr style="color:black;text-align:left;">
+                                <th style="padding:0.3rem 0.5rem;">Fecha</th>
+                                <th style="padding:0.3rem 0.5rem;">Modelo</th>
+                                <th style="padding:0.3rem 0.5rem;">Llamadas</th>
+                                <th style="padding:0.3rem 0.5rem;">Tokens ~</th>
+                            </tr></thead>
+                            <tbody>${history.map(h => `
+                                <tr style="border-top:1px solid #f1f5f9; color:black">
+                                    <td style="padding:0.3rem 0.5rem;color:#64748b;">${h.usage_date ? h.usage_date.split('T')[0] : '?'}</td>
+                                    <td style="padding:0.3rem 0.5rem;font-weight:600;">${h.model || '?'}</td>
+                                    <td style="padding:0.3rem 0.5rem;">${h.call_count}</td>
+                                    <td style="padding:0.3rem 0.5rem;">${(h.tokens_approx || 0).toLocaleString()}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>`;
+
+                    usageHtml = `
+                        <div class="spider-usage-card">
+                            <div class="spider-usage-title"><i class="fas fa-chart-bar"></i> Uso de cuota</div>
+                            <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+                                <div><div style="font-size:1.4rem;font-weight:800;color:#1e293b;">${callsToday}</div><div style="font-size:0.76rem;color:#94a3b8;">llamadas hoy</div></div>
+                                <div><div style="font-size:1.4rem;font-weight:800;color:#1e293b;">${tokensToday.toLocaleString()}</div><div style="font-size:0.76rem;color:#94a3b8;">tokens hoy ~</div></div>
+                                <div><div style="font-size:1.4rem;font-weight:800;color:#1e293b;">${quotaDaily ?? '∞'}</div><div style="font-size:0.76rem;color:#94a3b8;">límite diario</div></div>
+                            </div>
+                            ${pct !== null ? `
+                            <div class="spider-usage-bar-wrap"><div class="spider-usage-bar" style="width:${pct}%"></div></div>
+                            <div class="spider-usage-nums"><span>${callsToday} usados</span><span>${pct}%</span><span>Límite: ${quotaDaily}</span></div>` : ''}
+                            <details style="margin-top:0.75rem;">
+                                <summary style="font-size:0.8rem;color:#94a3b8;cursor:pointer;">Ver historial detallado</summary>
+                                ${historyHtml}
+                            </details>
+                        </div>`;
+                }
+
+                box.innerHTML = `
+                    <div class="spider-online-badge"><i class="fas fa-check-circle"></i> SpiderIA en línea — ${models.length} modelo${models.length !== 1 ? 's' : ''} disponible${models.length !== 1 ? 's' : ''}</div>
+                    <p style="font-size:0.8rem;color:#aaa;margin-bottom:1rem;">URL: <code>${data.url || '?'}</code></p>
+                    ${usageHtml}`;
+
+                // Renderizar el selector de modelo
+                renderModelSelector(models, _selectedModelId);
+                selectorSection.style.display = '';
+
+            } catch (err) {
+                box.innerHTML = `<div class="spider-status-error"><i class="fas fa-exclamation-triangle"></i><div><strong>Error</strong><p>${err.message}</p></div></div>`;
+            }
+
+            icon.classList.remove('fa-spin');
+        }
+
+        function renderModelSelector(models, activeModelId) {
+            const grid = document.getElementById('modelSelectorGrid');
+            const isAuto = activeModelId === null;
+            grid.innerHTML = models.map(m => {
+                const isActive = m.id == activeModelId;
+                return `
+                    <div class="spider-model-card ${isActive ? 'spider-model-card--active' : ''}" onclick="selectModel(${m.id})" style="cursor:pointer;" data-model-id="${m.id}">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="spider-model-status"><i class="fas fa-circle"></i> Disponible</div>
+                            ${isActive ? '<span class="spider-active-badge"><i class="fas fa-check"></i> ACTIVO</span>' : ''}
+                        </div>
+                        <div class="spider-model-name">${m.name || m.model || m.id || JSON.stringify(m)}</div>
+                        <div class="spider-model-meta">
+                            <span><i class="fas fa-hashtag"></i> ID: <code>${m.id ?? '—'}</code></span>
+                            ${m.type ? `<span><i class="fas fa-tag"></i> ${m.type}</span>` : ''}
+                            ${m.context_length ? `<span><i class="fas fa-text-width"></i> Ctx: ${m.context_length.toLocaleString()}</span>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function selectModel(modelId) {
+            _selectedModelId = modelId;
+            document.querySelectorAll('#modelSelectorGrid .spider-model-card').forEach(card => {
+                const id = parseInt(card.dataset.modelId, 10);
+                const isActive = id === modelId;
+                card.classList.toggle('spider-model-card--active', isActive);
+                // Actualizar badge
+                const existingBadge = card.querySelector('.spider-active-badge');
+                if (isActive && !existingBadge) {
+                    card.querySelector('.spider-model-status').insertAdjacentHTML('afterend', '<span class="spider-active-badge"><i class="fas fa-check"></i> ACTIVO</span>');
+                } else if (!isActive && existingBadge) {
+                    existingBadge.remove();
+                }
+            });
+        }
+
+        function selectModelAuto() {
+            _selectedModelId = null;
+            document.querySelectorAll('#modelSelectorGrid .spider-model-card').forEach(card => {
+                card.classList.remove('spider-model-card--active');
+                card.querySelector('.spider-active-badge')?.remove();
+            });
+        }
+
+        async function saveModelSelection() {
+            const btn = document.getElementById('saveModelBtn');
+            const badge = document.getElementById('modelSavedBadge');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            try {
+                await apiCall('/admin/api/spideria-selected-model', 'POST', { model_id: _selectedModelId });
+                badge.style.display = 'inline-flex';
+                showToast(_selectedModelId !== null
+                    ? `✅ Modelo ID ${_selectedModelId} seleccionado y guardado`
+                    : '✅ Modo auto activado (usar primer modelo disponible)');
+                setTimeout(() => badge.style.display = 'none', 4000);
+            } catch (err) {
+                showToast('Error al guardar modelo: ' + err.message, 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar selección';
+        }
+
+        // Auto-cargar cuando se abre el panel IA
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (link.dataset.panel === 'ia') loadSpiderStatus();
+            });
+        });
+
+
+        // ─── SpiderIA Test ──────────────────────────
+        async function runSpiderTest() {
+            const prompt = document.getElementById('spiderTestPrompt').value.trim();
+            const resultBox = document.getElementById('spiderTestResult');
+            const btn = document.getElementById('spiderTestBtn');
+            if (!prompt) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            resultBox.innerHTML = '<div style="color:#aaa;font-size:0.88rem;"><i class="fas fa-spinner fa-spin"></i> Esperando respuesta de SpiderIA…</div>';
+
+            try {
+                const data = await apiCall('/admin/api/spideria-test', 'POST', { prompt });
+
+                const badge = data.ok
+                    ? `<span class="st-badge st-ok"><i class="fas fa-check-circle"></i> Éxito</span>`
+                    : `<span class="st-badge st-err"><i class="fas fa-times-circle"></i> Error</span>`;
+
+                const metaItems = [
+                    data.url       ? `<span><i class="fas fa-link"></i> ${data.url}</span>` : '',
+                    data.modelId   ? `<span><i class="fas fa-cube"></i> Modelo ID: <code>${data.modelId}</code></span>` : '',
+                    data.httpStatus ? `<span><i class="fas fa-server"></i> HTTP ${data.httpStatus}</span>` : '',
+                    data.elapsed_ms !== null ? `<span><i class="fas fa-clock"></i> ${data.elapsed_ms} ms</span>` : '',
+                ].filter(Boolean).join('');
+
+                let body = '';
+                if (data.ok) {
+                    body = `<div class="st-response-box">${data.response.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>`;
+                } else {
+                    body = `<div class="st-error-box"><i class="fas fa-exclamation-triangle"></i> ${data.error || 'Error desconocido'}</div>`;
+                }
+
+                const rawToggleId = 'stRaw_' + Date.now();
+                const rawSection = data.rawJson
+                    ? `<details style="margin-top:0.75rem;">
+                        <summary style="font-size:0.8rem;color:#94a3b8;cursor:pointer;">Ver JSON crudo</summary>
+                        <pre class="st-raw">${JSON.stringify(data.rawJson, null, 2).replace(/</g,'&lt;')}</pre>
+                       </details>`
+                    : '';
+
+                resultBox.innerHTML = `
+                    <div class="st-result">
+                        <div class="st-result-header">${badge}<div class="st-meta">${metaItems}</div></div>
+                        ${body}
+                        ${rawSection}
+                    </div>`;
+
+            } catch (err) {
+                resultBox.innerHTML = `<div class="st-error-box"><i class="fas fa-exclamation-triangle"></i> Error de red: ${err.message}</div>`;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Probar';
+        }
     </script>
 
     <style>
@@ -1194,6 +1718,159 @@
             font-size: 0.8rem; padding: 0.4rem 0.75rem;
         }
         .btn-outline-info:hover { background: #3b82f6; color: white; }
+
+        /* ── SpiderIA Status Panel ── */
+        .spider-online-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;
+            border-radius: 99px; padding: 0.4rem 1rem; font-weight: 600;
+            font-size: 0.9rem; margin-bottom: 1.5rem;
+        }
+        .spider-online-badge i { color: #10b981; }
+        .spider-status-error {
+            display: flex; align-items: flex-start; gap: 1rem;
+            background: #fff5f5; border: 1px solid #fca5a5; border-radius: 10px;
+            padding: 1.25rem 1.5rem; color: #b91c1c;
+        }
+        .spider-status-error i { font-size: 1.5rem; margin-top: 0.15rem; flex-shrink: 0; }
+        .spider-status-error p { margin: 0.25rem 0 0; font-size: 0.9rem; color: #991b1b; }
+        .spider-models-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem; margin-top: 0.5rem;
+        }
+        .spider-model-card {
+            background: #f8faff; border: 1px solid #e0e7ff;
+            border-radius: 12px; padding: 1.1rem 1.25rem;
+            transition: box-shadow 0.2s;
+        }
+        .spider-model-card:hover { box-shadow: 0 4px 16px rgba(79,110,247,0.12); }
+        .spider-model-status {
+            font-size: 0.78rem; color: #10b981; font-weight: 600;
+            margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .spider-model-status i { font-size: 0.6rem; }
+        .spider-model-name {
+            font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 0.6rem;
+            word-break: break-all;
+        }
+        .spider-model-meta {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .spider-model-meta span {
+            font-size: 0.78rem; color: #64748b; background: #e8edfb;
+            border-radius: 6px; padding: 0.2rem 0.55rem;
+            display: flex; align-items: center; gap: 0.3rem;
+        }
+        .spider-model-meta code { font-size: 0.78rem; color: #4f6ef7; }
+        .spider-usage-card {
+            background: #fafafa; border: 1px solid #e5e7eb;
+            border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem;
+        }
+        .spider-usage-title {
+            font-weight: 600; font-size: 0.88rem; color: #374151;
+            margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .spider-usage-bar-wrap {
+            background: #e5e7eb; border-radius: 99px; height: 8px;
+            overflow: hidden; margin-bottom: 0.4rem;
+        }
+        .spider-usage-bar {
+            height: 100%; background: linear-gradient(90deg, #4f6ef7, #c39215);
+            border-radius: 99px; transition: width 0.4s ease;
+            min-width: 2px;
+        }
+        .spider-usage-nums {
+            display: flex; justify-content: space-between;
+            font-size: 0.8rem; color: #6b7280;
+        }
+        .spider-usage-raw {
+            margin-top: 0.75rem; font-size: 0.75rem; color: #94a3b8;
+            background: #f1f5f9; border-radius: 6px; padding: 0.5rem;
+            overflow-x: auto; display: none;
+        }
+        .spider-usage-card:hover .spider-usage-raw { display: block; }
+
+        /* ── SpiderIA Test Panel ── */
+        .spider-test-section {
+            margin-top: 2rem; padding-top: 1.5rem;
+            border-top: 2px solid #f0f4ff;
+        }
+        .spider-test-section h4 {
+            margin-bottom: 0.4rem; font-size: 1rem;
+            color: var(--text-primary, #1e293b);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .st-result { margin-top: 0; }
+        .st-result-header {
+            display: flex; align-items: center; gap: 0.75rem;
+            flex-wrap: wrap; margin-bottom: 0.75rem;
+        }
+        .st-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            border-radius: 99px; padding: 0.3rem 0.85rem;
+            font-size: 0.82rem; font-weight: 700;
+        }
+        .st-ok  { background:#ecfdf5; color:#059669; border:1px solid #a7f3d0; }
+        .st-err { background:#fff5f5; color:#b91c1c; border:1px solid #fca5a5; }
+        .st-meta {
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .st-meta span {
+            font-size: 0.78rem; background:#f1f5f9; color:#64748b;
+            border-radius: 6px; padding: 0.2rem 0.55rem;
+            display: flex; align-items: center; gap: 0.3rem;
+        }
+        .st-meta code { font-size: 0.78rem; color: #4f6ef7; }
+        .st-response-box {
+            background: #f0fdf4; border: 1px solid #bbf7d0;
+            border-radius: 10px; padding: 1rem 1.25rem;
+            color: #166534; font-size: 0.92rem; line-height: 1.6;
+            white-space: pre-wrap; word-break: break-word;
+        }
+        .st-error-box {
+            background: #fff5f5; border: 1px solid #fca5a5;
+            border-radius: 10px; padding: 1rem 1.25rem;
+            color: #991b1b; font-size: 0.88rem; line-height: 1.5;
+            display: flex; align-items: flex-start; gap: 0.6rem;
+            word-break: break-all;
+        }
+        .st-error-box i { flex-shrink: 0; margin-top: 0.1rem; }
+        .st-raw {
+            margin-top: 0.5rem; font-size: 0.74rem; color: #94a3b8;
+            background: #f8fafc; border-radius: 6px; padding: 0.6rem;
+            overflow-x: auto; max-height: 260px; white-space: pre;
+        }
+
+        /* ── Model Selector ── */
+        .spider-model-selector-section {
+            margin-top: 2rem; padding-top: 1.5rem;
+            border-top: 2px solid #f0f4ff;
+        }
+        .spider-model-selector-section h4 {
+            margin-bottom: 0.4rem; font-size: 1rem;
+            color: var(--text-primary, #1e293b);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        #modelSelectorGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem; margin-top: 0.5rem;
+        }
+        .spider-model-card--active {
+            border-color: #4f6ef7 !important;
+            background: #f0f4ff !important;
+            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.15);
+        }
+        .spider-active-badge {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            background: #4f6ef7; color: white;
+            font-size: 0.72rem; font-weight: 700;
+            border-radius: 99px; padding: 0.2rem 0.6rem;
+        }
     </style>
+
+    <!-- LIVE CHAT ADMIN SCRIPT -->
+    <script src="/js/livechat-admin.js"></script>
+
 </body>
 </html>

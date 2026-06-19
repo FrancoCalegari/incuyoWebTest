@@ -6,8 +6,20 @@ const router = express.Router();
 const multer = require('multer');
 const { query, uploadFile, deleteFile } = require('../lib/spider');
 const { requireAdmin } = require('../middleware/auth');
+const { invalidateDbContextCache, setPreferredModel, getPreferredModel } = require('../lib/chatbot');
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+const path = require('path');
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: path.join(__dirname, '../public/uploads'),
+        filename: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + ext);
+        }
+    }),
+    limits: { fileSize: 500 * 1024 * 1024 } // 500MB
+});
+const fs = require('fs');
 
 // ─── AUTH ────────────────────────────────────────────
 router.get('/login', (req, res) => {
@@ -32,7 +44,7 @@ router.get('/logout', (req, res) => {
 // ─── DASHBOARD ───────────────────────────────────────
 router.get('/', requireAdmin, async (req, res) => {
     try {
-        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult] = await Promise.all([
+        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult, testResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM student_projects ORDER BY year, order_index'),
@@ -40,6 +52,7 @@ router.get('/', requireAdmin, async (req, res) => {
             query('SELECT * FROM pasantias_empresas ORDER BY order_index').catch(() => ({ result: [] })),
             query("SELECT * FROM configuracion").catch(() => ({ result: [] })),
             query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
+            query('SELECT * FROM testimonios ORDER BY order_index').catch(() => ({ result: [] })),
         ]);
 
         const curriculum = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
@@ -49,6 +62,7 @@ router.get('/', requireAdmin, async (req, res) => {
         const pasantias = pasResult?.result || pasResult?.results || (Array.isArray(pasResult) ? pasResult : []);
         const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
         const certificaciones = certResult?.result || certResult?.results || (Array.isArray(certResult) ? certResult : []);
+        const testimonios = testResult?.result || testResult?.results || (Array.isArray(testResult) ? testResult : []);
 
         // Parse tech_tags
         projects.forEach((p) => {
@@ -63,10 +77,10 @@ router.get('/', requireAdmin, async (req, res) => {
         let horario = null;
         try { horario = JSON.parse(config.horario || 'null'); } catch (e) { horario = null; }
 
-        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones });
+        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios });
     } catch (err) {
-        console.error('Dashboard error:', err);
-        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [] });
+        console.error('Error load dashboard:', err);
+        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [] });
     }
 });
 
@@ -74,12 +88,21 @@ router.get('/', requireAdmin, async (req, res) => {
 router.post('/api/upload', requireAdmin, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No se envió archivo' });
-        const result = await uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype);
-        result.url = `/admin/api/img/${result.id}`;
+        console.log(`Uploaded local file: ${req.file.originalname}, Size: ${req.file.size}, Path: ${req.file.path}`);
+        
+        // El archivo ya está guardado en public/uploads por multer.
+        const localUrl = `/uploads/${req.file.filename}`;
+        
+        const result = {
+            id: req.file.filename,
+            url: localUrl,
+            name: req.file.originalname
+        };
+        
         res.json({ success: true, file: result });
     } catch (err) {
         console.error('Upload error:', err);
-        res.status(500).json({ error: 'Error al subir archivo' });
+        res.status(500).json({ error: 'Error al subir archivo localmente' });
     }
 });
 
@@ -87,13 +110,18 @@ router.post('/api/upload', requireAdmin, upload.single('file'), async (req, res)
 const fetch = require('node-fetch');
 router.get('/api/img/:fileId', async (req, res) => {
     try {
-        const API_URL = process.env.SPIDER_API_URL;
+        const API_URL = process.env.SPIDER_API_URL ? process.env.SPIDER_API_URL.replace(/\/+$/, '') : '';
         const API_KEY = process.env.SPIDER_API_KEY;
         const imgRes = await fetch(`${API_URL}/storage/files/${req.params.fileId}`, {
             headers: { 'X-API-KEY': API_KEY }
         });
         if (!imgRes.ok) return res.status(imgRes.status).send('Image not found');
-        res.set('Content-Type', imgRes.headers.get('content-type') || 'image/jpeg');
+        let contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+        const contentDisposition = imgRes.headers.get('content-disposition') || '';
+        if (contentDisposition.toLowerCase().includes('.mp4')) contentType = 'video/mp4';
+        else if (contentDisposition.toLowerCase().includes('.webm')) contentType = 'video/webm';
+        
+        res.set('Content-Type', contentType);
         res.set('Cache-Control', 'public, max-age=86400');
         imgRes.body.pipe(res);
     } catch (err) {
@@ -134,6 +162,14 @@ router.post('/api/init-tables', requireAdmin, async (req, res) => {
             nombre VARCHAR(255) NOT NULL,
             order_index INT DEFAULT 0
         )`).catch(() => {});
+        // Crear tabla de testimonios
+        await query(`CREATE TABLE testimonios (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            student_name VARCHAR(255) NOT NULL,
+            student_role VARCHAR(255) NOT NULL,
+            video_url TEXT,
+            order_index INT DEFAULT 0
+        )`).catch(() => {});
         // Insert default horario if not exists
         await query(`INSERT IGNORE INTO configuracion (clave, valor) VALUES ('horario', '${JSON.stringify([
             { dia: 'Lunes', abierto: true, apertura: '08:00', cierre: '20:00' },
@@ -166,6 +202,7 @@ router.post('/api/curriculum', requireAdmin, async (req, res) => {
         const { year, subject_name, order_index, semestre } = req.body;
         const sem = semestre || null;
         await query(`INSERT INTO curriculum (year, subject_name, order_index, semestre) VALUES (${parseInt(year)}, ?, ${parseInt(order_index || 0)}, ?)`, [subject_name, sem]);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -177,6 +214,7 @@ router.put('/api/curriculum/:id', requireAdmin, async (req, res) => {
         const { year, subject_name, order_index, semestre } = req.body;
         const sem = semestre || null;
         await query(`UPDATE curriculum SET year=${parseInt(year)}, subject_name=?, order_index=${parseInt(order_index || 0)}, semestre=? WHERE id=${parseInt(req.params.id)}`, [subject_name, sem]);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -186,6 +224,7 @@ router.put('/api/curriculum/:id', requireAdmin, async (req, res) => {
 router.delete('/api/curriculum/all', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM curriculum`);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -195,6 +234,7 @@ router.delete('/api/curriculum/all', requireAdmin, async (req, res) => {
 router.delete('/api/curriculum/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM curriculum WHERE id=${parseInt(req.params.id)}`);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -220,6 +260,7 @@ router.post('/api/certificaciones', requireAdmin, async (req, res) => {
         const total = countResult?.result?.[0]?.total || countResult?.results?.[0]?.total || 0;
         if (total >= 10) return res.status(400).json({ error: `Límite de 10 certificaciones por año alcanzado para el año ${yr}` });
         await query(`INSERT INTO certificaciones_laborales (year, nombre, order_index) VALUES (${yr}, ?, ${parseInt(order_index || 0)})`, [nombre]);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -230,6 +271,7 @@ router.put('/api/certificaciones/:id', requireAdmin, async (req, res) => {
     try {
         const { year, nombre, order_index } = req.body;
         await query(`UPDATE certificaciones_laborales SET year=${parseInt(year)}, nombre=?, order_index=${parseInt(order_index || 0)} WHERE id=${parseInt(req.params.id)}`, [nombre]);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -239,6 +281,7 @@ router.put('/api/certificaciones/:id', requireAdmin, async (req, res) => {
 router.delete('/api/certificaciones/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM certificaciones_laborales WHERE id=${parseInt(req.params.id)}`);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -342,6 +385,43 @@ router.delete('/api/projects/:id', requireAdmin, async (req, res) => {
     }
 });
 
+// ─── TESTIMONIOS CRUD ────────────────────────────────
+
+router.post('/api/testimonios', requireAdmin, async (req, res) => {
+    try {
+        const { student_name, student_role, video_url, order_index } = req.body;
+        await query(
+            `INSERT INTO testimonios (student_name, student_role, video_url, order_index) VALUES (?, ?, ?, ?)`,
+            [student_name, student_role, video_url || '', parseInt(order_index || 0)]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/api/testimonios/:id', requireAdmin, async (req, res) => {
+    try {
+        const { student_name, student_role, video_url, order_index } = req.body;
+        await query(
+            `UPDATE testimonios SET student_name=?, student_role=?, video_url=?, order_index=? WHERE id=?`,
+            [student_name, student_role, video_url || '', parseInt(order_index || 0), parseInt(req.params.id)]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/api/testimonios/:id/delete', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM testimonios WHERE id=?`, [parseInt(req.params.id)]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ─── DIPLOMATURAS CRUD ───────────────────────────────
 router.get('/api/diplomaturas', requireAdmin, async (req, res) => {
     try {
@@ -359,6 +439,7 @@ router.post('/api/diplomaturas', requireAdmin, async (req, res) => {
             `INSERT INTO diplomaturas (nombre, descripcion_breve, descripcion_completa, imagen_url, fecha_inicio, whatsapp_msg, order_index, destacado) VALUES (?, ?, ?, ?, ?, ?, ${parseInt(order_index || 0)}, ${destacado ? 1 : 0})`,
             [nombre, descripcion_breve || '', descripcion_completa || '', imagen_url || '', fecha_inicio || '', whatsapp_msg || '']
         );
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -372,6 +453,7 @@ router.put('/api/diplomaturas/:id', requireAdmin, async (req, res) => {
             `UPDATE diplomaturas SET nombre=?, descripcion_breve=?, descripcion_completa=?, imagen_url=?, fecha_inicio=?, whatsapp_msg=?, order_index=${parseInt(order_index || 0)}, destacado=${destacado ? 1 : 0} WHERE id=${parseInt(req.params.id)}`,
             [nombre, descripcion_breve || '', descripcion_completa || '', imagen_url || '', fecha_inicio || '', whatsapp_msg || '']
         );
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -381,6 +463,7 @@ router.put('/api/diplomaturas/:id', requireAdmin, async (req, res) => {
 router.delete('/api/diplomaturas/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM diplomaturas WHERE id=${parseInt(req.params.id)}`);
+        invalidateDbContextCache();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -456,4 +539,292 @@ router.put('/api/configuracion', requireAdmin, async (req, res) => {
     }
 });
 
+// ─── SPIDERIA STATUS ─────────────────────────────────
+router.get('/api/spideria-status', requireAdmin, async (req, res) => {
+    const SPIDER_IA_URL = process.env.SPIDER_API_URL ? process.env.SPIDER_API_URL.replace(/\/+$/, '') : '';
+    const API_KEY = process.env.SPIDER_API_KEY;
+    try {
+        const [modelsRes, usageRes] = await Promise.all([
+            fetch(`${SPIDER_IA_URL}/ia/models`, {
+                headers: { 'X-API-KEY': API_KEY },
+                signal: AbortSignal.timeout(6000),
+            }),
+            fetch(`${SPIDER_IA_URL}/ia/usage`, {
+                headers: { 'X-API-KEY': API_KEY },
+                signal: AbortSignal.timeout(6000),
+            }).catch(() => null),
+        ]);
+
+        if (!modelsRes.ok) {
+            return res.json({ ok: false, error: `HTTP ${modelsRes.status}`, models: [], usage: null, url: SPIDER_IA_URL });
+        }
+
+        const modelsData = await modelsRes.json();
+        const models = modelsData.models || modelsData || [];
+
+        let usage = null;
+        if (usageRes && usageRes.ok) {
+            usage = await usageRes.json();
+        }
+
+        res.json({ ok: true, models, usage, url: SPIDER_IA_URL });
+    } catch (err) {
+        res.json({ ok: false, error: err.message, models: [], usage: null, url: SPIDER_IA_URL });
+    }
+});
+
+// ─── SPIDERIA TEST ───────────────────────────────────
+router.post('/api/spideria-test', requireAdmin, async (req, res) => {
+    const SPIDER_IA_URL = process.env.SPIDER_API_URL ? process.env.SPIDER_API_URL.replace(/\/+$/, '') : '';
+    const API_KEY = process.env.SPIDER_API_KEY;
+    const { prompt = 'Hola, ¿cómo estás?' } = req.body;
+
+    const t0 = Date.now();
+    const result = { ok: false, url: SPIDER_IA_URL, prompt, modelId: null, elapsed_ms: null, response: null, rawJson: null, error: null, httpStatus: null };
+
+    try {
+        // 1. Obtener modelos
+        const modelsRes = await fetch(`${SPIDER_IA_URL}/ia/models`, {
+            headers: { 'X-API-KEY': API_KEY },
+            signal: AbortSignal.timeout(6000),
+        });
+        result.httpStatus = modelsRes.status;
+        if (!modelsRes.ok) {
+            const body = await modelsRes.text().catch(() => '');
+            result.error = `GET /ia/models → HTTP ${modelsRes.status}: ${body}`;
+            result.elapsed_ms = Date.now() - t0;
+            return res.json(result);
+        }
+
+        const modelsData = await modelsRes.json();
+        const models = modelsData.models || modelsData || [];
+        if (!models.length) {
+            result.error = 'GET /ia/models → OK pero sin modelos disponibles';
+            result.elapsed_ms = Date.now() - t0;
+            return res.json(result);
+        }
+        result.modelId = models[0].id;
+
+        // 2. Enviar mensaje de prueba
+        const chatRes = await fetch(`${SPIDER_IA_URL}/ia/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-KEY': API_KEY },
+            body: JSON.stringify({
+                model_id: result.modelId,
+                messages: [
+                    { role: 'system', content: 'Eres un asistente útil. Responde de forma breve.' },
+                    { role: 'user', content: prompt },
+                ],
+            }),
+            signal: AbortSignal.timeout(15000),
+        });
+        result.httpStatus = chatRes.status;
+
+        const rawBody = await chatRes.text();
+        let parsedJson = null;
+        try { parsedJson = JSON.parse(rawBody); } catch (_) { /* not JSON */ }
+        result.rawJson = parsedJson || rawBody;
+
+        if (!chatRes.ok) {
+            result.error = `POST /ia/chat → HTTP ${chatRes.status}: ${rawBody}`;
+            result.elapsed_ms = Date.now() - t0;
+            return res.json(result);
+        }
+
+        const text = parsedJson?.message?.content || parsedJson?.choices?.[0]?.message?.content;
+        if (!text) {
+            result.error = 'POST /ia/chat → HTTP 200 pero sin contenido en la respuesta';
+            result.elapsed_ms = Date.now() - t0;
+            return res.json(result);
+        }
+
+        result.ok = true;
+        result.response = text;
+        result.elapsed_ms = Date.now() - t0;
+        res.json(result);
+
+    } catch (err) {
+        result.error = err.message;
+        result.elapsed_ms = Date.now() - t0;
+        res.json(result);
+    }
+});
+
+// ─── MODELO IA SELECCIONADO ───────────────────────────────────────
+
+/** Al arrancar el servidor, carga el modelo guardado en la DB */
+(async () => {
+    try {
+        const result = await query("SELECT valor FROM configuracion WHERE clave='spideria_model_id'");
+        const rows = result?.result || result?.results || (Array.isArray(result) ? result : []);
+        if (rows[0]?.valor) {
+            const savedId = parseInt(rows[0].valor, 10);
+            if (!isNaN(savedId)) {
+                setPreferredModel(savedId);
+                console.log(`🔧 [Admin] Modelo SpiderIA restaurado desde DB: ${savedId}`);
+            }
+        }
+    } catch (_) { /* ignorar si la tabla no existe aún */ }
+})();
+
+/** GET /admin/api/spideria-selected-model — modelo activo actual */
+router.get('/api/spideria-selected-model', requireAdmin, (req, res) => {
+    res.json({ model_id: getPreferredModel() });
+});
+
+/** POST /admin/api/spideria-selected-model — cambia el modelo activo */
+router.post('/api/spideria-selected-model', requireAdmin, async (req, res) => {
+    const { model_id } = req.body;
+    const modelId = model_id !== null && model_id !== undefined ? parseInt(model_id, 10) : null;
+
+    if (model_id !== null && isNaN(modelId)) {
+        return res.status(400).json({ error: 'model_id debe ser un número entero o null (auto)' });
+    }
+
+    // Aplicar en memoria de inmediato
+    setPreferredModel(modelId);
+
+    // Persistir en la DB para sobrevivir reinicios del servidor
+    try {
+        if (modelId !== null) {
+            await query(
+                `INSERT INTO configuracion (clave, valor) VALUES ('spideria_model_id', ?) ON DUPLICATE KEY UPDATE valor=?`,
+                [String(modelId), String(modelId)]
+            );
+        } else {
+            // null = auto: borrar preferencia guardada
+            await query(`DELETE FROM configuracion WHERE clave='spideria_model_id'`).catch(() => {});
+        }
+    } catch (err) {
+        console.warn('[Admin] No se pudo persistir model_id en DB:', err.message);
+        // No es fatal, el cambio en memoria ya fue aplicado
+    }
+
+    console.log(`✅ [Admin] Modelo SpiderIA cambiado a: ${modelId ?? 'auto'}`);
+    res.json({ success: true, model_id: modelId });
+});
+
+// ─── LIVE CHAT — Admin endpoints ─────────────────────────────────────────────
+
+/** POST /admin/api/init-chat-tables — crea las tablas de live chat en la DB */
+router.post('/api/init-chat-tables', requireAdmin, async (req, res) => {
+    try {
+        await query(`CREATE TABLE IF NOT EXISTS chat_sessions (
+            id VARCHAR(36) PRIMARY KEY,
+            session_key VARCHAR(64) UNIQUE NOT NULL,
+            status ENUM('waiting','active','closed') DEFAULT 'waiting',
+            admin_name VARCHAR(100) DEFAULT NULL,
+            created_at DATETIME DEFAULT NOW(),
+            expires_at DATETIME NOT NULL
+        )`);
+        await query(`CREATE TABLE IF NOT EXISTS chat_messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            session_id VARCHAR(36) NOT NULL,
+            role ENUM('user','bot','admin') NOT NULL,
+            content TEXT NOT NULL,
+            created_at DATETIME DEFAULT NOW(),
+            INDEX idx_session (session_id),
+            FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE
+        )`);
+        res.json({ success: true, message: 'Tablas de live chat creadas' });
+    } catch (err) {
+        // Ignorar si ya existen
+        if (err.message && err.message.includes('already exists')) {
+            return res.json({ success: true, message: 'Tablas ya existían' });
+        }
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** GET /admin/api/chat-sessions — lista sesiones activas (no expiradas, no cerradas) */
+router.get('/api/chat-sessions', requireAdmin, async (req, res) => {
+    try {
+        const result = await query(
+            `SELECT id, session_key, status, admin_name, created_at, expires_at,
+             (SELECT COUNT(*) FROM chat_messages WHERE session_id=chat_sessions.id) as msg_count
+             FROM chat_sessions
+             WHERE expires_at > NOW()
+             ORDER BY FIELD(status,'waiting','active','closed'), created_at DESC
+             LIMIT 50`
+        );
+        const rows = result?.result || result?.results || (Array.isArray(result) ? result : []);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** GET /admin/api/chat-sessions/:id/messages — mensajes de una sesión */
+router.get('/api/chat-sessions/:id/messages', requireAdmin, async (req, res) => {
+    try {
+        const result = await query(
+            `SELECT id, role, content, created_at FROM chat_messages WHERE session_id=? ORDER BY id ASC`,
+            [req.params.id]
+        );
+        const messages = result?.result || result?.results || (Array.isArray(result) ? result : []);
+
+        const sessResult = await query(`SELECT * FROM chat_sessions WHERE id=?`, [req.params.id]);
+        const sessRows = sessResult?.result || sessResult?.results || (Array.isArray(sessResult) ? sessResult : []);
+
+        res.json({ messages, session: sessRows[0] || null });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** POST /admin/api/chat-sessions/:id/take-control — admin toma el control */
+router.post('/api/chat-sessions/:id/take-control', requireAdmin, async (req, res) => {
+    try {
+        const adminName = process.env.ADMIN_USER || 'Admin';
+        await query(
+            `UPDATE chat_sessions SET status='active', admin_name=? WHERE id=?`,
+            [adminName, req.params.id]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** POST /admin/api/chat-sessions/:id/send — admin envía mensaje */
+router.post('/api/chat-sessions/:id/send', requireAdmin, async (req, res) => {
+    try {
+        const { content } = req.body;
+        if (!content || !content.trim()) return res.status(400).json({ error: 'content requerido' });
+
+        // Asegurar que la sesión está activa
+        await query(`UPDATE chat_sessions SET status='active' WHERE id=? AND status='waiting'`, [req.params.id]);
+
+        await query(
+            `INSERT INTO chat_messages (session_id, role, content, created_at) VALUES (?, 'admin', ?, NOW())`,
+            [req.params.id, content.substring(0, 4000)]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** POST /admin/api/chat-sessions/:id/close — admin cierra la sesión */
+router.post('/api/chat-sessions/:id/close', requireAdmin, async (req, res) => {
+    try {
+        await query(`UPDATE chat_sessions SET status='closed' WHERE id=?`, [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** POST /admin/api/chat-sessions/:id/delete — admin elimina la sesión y sus mensajes */
+router.post('/api/chat-sessions/:id/delete', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM chat_sessions WHERE id=?`, [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;
+
+

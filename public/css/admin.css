@@ -663,3 +663,204 @@ body {
     color: var(--primary-gold);
     border-color: rgba(195, 146, 21, 0.3);
 }
+/* ─── LIVE CHAT ADMIN STYLES ─── */
+
+/* Badge en sidebar */
+.livechat-badge {
+    background: #e53e3e;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 99px;
+    padding: 0.15rem 0.5rem;
+    margin-left: 0.35rem;
+    vertical-align: middle;
+    animation: lc-pulse-badge 2s infinite;
+}
+
+@keyframes lc-pulse-badge {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
+/* Grid de sesiones */
+.lc-sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.lc-session-card {
+    border: 2px solid var(--border-color, #e5e7eb);
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-card, #fff);
+}
+
+.lc-session-card:hover {
+    border-color: #4f6ef7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(79,110,247,0.15);
+}
+
+/* Sesión esperando — borde naranja pulsante */
+.lc-session-card--waiting {
+    border-color: #f97316;
+    animation: lc-pulse-border 1.8s ease-in-out infinite;
+    background: linear-gradient(135deg, rgba(249,115,22,0.04), rgba(249,115,22,0.01));
+}
+
+@keyframes lc-pulse-border {
+    0%, 100% { border-color: #f97316; box-shadow: 0 0 0 0 rgba(249,115,22,0.4); }
+    50%       { border-color: #ea580c; box-shadow: 0 0 0 6px rgba(249,115,22,0); }
+}
+
+/* Sesión activa */
+.lc-session-card--active {
+    border-color: #10b981;
+    background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(16,185,129,0.01));
+}
+
+.lc-session-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.lc-status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.65rem;
+    border-radius: 99px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.lc-status-badge--waiting {
+    background: rgba(249,115,22,0.15);
+    color: #c2410c;
+    border: 1px solid rgba(249,115,22,0.3);
+}
+
+.lc-status-badge--active {
+    background: rgba(16,185,129,0.15);
+    color: #047857;
+    border: 1px solid rgba(16,185,129,0.3);
+}
+
+.lc-status-badge--closed {
+    background: rgba(100,116,139,0.1);
+    color: #64748b;
+    border: 1px solid rgba(100,116,139,0.2);
+}
+
+.lc-session-msgs {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.lc-session-card__id {
+    font-size: 0.75rem;
+    color: #999;
+    font-family: monospace;
+    margin-bottom: 0.4rem;
+}
+
+.lc-session-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.78rem;
+    color: #ccc;
+}
+
+.lc-session-card__meta i {
+    width: 14px;
+    margin-right: 0.3rem;
+    opacity: 0.6;
+}
+
+/* Área de mensajes del chat */
+.lc-messages-area {
+    background: var(--bg-secondary, #f8fafc);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 12px;
+    padding: 1rem;
+    min-height: 240px;
+    max-height: 420px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.lc-msg {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.lc-msg__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: black;
+}
+
+.lc-msg__bubble {
+    padding: 0.65rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    max-width: 85%;
+}
+
+.lc-msg__time {
+    font-size: 0.68rem;
+    color: #bbb;
+}
+
+.lc-msg--user .lc-msg__bubble {
+    background: rgba(79,110,247,0.1);
+    border: 1px solid rgba(79,110,247,0.2);
+    color: var(--text-primary, #1a1a2e);
+}
+
+.lc-msg--bot .lc-msg__bubble {
+    background: rgba(100,116,139,0.08);
+    border: 1px solid rgba(100,116,139,0.12);
+    color: black;
+    font-style: italic;
+}
+
+.lc-msg--admin {
+    align-items: flex-end;
+}
+
+.lc-msg--admin .lc-msg__bubble {
+    background: linear-gradient(135deg, #4f6ef7, #667eea);
+    color: white;
+    border: none;
+}
+
+.lc-msg--admin .lc-msg__label,
+.lc-msg--admin .lc-msg__time {
+    text-align: right;
+}
+
+/* Input del admin */
+.lc-admin-input-area {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+}
+
+.lc-admin-input-area textarea {
+    flex: 1;
+    min-height: 56px;
+}

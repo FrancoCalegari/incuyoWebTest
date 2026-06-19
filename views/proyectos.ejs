@@ -241,6 +241,59 @@
         </div>
     </section>
 
+    <!-- TESTIMONIOS SECTION -->
+    <% if (testimonios && testimonios.length > 0) { %>
+    <section class="section" style="background: var(--white)">
+        <div class="container" style="max-width: 1200px">
+            <h2 class="section-title text-center" style="margin-bottom: var(--space-12)">Testimonios de nuestros Egresados</h2>
+            <div class="projects-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-8);">
+                <% testimonios.forEach(function(t) { %>
+                    <div class="project-card reveal">
+                        <div class="project-header" style="background: var(--gray-100);">
+                            <div class="student-photo" style="display:flex;align-items:center;justify-content:center;background:var(--gradient-primary);color:white;font-size:2rem;">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="student-info">
+                                <h3><%= t.student_name %></h3>
+                                <span class="student-year"><%= t.student_role %></span>
+                            </div>
+                        </div>
+
+                        <% if (t.video_url) { %>
+                            <div class="project-media">
+                                <% 
+                                let videoUrl = t.video_url;
+                                let isYoutube = videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
+                                %>
+                                <div class="media-container has-video">
+                                    <% if (isYoutube) { 
+                                        let ytId = '';
+                                        if (videoUrl.includes('youtube.com/watch?v=')) { ytId = videoUrl.split('v=')[1].split('&')[0]; }
+                                        else if (videoUrl.includes('youtu.be/')) { ytId = videoUrl.split('youtu.be/')[1].split('?')[0]; }
+                                        if (ytId) { %>
+                                            <iframe class="project-video youtube-video" src="https://www.youtube.com/embed/<%= ytId %>?enablejsapi=1&autoplay=0&controls=1&loop=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                        <% } 
+                                    } else { 
+                                        if (videoUrl.includes('/api/v1/storage/files/')) {
+                                            const fileId = videoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                            videoUrl = `/api/storage/files/${fileId}`;
+                                        }
+                                    %>
+                                        <video class="project-video html-video" controls preload="metadata" playsinline>
+                                            <source src="<%= videoUrl %>" type="video/mp4">
+                                            Tu navegador no soporta la reproducción de video.
+                                        </video>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
@@ -295,100 +348,6 @@
     <!-- JavaScript -->
     <script src="/js/script.js"></script>
     <script>
-        // Lógica de interactividad y previsualización de video
-        let idleTimer;
-        const IDLE_TIMEOUT = 10000; // 10 segundos
-
-        function playVideo(mediaContainer) {
-            mediaContainer.classList.add('video-playing');
-            const htmlVideo = mediaContainer.querySelector('video.html-video');
-            const ytVideo = mediaContainer.querySelector('iframe.youtube-video');
-
-            if (htmlVideo) {
-                htmlVideo.play().catch(e => console.log('Autoplay prevent:', e));
-            } else if (ytVideo) {
-                ytVideo.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
-        }
-
-        function pauseVideo(mediaContainer) {
-            mediaContainer.classList.remove('video-playing');
-            const htmlVideo = mediaContainer.querySelector('video.html-video');
-            const ytVideo = mediaContainer.querySelector('iframe.youtube-video');
-
-            if (htmlVideo) {
-                htmlVideo.pause();
-            } else if (ytVideo) {
-                ytVideo.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            }
-        }
-
-        // Configurar intersection observer para los videos automáticos
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5 // 50% de visibilidad requerida
-        };
-
-        const autoPlayObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    playVideo(entry.target);
-                } else {
-                    pauseVideo(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        function handleIdle() {
-            // Empezar a observar videos visibles para reproducirlos
-            document.querySelectorAll('.media-container.has-video').forEach(container => {
-                // Solo si el contenedor está en un card que es visible (por el filtro de años)
-                if (container.closest('.project-card').style.display !== 'none') {
-                    autoPlayObserver.observe(container);
-                }
-            });
-        }
-
-        function resetIdleTimer() {
-            clearTimeout(idleTimer);
-
-            // Pausar observación automática
-            document.querySelectorAll('.media-container.has-video').forEach(container => {
-                autoPlayObserver.unobserve(container);
-                // Si no se le está haciendo hover manualmente, pausar
-                if (!container.matches(':hover') && !container.closest('.project-card').matches(':hover')) {
-                    pauseVideo(container);
-                }
-            });
-
-            // Reiniciar timer
-            idleTimer = setTimeout(handleIdle, IDLE_TIMEOUT);
-        }
-
-        // Escuchar eventos de inactividad del usuario
-        ['mousemove', 'mousedown', 'keypress', 'DOMMouseScroll', 'mousewheel', 'touchmove', 'MSPointerMove'].forEach(event => {
-            document.addEventListener(event, resetIdleTimer, { passive: true });
-        });
-
-        // Configurar hover individual
-        document.querySelectorAll('.project-card').forEach(card => {
-            const mediaContainer = card.querySelector('.media-container.has-video');
-            if (mediaContainer) {
-                card.addEventListener('mouseenter', () => {
-                    // Forzar reproducción al hacer hover, anulando el timer si era necesario
-                    playVideo(mediaContainer);
-                });
-                card.addEventListener('mouseleave', () => {
-                    // Si el timer de idle no se ha disparado (el usuario está activo), pausamos
-                    // (el mouseleave de todas formas dispara resetIdleTimer porque es movimiento)
-                    pauseVideo(mediaContainer);
-                });
-            }
-        });
-
-        // Iniciar timer
-        resetIdleTimer();
 
         // Year tab filtering
         document.querySelectorAll('.year-tab').forEach(tab => {

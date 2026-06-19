@@ -723,12 +723,38 @@
                             </div>
                         </div>
 
-                        <div class="ai-chat-input-area">
-                            <textarea class="ai-chat-input" id="aiChatInput" placeholder="Escribí tu pregunta..."
-                                rows="1" maxlength="500" aria-label="Mensaje para el asistente"></textarea>
-                            <button class="ai-chat-send" id="aiChatSend" aria-label="Enviar mensaje">
-                                <i class="fas fa-paper-plane"></i>
+                        <div class="ai-chat-input-area" id="aiChatInputArea">
+                            <button class="ai-chat-human-btn" id="aiChatHumanBtn" title="Solicitar atención de una persona" aria-label="Charlar con una persona">
+                                <i class="fas fa-user-headset"></i> Charlar con una persona
                             </button>
+                            <div class="ai-chat-input-row">
+                                <textarea class="ai-chat-input" id="aiChatInput" placeholder="Escribí tu pregunta..."
+                                    rows="1" maxlength="500" aria-label="Mensaje para el asistente"></textarea>
+                                <button class="ai-chat-send" id="aiChatSend" aria-label="Enviar mensaje">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Estado de espera: asesor humano -->
+                        <div class="ai-chat-waiting-area" id="aiChatWaitingArea" style="display:none;">
+                            <div class="ai-chat-waiting-indicator">
+                                <span class="ai-chat-waiting-dot"></span>
+                                <span class="ai-chat-waiting-dot"></span>
+                                <span class="ai-chat-waiting-dot"></span>
+                            </div>
+                            <p class="ai-chat-waiting-text">Esperando a un asesor...</p>
+                        </div>
+
+                        <!-- Input habilitado para hablar con admin -->
+                        <div class="ai-chat-human-input-area" id="aiChatHumanInputArea" style="display:none;">
+                            <div class="ai-chat-input-row">
+                                <textarea class="ai-chat-input" id="aiChatHumanInput" placeholder="Escribí tu mensaje al asesor..."
+                                    rows="1" maxlength="500"></textarea>
+                                <button class="ai-chat-send ai-chat-send--human" id="aiChatHumanSend" aria-label="Enviar al asesor">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -795,6 +821,211 @@
                                 });
                             }
                         });
+                    </script>
+
+                    <!-- LIVE CHAT ESCALATION SCRIPT -->
+                    <script>
+                    (function() {
+                        'use strict';
+                        var liveSessionKey  = sessionStorage.getItem('incuyo_lc_key') || null;
+                        var liveSessionId   = sessionStorage.getItem('incuyo_lc_id') || null;
+                        var liveStatus      = sessionStorage.getItem('incuyo_lc_status') || null;
+                        var lastMsgId       = 0;
+                        var pollInterval    = null;
+
+                        var humanBtn        = document.getElementById('aiChatHumanBtn');
+                        var inputArea       = document.getElementById('aiChatInputArea');
+                        var waitingArea     = document.getElementById('aiChatWaitingArea');
+                        var humanInputArea  = document.getElementById('aiChatHumanInputArea');
+                        var humanInput      = document.getElementById('aiChatHumanInput');
+                        var humanSend       = document.getElementById('aiChatHumanSend');
+                        var messagesEl      = document.getElementById('aiChatMessages');
+
+                        if (liveSessionKey && liveStatus && liveStatus !== 'closed') {
+                            document.addEventListener('DOMContentLoaded', function() { setTimeout(restoreLiveChatState, 300); });
+                        }
+
+                        if (humanBtn) {
+                            humanBtn.addEventListener('click', async function() {
+                                if (humanBtn.disabled) return;
+                                humanBtn.disabled = true;
+                                humanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando...';
+                                var history = [];
+                                document.querySelectorAll('#aiChatMessages .ai-chat-msg').forEach(function(el) {
+                                    var isBot = el.classList.contains('ai-chat-msg--bot');
+                                    var bubble = el.querySelector('.ai-chat-msg-bubble');
+                                    if (bubble && !el.classList.contains('ai-chat-msg--system')) {
+                                        history.push({ role: isBot ? 'assistant' : 'user', content: bubble.innerText || '' });
+                                    }
+                                });
+                                try {
+                                    var res = await fetch('/api/chat/request-human', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ history: history, visitorKey: liveSessionKey }),
+                                    });
+                                    var data = await res.json();
+                                    if (!data.ok) throw new Error(data.error || 'Error');
+                                    liveSessionKey = data.sessionKey;
+                                    liveSessionId  = data.sessionId;
+                                    liveStatus     = data.status;
+                                    sessionStorage.setItem('incuyo_lc_key', liveSessionKey);
+                                    sessionStorage.setItem('incuyo_lc_id', liveSessionId);
+                                    sessionStorage.setItem('incuyo_lc_status', liveStatus);
+                                    appendSystemMsg('&#x1F64B; Solicitud enviada. Un asesor se comunicará con vos pronto.');
+                                    enterWaitingMode();
+                                    startPolling();
+                                } catch (err) {
+                                    humanBtn.disabled = false;
+                                    humanBtn.innerHTML = '<i class="fas fa-user-headset"></i> Charlar con una persona';
+                                    appendSystemMsg('&#x274C; No se pudo conectar. Escribínos por WhatsApp al +54 9 261 627-1658');
+                                }
+                            });
+                        }
+
+                        if (humanSend) humanSend.addEventListener('click', sendHumanMessage);
+                        if (humanInput) {
+                            humanInput.addEventListener('keydown', function(e) {
+                                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendHumanMessage(); }
+                            });
+                        }
+
+                        async function sendHumanMessage() {
+                            if (!humanInput || !liveSessionKey) return;
+                            var content = humanInput.value.trim();
+                            if (!content) return;
+                            humanInput.value = '';
+                            appendUserMsg(content);
+                            try {
+                                await fetch('/api/chat/session/' + liveSessionKey + '/send', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ content: content }),
+                                });
+                            } catch (err) { console.error('[LiveChat] send error:', err); }
+                        }
+
+                        function startPolling() {
+                            if (pollInterval) clearInterval(pollInterval);
+                            pollInterval = setInterval(pollMessages, 5000);
+                            pollMessages();
+                        }
+
+                        async function pollMessages() {
+                            if (!liveSessionKey) return;
+                            try {
+                                var res = await fetch('/api/chat/session/' + liveSessionKey + '/messages?since=' + lastMsgId);
+                                var data = await res.json();
+                                if (data.expired || data.status === 'closed') { handleSessionClosed(); return; }
+                                (data.messages || []).forEach(function(msg) {
+                                    if (msg.id > lastMsgId) lastMsgId = msg.id;
+                                    if (msg.role === 'admin') appendAdminMsg(msg.content, data.adminName);
+                                });
+                                // Update UI to active if status is active (even if we thought it already was, to get the right admin name)
+                                if (data.status === 'active') {
+                                    if (liveStatus !== 'active') {
+                                        liveStatus = 'active';
+                                        sessionStorage.setItem('incuyo_lc_status', 'active');
+                                    }
+                                    enterActiveMode(data.adminName);
+                                }
+                            } catch (err) { console.error('[LiveChat] poll error:', err); }
+                        }
+
+                        function enterWaitingMode() {
+                            if (inputArea)      inputArea.style.display      = 'none';
+                            if (waitingArea)    waitingArea.style.display    = 'flex';
+                            if (humanInputArea) humanInputArea.style.display = 'none';
+                        }
+                        function enterActiveMode(adminName) {
+                            if (waitingArea)    waitingArea.style.display    = 'none';
+                            if (humanInputArea) humanInputArea.style.display = 'block';
+                            if (inputArea)      inputArea.style.display      = 'none';
+                            
+                            // Check if system message already exists to avoid duplicates on polling
+                            var exists = false;
+                            document.querySelectorAll('.ai-chat-msg--system').forEach(function(el) {
+                                if (el.innerText.includes('se conectó y está listo')) exists = true;
+                            });
+                            if (!exists) {
+                                appendSystemMsg('&#x2705; ' + (adminName || 'Un asesor') + ' se conectó y está listo para ayudarte.');
+                            }
+
+                            var sub = document.querySelector('.ai-chat-subtitle');
+                            if (sub) sub.textContent = '&#x1F7E2; Asesor en línea · ' + (adminName || 'Asesor');
+                        }
+                        function handleSessionClosed() {
+                            if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+                            liveStatus = 'closed';
+                            sessionStorage.setItem('incuyo_lc_status', 'closed');
+                            sessionStorage.removeItem('incuyo_lc_key');
+                            sessionStorage.removeItem('incuyo_lc_id');
+                            if (waitingArea)    waitingArea.style.display    = 'none';
+                            if (humanInputArea) humanInputArea.style.display = 'none';
+                            if (inputArea) {
+                                inputArea.style.display = 'block';
+                                var btn = document.getElementById('aiChatHumanBtn');
+                                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-headset"></i> Charlar con una persona'; }
+                            }
+                            appendSystemMsg('&#x1F512; La sesión fue cerrada. Para más ayuda, escribínos por WhatsApp.');
+                            var sub = document.querySelector('.ai-chat-subtitle');
+                            if (sub) sub.textContent = 'Respondido por IA · SpiderWeb';
+                        }
+                        function restoreLiveChatState() {
+                            if (liveStatus === 'waiting') {
+                                enterWaitingMode();
+                                startPolling();
+                            } else if (liveStatus === 'active') {
+                                enterActiveMode('Asesor');
+                                startPolling();
+                            }
+                        }
+                        function appendUserMsg(t) {
+                            var d = document.createElement('div');
+                            d.className = 'ai-chat-msg ai-chat-msg--user';
+                            d.innerHTML = '<div class="ai-chat-msg-bubble">' + esc(t) + '</div>';
+                            app(d);
+                        }
+                        function appendAdminMsg(t, n) {
+                            var d = document.createElement('div');
+                            d.className = 'ai-chat-msg ai-chat-msg--bot ai-chat-msg--admin';
+                            d.innerHTML = '<div class="ai-chat-msg-bubble"><strong>&#x1F468;&#x200D;&#x1F4BC; ' + esc(n||'Asesor') + ':</strong><br>' + esc(t) + '</div>';
+                            app(d);
+                        }
+                        function appendSystemMsg(t) {
+                            var d = document.createElement('div');
+                            d.className = 'ai-chat-msg ai-chat-msg--system';
+                            d.innerHTML = '<div class="ai-chat-msg-bubble ai-chat-msg-bubble--system">' + t + '</div>';
+                            app(d);
+                        }
+                        function app(el) {
+                            if (messagesEl) { messagesEl.appendChild(el); messagesEl.scrollTop = messagesEl.scrollHeight; }
+                        }
+                        function esc(s) {
+                            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+                        }
+
+                        var chatOpenBtn = document.getElementById('aiChatBtn');
+                        if (chatOpenBtn) {
+                            chatOpenBtn.addEventListener('click', function() {
+                                if (liveSessionKey && liveStatus && liveStatus !== 'closed' && !pollInterval) {
+                                    startPolling();
+                                    if (liveStatus === 'waiting') enterWaitingMode();
+                                    else if (liveStatus === 'active') {
+                                        if (waitingArea)    waitingArea.style.display = 'none';
+                                        if (humanInputArea) humanInputArea.style.display = 'block';
+                                        if (inputArea)      inputArea.style.display = 'none';
+                                    }
+                                }
+                            });
+                        }
+                        var closeBtn = document.getElementById('aiChatClose');
+                        if (closeBtn) {
+                            closeBtn.addEventListener('click', function() {
+                                if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+                            });
+                        }
+                    })();
                     </script>
 </body>
 

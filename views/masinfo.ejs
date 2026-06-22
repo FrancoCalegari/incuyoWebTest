@@ -15,15 +15,23 @@
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar scrolled" id="navbar">
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="navbar">
         <div class="container">
             <a href="/" class="navbar-brand">
                 <img src="/assets/img/logo.png" alt="Instituto Nuevo Cuyo" class="navbar-logo" />
             </a>
-            <ul class="navbar-menu">
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/#inscripciones">Inscripciones</a></li>
+
+            <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="navbar-menu" id="navbarMenu">
+                <!-- <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#inscripciones">Inscripciones</a></li> -->
+                <li><a href="/diplomaturas">Diplomaturas</a></li>
                 <li>
                     <a href="<%= config.campus_virtual_url || 'https://aula.incuyo.edu.ar/' %>" target="_blank" class="campus-link">Campus Virtual</a>
                 </li>

@@ -55,7 +55,7 @@
 
 <body>
     <!-- NAVIGATION -->
-    <nav class="navbar scrolled" id="navbar">
+    <nav class="navbar" id="navbar">
         <div class="container">
             <a href="/" class="navbar-brand">
                 <img src="/assets/img/logo.png" alt="Instituto Nuevo Cuyo" class="navbar-logo" />
@@ -68,11 +68,11 @@
             </button>
 
             <ul class="navbar-menu" id="navbarMenu">
-                <li><a href="/#inicio">Inicio</a></li>
-                <li><a href="/#inscripciones">Inscripciones</a></li>
+                <!-- <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#inscripciones">Inscripciones</a></li> -->
                 <li><a href="/diplomaturas">Diplomaturas</a></li>
                 <li>
-                    <a href="https://aula.incuyo.edu.ar/" target="_blank" class="campus-link">Campus Virtual</a>
+                    <a href="<%= config.campus_virtual_url || 'https://aula.incuyo.edu.ar/' %>" target="_blank" class="campus-link">Campus Virtual</a>
                 </li>
             </ul>
         </div>

@@ -77,10 +77,10 @@ router.get('/', requireAdmin, async (req, res) => {
         let horario = null;
         try { horario = JSON.parse(config.horario || 'null'); } catch (e) { horario = null; }
 
-        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios });
+        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios, config });
     } catch (err) {
         console.error('Error load dashboard:', err);
-        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [] });
+        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [], config: {} });
     }
 });
 
@@ -88,21 +88,37 @@ router.get('/', requireAdmin, async (req, res) => {
 router.post('/api/upload', requireAdmin, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No se envió archivo' });
-        console.log(`Uploaded local file: ${req.file.originalname}, Size: ${req.file.size}, Path: ${req.file.path}`);
+        console.log(`Uploaded local file: ${req.file.originalname}, Size: ${req.file.size}, Path: ${req.file.path}, Type: ${req.file.mimetype}`);
         
-        // El archivo ya está guardado en public/uploads por multer.
-        const localUrl = `/uploads/${req.file.filename}`;
-        
-        const result = {
-            id: req.file.filename,
-            url: localUrl,
-            name: req.file.originalname
-        };
-        
-        res.json({ success: true, file: result });
+        const isVideo = req.file.mimetype.startsWith('video/');
+
+        if (isVideo) {
+            // Guardado local
+            const localUrl = `/uploads/${req.file.filename}`;
+            const result = {
+                id: req.file.filename,
+                url: localUrl,
+                name: req.file.originalname
+            };
+            return res.json({ success: true, file: result });
+        } else {
+            // Guardado en Cloud Storage via SpiderWeb API
+            const fileBuffer = fs.readFileSync(req.file.path);
+            const uploaded = await uploadFile(fileBuffer, req.file.originalname, req.file.mimetype);
+            
+            // Eliminar el archivo local temporal
+            fs.unlinkSync(req.file.path);
+
+            const result = {
+                id: uploaded.id,
+                url: `/admin/api/img/${uploaded.id}`,
+                name: uploaded.name
+            };
+            return res.json({ success: true, file: result });
+        }
     } catch (err) {
         console.error('Upload error:', err);
-        res.status(500).json({ error: 'Error al subir archivo localmente' });
+        res.status(500).json({ error: 'Error al procesar la subida del archivo' });
     }
 });
 
@@ -535,6 +551,22 @@ router.put('/api/configuracion', requireAdmin, async (req, res) => {
         await query(`INSERT INTO configuracion (clave, valor) VALUES ('horario', ?) ON DUPLICATE KEY UPDATE valor=?`, [horarioStr, horarioStr]);
         res.json({ success: true });
     } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/api/configuracion/bulk', requireAdmin, async (req, res) => {
+    try {
+        const data = req.body;
+        if (!data || typeof data !== 'object') return res.status(400).json({ error: 'Datos inválidos' });
+        
+        for (const [clave, valor] of Object.entries(data)) {
+            // Guardar o actualizar
+            await query(`INSERT INTO configuracion (clave, valor) VALUES (?, ?) ON DUPLICATE KEY UPDATE valor=?`, [clave, valor, valor]);
+        }
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error in bulk config:', err);
         res.status(500).json({ error: err.message });
     }
 });

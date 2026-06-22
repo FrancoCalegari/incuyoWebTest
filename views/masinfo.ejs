@@ -25,7 +25,7 @@
                 <li><a href="/">Inicio</a></li>
                 <li><a href="/#inscripciones">Inscripciones</a></li>
                 <li>
-                    <a href="https://aula.incuyo.edu.ar/" target="_blank" class="campus-link">Campus Virtual</a>
+                    <a href="<%= config.campus_virtual_url || 'https://aula.incuyo.edu.ar/' %>" target="_blank" class="campus-link">Campus Virtual</a>
                 </li>
             </ul>
         </div>
@@ -53,11 +53,10 @@
     <section class="section" style="background: var(--gray-100);">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle">Al finalizar cada año</p>
-                <h2 class="section-title">Los títulos que obtenés</h2>
+                <p class="section-subtitle"><%= config.titulos_subtitle || 'Al finalizar cada año' %></p>
+                <h2 class="section-title"><%= config.titulos_title || 'Los títulos que obtenés' %></h2>
                 <p class="section-description">
-                    Títulos intermedios desde 2do año, 3ro título final más 8 certificaciones laborales desde primer
-                    año.
+                    <%= config.titulos_desc || 'Títulos intermedios desde 2do año, 3ro título final más 8 certificaciones laborales desde primer año.' %>
                 </p>
             </div>
 
@@ -71,13 +70,13 @@
                 -->
                 <div class="year-item">
                     <div class="year-badge">2</div>
-                    <p class="year-title-degree">Al terminar 2° Año</p>
-                    <p class="year-degree">Desarollador full Stack </p>
+                    <p class="year-title-degree"><%= config.titulos_2_title || 'Al terminar 2° Año' %></p>
+                    <p class="year-degree"><%= config.titulos_2_desc || 'Desarrollador full Stack' %></p>
                 </div>
                 <div class="year-item">
                     <div class="year-badge">3</div>
-                    <p class="year-title-degree">Al terminar 3° Año</p>
-                    <p class="year-degree">Técnico Superior en Desarrollo de Software + IA</p>
+                    <p class="year-title-degree"><%= config.titulos_3_title || 'Al terminar 3° Año' %></p>
+                    <p class="year-degree"><%= config.titulos_3_desc || 'Técnico Superior en Desarrollo de Software + IA' %></p>
                 </div>
             </div>
 
@@ -86,7 +85,7 @@
                 <p style="color: var(--gray-600); margin: 0;">
                     <i class="fas fa-file-alt" style="color:var(--primary-gold);"></i>
                     Carrera oficial nacional reconocida por la Resolución<br>
-                    <strong style="color:var(--gray-900);">DGE/R:6079</strong>
+                    <strong style="color:var(--gray-900);"><%= config.titulos_resolucion || 'DGE/R:6079' %></strong>
                 </p>
             </div>
         </div>
@@ -96,10 +95,10 @@
     <section class="section">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle">Plan de Estudios</p>
-                <h2 class="section-title">Materias por año</h2>
+                <p class="section-subtitle"><%= config.plan_subtitle || 'Plan de Estudios' %></p>
+                <h2 class="section-title"><%= config.plan_title || 'Materias por año' %></h2>
                 <p class="section-description">
-                    Plan actualizado con las últimas tendencias en desarrollo de software e inteligencia artificial
+                    <%= config.plan_desc || 'Plan actualizado con las últimas tendencias en desarrollo de software e inteligencia artificial' %>
                 </p>
             </div>
 
@@ -138,10 +137,10 @@
     <section class="section" style="background: var(--gray-100);">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle">Valor Adicional</p>
-                <h2 class="section-title">Certificaciones Laborales</h2>
+                <p class="section-subtitle"><%= config.cert_subtitle || 'Valor Adicional' %></p>
+                <h2 class="section-title"><%= config.cert_title || 'Certificaciones Laborales' %></h2>
                 <p class="section-description">
-                    Al aprobar materias coprogramáticas, obtenés certificaciones reconocidas por la industria
+                    <%= config.cert_desc || 'Al aprobar materias coprogramáticas, obtenés certificaciones reconocidas por la industria' %>
                 </p>
             </div>
 
@@ -254,7 +253,7 @@
             <h2>¿Listo para empezar tu futuro?</h2>
             <p>Consultá por inscripciones, becas y toda la información que necesitás para dar el primer paso</p>
             <div class="final-cta-btns">
-                <a href="https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20inscribirme%20en%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
+                <a href="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>"
                     class="btn btn-gold btn-lg" target="_blank">
                     <i class="fab fa-whatsapp"></i> Consultá por WhatsApp
                 </a>
@@ -282,7 +281,7 @@
                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 10px; background: white;">
         </button>
 
-        <a href="https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura"
+        <a href="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>"
             class="whatsapp-btn" target="_blank" aria-label="Contactar por WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>

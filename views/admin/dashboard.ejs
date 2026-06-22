@@ -33,6 +33,7 @@
                 <li><a href="#" data-panel="diplomaturas"><i class="fas fa-graduation-cap"></i> Diplomaturas</a></li>
                 <li><a href="#" data-panel="pasantias"><i class="fas fa-building"></i> Pasantías</a></li>
                 <li><a href="#" data-panel="configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="#" data-panel="textos"><i class="fas fa-font"></i> Textos Fijos</a></li>
                 <li><a href="#" data-panel="ia"><i class="fas fa-robot"></i> Estado IA</a></li>
                 <li><a href="#" data-panel="livechat" id="livechatSidebarLink"><i class="fas fa-comments"></i> Chat en Vivo <span class="livechat-badge" id="livechatBadge" style="display:none;"></span></a></li>
             </ul>
@@ -474,6 +475,210 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- ═══ TEXTOS FIJOS PANEL ═══ -->
+            <div class="panel" id="panel-textos">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-font"></i> Configuración de Textos del Sitio Web</h3>
+                    </div>
+                    <p style="color:#888; font-size:0.9rem; margin-bottom:1.5rem;">
+                        Personaliza los títulos, descripciones y enlaces estáticos que aparecen en la página de inicio y en la página de más información.
+                    </p>
+
+                    <!-- Textos de index.ejs -->
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="margin-bottom:1rem; color: var(--primary-gold);">Página de Inicio (index.ejs)</h4>
+
+                        <div class="form-group" style="margin-bottom:1.5rem;">
+                            <label><strong>Navegación</strong>: Enlace al Campus Virtual</label>
+                            <input type="url" id="txt_campus_virtual_url" value="<%= config.campus_virtual_url || 'https://aula.incuyo.edu.ar/' %>" style="width:100%; max-width:600px; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                        </div>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Servicios Tecnológicos</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_servicios_subtitle" value="<%= config.servicios_subtitle || 'Nuestros servicios' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_servicios_title" value="<%= config.servicios_title || 'Servicios tecnológicos integrales' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción / Bajada</label>
+                                <textarea id="txt_servicios_lead" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.servicios_lead || 'Hemos formado una empresa de servicios, unificando experiencia & energía con los alumnos del último año de la carrera.' %></textarea>
+                            </div>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Beneficio 1</label>
+                                <textarea id="txt_servicios_card1" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.servicios_card1 || 'Podrá contar con un alumno como pasante para guiarlo y apoyarlo en su emprendimiento.' %></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Beneficio 2</label>
+                                <textarea id="txt_servicios_card2" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.servicios_card2 || 'Luego que el proyecto quede finalizado, con su aprobación (puede contratar al pasante, si lo desea; para seguir creciendo juntos).' %></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Beneficio 3</label>
+                                <textarea id="txt_servicios_card3" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.servicios_card3 || 'Podrá lograr objetivos, mejorar ventas al mejor costo del mercado.' %></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Beneficio 4</label>
+                                <textarea id="txt_servicios_card4" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.servicios_card4 || 'Garantía de satisfacción.' %></textarea>
+                            </div>
+                        </div>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Proyectos Reales</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_proyectos_subtitle" value="<%= config.proyectos_subtitle || 'Proyectos Reales' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_proyectos_title" value="<%= config.proyectos_title || 'Creando desde el Primer Año' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea id="txt_proyectos_desc" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.proyectos_desc || '"Nuestros alumnos son capaces desde el primer año de crear sistemas personalizados de acuerdo a las necesidades de la actualidad".' %></textarea>
+                            </div>
+                        </div>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Compromiso Social</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_compromiso_subtitle" value="<%= config.compromiso_subtitle || 'Compromiso Social' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_compromiso_title" value="<%= config.compromiso_title || 'Ayudando a la Comunidad' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea id="txt_compromiso_desc" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.compromiso_desc || 'Los alumnos del instituto en la materia Ética organizan tareas extracurriculares para ayudar a los más necesitados.' %></textarea>
+                            </div>
+                        </div>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Inscripciones</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_inscripciones_subtitle" value="<%= config.inscripciones_subtitle || '¡No te quedes afuera!' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_inscripciones_title" value="<%= config.inscripciones_title || 'Inscripciones Abiertas desde Agosto' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Insignia Beca</label>
+                                <input type="text" id="txt_inscripciones_badge" value="<%= config.inscripciones_badge || 'BECAS CON HASTA 40% DE DESCUENTO EN AGOSTO' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Texto Promoción</label>
+                                <input type="text" id="txt_inscripciones_promo" value="<%= config.inscripciones_promo || '¡Consultá por precios y promociones especiales!' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Enlace/Mensaje WhatsApp</label>
+                                <input type="text" id="txt_inscripciones_whatsapp" value="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                        </div>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Ubicación</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_ubicacion_subtitle" value="<%= config.ubicacion_subtitle || 'Visitanos' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_ubicacion_title" value="<%= config.ubicacion_title || 'Nuestra Ubicación' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección</label>
+                                <input type="text" id="txt_ubicacion_desc" value="<%= config.ubicacion_desc || 'La Rioja 614 - Ciudad de Mendoza - Argentina' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Textos de masinfo.ejs -->
+                    <div style="margin-bottom: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                        <h4 style="margin-bottom:1rem; color: var(--primary-gold);">Página de Más Información (masinfo.ejs)</h4>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Los títulos que obtenés</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_titulos_subtitle" value="<%= config.titulos_subtitle || 'Al finalizar cada año' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_titulos_title" value="<%= config.titulos_title || 'Los títulos que obtenés' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea id="txt_titulos_desc" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.titulos_desc || 'Títulos intermedios desde 2do año, 3ro título final más 8 certificaciones laborales desde primer año.' %></textarea>
+                            </div>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Tarjeta 2do Año - Título</label>
+                                <input type="text" id="txt_titulos_2_title" value="<%= config.titulos_2_title || 'Al terminar 2° Año' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Tarjeta 2do Año - Descripción</label>
+                                <input type="text" id="txt_titulos_2_desc" value="<%= config.titulos_2_desc || 'Desarollador full Stack' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Tarjeta 3er Año - Título</label>
+                                <input type="text" id="txt_titulos_3_title" value="<%= config.titulos_3_title || 'Al terminar 3° Año' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Tarjeta 3er Año - Descripción</label>
+                                <input type="text" id="txt_titulos_3_desc" value="<%= config.titulos_3_desc || 'Técnico Superior en Desarrollo de Software + IA' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Texto Resolución DGE</label>
+                                <input type="text" id="txt_titulos_resolucion" value="<%= config.titulos_resolucion || 'DGE/R:6079' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                        </div>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Plan de Estudios</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_plan_subtitle" value="<%= config.plan_subtitle || 'Plan de Estudios' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_plan_title" value="<%= config.plan_title || 'Materias por año' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea id="txt_plan_desc" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.plan_desc || 'Plan actualizado con las últimas tendencias en desarrollo de software e inteligencia artificial' %></textarea>
+                            </div>
+                        </div>
+
+                        <div style="background:#1a1f2e; padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+                            <h5>Sección: Certificaciones Laborales</h5>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label>Subtítulo</label>
+                                <input type="text" id="txt_cert_subtitle" value="<%= config.cert_subtitle || 'Valor Adicional' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Título Principal</label>
+                                <input type="text" id="txt_cert_title" value="<%= config.cert_title || 'Certificaciones Laborales' %>" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea id="txt_cert_desc" rows="2" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;"><%= config.cert_desc || 'Al aprobar materias coprogramáticas, obtenés certificaciones reconocidas por la industria' %></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-gold" onclick="saveTextosSite()">
+                        <i class="fas fa-save"></i> Guardar Textos Fijos
+                    </button>
+                </div>
+            </div>
+
             <!-- ═══ IA PANEL ═══ -->
             <div class="panel" id="panel-ia">
                 <div class="panel-section">
@@ -1428,6 +1633,43 @@
                 showToast('Error al guardar horario', 'error');
             }
         }
+
+        async function saveTextosSite() {
+            const keys = [
+                'campus_virtual_url',
+                'servicios_subtitle', 'servicios_title', 'servicios_lead', 'servicios_card1', 'servicios_card2', 'servicios_card3', 'servicios_card4',
+                'proyectos_subtitle', 'proyectos_title', 'proyectos_desc',
+                'compromiso_subtitle', 'compromiso_title', 'compromiso_desc',
+                'inscripciones_subtitle', 'inscripciones_title', 'inscripciones_badge', 'inscripciones_promo', 'inscripciones_whatsapp',
+                'ubicacion_subtitle', 'ubicacion_title', 'ubicacion_desc',
+                'titulos_subtitle', 'titulos_title', 'titulos_desc', 'titulos_2_title', 'titulos_2_desc', 'titulos_3_title', 'titulos_3_desc', 'titulos_resolucion',
+                'plan_subtitle', 'plan_title', 'plan_desc',
+                'cert_subtitle', 'cert_title', 'cert_desc'
+            ];
+            
+            const payload = {};
+            for (const key of keys) {
+                const el = document.getElementById(`txt_${key}`);
+                if (el) payload[key] = el.value;
+            }
+
+            try {
+                const res = await fetch('/admin/api/configuracion/bulk', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    showToast('✓ Textos guardados correctamente');
+                } else {
+                    showToast('Error: ' + (json.error || 'Desconocido'), 'error');
+                }
+            } catch (err) {
+                showToast('Error de conexión al guardar los textos', 'error');
+            }
+        }
+
 
         // ─── INIT BD ─────────────────────────────────
         async function initTables() {

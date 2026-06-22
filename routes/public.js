@@ -118,7 +118,7 @@ router.get('/', async (req, res) => {
             if (certificaciones[row.year]) certificaciones[row.year].push(row);
         });
 
-        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario, certificaciones });
+        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario, certificaciones, config: configMap });
     } catch (err) {
         console.error('Error loading landing page:', err);
         res.render('index', {
@@ -128,6 +128,7 @@ router.get('/', async (req, res) => {
             pasantias: [],
             horario: null,
             certificaciones: { 1: [], 2: [], 3: [] },
+            config: {}
         });
     }
 });
@@ -178,9 +179,10 @@ router.get('/servicios', (req, res) => {
 // GET /sabermas
 router.get('/sabermas', async (req, res) => {
     try {
-        const [currResult, certResult] = await Promise.all([
+        const [currResult, certResult, configResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
+            query("SELECT * FROM configuracion").catch(() => ({ result: [] }))
         ]);
         const currRows = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
         const curriculum = { 1: [], 2: [], 3: [] };
@@ -194,10 +196,14 @@ router.get('/sabermas', async (req, res) => {
             if (certificaciones[row.year]) certificaciones[row.year].push(row);
         });
 
-        res.render('masinfo', { curriculum, certificaciones });
+        const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
+        const configMap = {};
+        configRows.forEach(r => { configMap[r.clave] = r.valor; });
+
+        res.render('masinfo', { curriculum, certificaciones, config: configMap });
     } catch (err) {
         console.error('Error loading sabermas:', err);
-        res.render('masinfo', { curriculum: { 1: [], 2: [], 3: [] }, certificaciones: { 1: [], 2: [], 3: [] } });
+        res.render('masinfo', { curriculum: { 1: [], 2: [], 3: [] }, certificaciones: { 1: [], 2: [], 3: [] }, config: {} });
     }
 });
 

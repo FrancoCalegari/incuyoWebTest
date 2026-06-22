@@ -133,6 +133,59 @@
         </div>
     </section>
 
+    <!-- ENROLLMENT SECTION -->
+                    <section class="section section-dark enrollment" id="inscripciones">
+                        <div class="container">
+                            <div class="section-header">
+                                <p class="section-subtitle" style="color: var(--primary-gold)">
+                                    <%= config.inscripciones_subtitle || '¡No te quedes afuera!' %>
+                                </p>
+                                <h2 class="section-title"><%= config.inscripciones_title || 'Inscripciones Abiertas desde Agosto' %></h2>
+                            </div>
+
+                            <div class="highlight-box reveal">
+                                <div class="text-center">
+                                    <div class="scholarship-badge">
+                                        <i class="fas fa-graduation-cap"></i> <%= config.inscripciones_badge || 'BECAS CON HASTA 40% DE DESCUENTO EN AGOSTO' %>
+                                    </div>
+                                    <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
+                                        <%= config.inscripciones_promo || '¡Consultá por precios y promociones especiales!' %>
+                                    </p>
+                                </div>
+
+                                <div class="highlight-grid">
+                                    <div class="highlight-item reveal">
+                                        <div class="highlight-item-icon"><i class="fas fa-laptop-code"></i></div>
+                                        <p class="highlight-item-text">
+                                            Creá y diseñá aplicaciones para todo tipo de dispositivo
+                                        </p>
+                                    </div>
+
+                                    <div class="highlight-item reveal">
+                                        <div class="highlight-item-icon"><i class="fas fa-rocket"></i></div>
+                                        <p class="highlight-item-text">
+                                            Desarrollá aplicaciones con las últimas tecnologías
+                                        </p>
+                                    </div>
+
+                                    <div class="highlight-item reveal">
+                                        <div class="highlight-item-icon"><i class="fas fa-robot"></i></div>
+                                        <p class="highlight-item-text">
+                                            Aprendé con Inteligencia Artificial integrada en las materias
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="text-center" style="margin-top: 2rem">
+                                    <a href="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>"
+                                        class="btn btn-primary btn-lg" target="_blank">
+                                        <i class="fab fa-whatsapp"></i> Consultá por Inscripciones
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
     <!-- CURRICULUM SECTION (DYNAMIC)
     <section class="section curriculum" id="curriculum">
         <div class="container">
@@ -335,7 +388,7 @@
                     <div class="container">
                         <div class="section-header">
                             <p class="section-subtitle">Vinculación Laboral</p>
-                            <h2 class="section-title">Empresas con las que hemos trabajado</h2>
+                            <h2 class="section-title">Pasantias</h2>
                             <p class="section-description">
                                 Nuestros alumnos desarrollan experiencia real en empresas líderes a través de pasantías
                                 y proyectos profesionales.
@@ -505,58 +558,7 @@
                         </div>
                     </section>
 
-                    <!-- ENROLLMENT SECTION -->
-                    <section class="section section-dark enrollment" id="inscripciones">
-                        <div class="container">
-                            <div class="section-header">
-                                <p class="section-subtitle" style="color: var(--primary-gold)">
-                                    <%= config.inscripciones_subtitle || '¡No te quedes afuera!' %>
-                                </p>
-                                <h2 class="section-title"><%= config.inscripciones_title || 'Inscripciones Abiertas desde Agosto' %></h2>
-                            </div>
-
-                            <div class="highlight-box reveal">
-                                <div class="text-center">
-                                    <div class="scholarship-badge">
-                                        <i class="fas fa-graduation-cap"></i> <%= config.inscripciones_badge || 'BECAS CON HASTA 40% DE DESCUENTO EN AGOSTO' %>
-                                    </div>
-                                    <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
-                                        <%= config.inscripciones_promo || '¡Consultá por precios y promociones especiales!' %>
-                                    </p>
-                                </div>
-
-                                <div class="highlight-grid">
-                                    <div class="highlight-item reveal">
-                                        <div class="highlight-item-icon"><i class="fas fa-laptop-code"></i></div>
-                                        <p class="highlight-item-text">
-                                            Creá y diseñá aplicaciones para todo tipo de dispositivo
-                                        </p>
-                                    </div>
-
-                                    <div class="highlight-item reveal">
-                                        <div class="highlight-item-icon"><i class="fas fa-rocket"></i></div>
-                                        <p class="highlight-item-text">
-                                            Desarrollá aplicaciones con las últimas tecnologías
-                                        </p>
-                                    </div>
-
-                                    <div class="highlight-item reveal">
-                                        <div class="highlight-item-icon"><i class="fas fa-robot"></i></div>
-                                        <p class="highlight-item-text">
-                                            Aprendé con Inteligencia Artificial integrada en las materias
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="text-center" style="margin-top: 2rem">
-                                    <a href="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>"
-                                        class="btn btn-primary btn-lg" target="_blank">
-                                        <i class="fab fa-whatsapp"></i> Consultá por Inscripciones
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    
 
                     <!-- LOCATION SECTION -->
                     <section class="section location" id="ubicacion">

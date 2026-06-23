@@ -133,54 +133,66 @@
         </div>
     </section>
 
-    <!-- ENROLLMENT SECTION -->
+    <!-- ENROLLMENT SECTION (BECAS) -->
                     <section class="section section-dark enrollment" id="inscripciones">
                         <div class="container">
                             <div class="section-header">
                                 <p class="section-subtitle" style="color: var(--primary-gold)">
-                                    <%= config.inscripciones_subtitle || '¡No te quedes afuera!' %>
+                                    Ciclo Lectivo 2027
                                 </p>
-                                <h2 class="section-title"><%= config.inscripciones_title || 'Inscripciones Abiertas desde Agosto' %></h2>
+                                <h2 class="section-title">¡Inscripciones Abiertas con Becas Exclusivas!</h2>
                             </div>
 
                             <div class="highlight-box reveal">
                                 <div class="text-center">
-                                    <div class="scholarship-badge">
-                                        <i class="fas fa-graduation-cap"></i> <%= config.inscripciones_badge || 'BECAS CON HASTA 40% DE DESCUENTO EN AGOSTO' %>
+                                    <div class="scholarship-badge" style="margin-bottom: 1.5rem;">
+                                        <i class="fas fa-graduation-cap"></i> PROGRAMA DE BECAS 2027
                                     </div>
                                     <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
-                                        <%= config.inscripciones_promo || '¡Consultá por precios y promociones especiales!' %>
+                                        Aprovechá nuestros descuentos especiales para el próximo ciclo lectivo y asegurá tu futuro en el desarrollo de software.
                                     </p>
                                 </div>
 
                                 <div class="highlight-grid">
                                     <div class="highlight-item reveal">
-                                        <div class="highlight-item-icon"><i class="fas fa-laptop-code"></i></div>
+                                        <div class="highlight-item-icon"><i class="fas fa-sun"></i></div>
+                                        <h3 style="color: white; font-size: 1.25rem; margin-bottom: 0.5rem;">Turno Mañana</h3>
                                         <p class="highlight-item-text">
-                                            Creá y diseñá aplicaciones para todo tipo de dispositivo
+                                            <strong style="color: var(--primary-gold); font-size: 1.1rem;">Hasta 50% de Beca</strong><br>
+                                            Cursado intensivo y focalizado.
                                         </p>
                                     </div>
 
                                     <div class="highlight-item reveal">
-                                        <div class="highlight-item-icon"><i class="fas fa-rocket"></i></div>
+                                        <div class="highlight-item-icon"><i class="fas fa-cloud-sun"></i></div>
+                                        <h3 style="color: white; font-size: 1.25rem; margin-bottom: 0.5rem;">Turno Tarde</h3>
                                         <p class="highlight-item-text">
-                                            Desarrollá aplicaciones con las últimas tecnologías
+                                            <strong style="color: var(--primary-gold); font-size: 1.1rem;">Hasta 40% de Beca</strong><br>
+                                            Ideal para combinar con otras actividades.
                                         </p>
                                     </div>
 
                                     <div class="highlight-item reveal">
-                                        <div class="highlight-item-icon"><i class="fas fa-robot"></i></div>
+                                        <div class="highlight-item-icon"><i class="fas fa-moon"></i></div>
+                                        <h3 style="color: white; font-size: 1.25rem; margin-bottom: 0.5rem;">Turno Vespertino</h3>
                                         <p class="highlight-item-text">
-                                            Aprendé con Inteligencia Artificial integrada en las materias
+                                            <strong style="color: var(--primary-gold); font-size: 1.1rem;">Hasta 40% de Beca</strong><br>
+                                            Pensado para quienes trabajan de día.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div class="text-center" style="margin-top: 2rem">
-                                    <a href="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>"
-                                        class="btn btn-primary btn-lg" target="_blank">
-                                        <i class="fab fa-whatsapp"></i> Consultá por Inscripciones
-                                    </a>
+                                <div class="text-center" style="margin-top: 2.5rem">
+                                    <button class="btn btn-gold btn-lg" onclick="openBecaModal()" style="font-size: 1.1rem; padding: 1rem 2.5rem; animation: pulse 2s infinite;">
+                                        <i class="fas fa-envelope-open-text"></i> Solicitar Beca Ahora
+                                    </button>
+                                    <style>
+                                        @keyframes pulse {
+                                            0% { box-shadow: 0 0 0 0 rgba(195, 146, 21, 0.7); }
+                                            70% { box-shadow: 0 0 0 15px rgba(195, 146, 21, 0); }
+                                            100% { box-shadow: 0 0 0 0 rgba(195, 146, 21, 0); }
+                                        }
+                                    </style>
                                 </div>
                             </div>
                         </div>
@@ -381,6 +393,65 @@
             </div>
         </div>
         <% }); %>
+
+            <!-- BECA PUBLIC MODAL -->
+            <div class="diplom-modal-overlay" id="publicBecaModal" style="z-index: 10000;" onclick="closeBecaModal()">
+                <div class="diplom-modal" onclick="event.stopPropagation()" style="max-width: 650px; background: #fff; padding: 2rem; border-radius: 12px;">
+                    <button class="diplom-modal-close" onclick="closeBecaModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <h2 style="color: #10182c; margin-bottom: 1.5rem; text-align: center; font-size: 1.8rem;">
+                        <i class="fas fa-graduation-cap" style="color: var(--primary-gold);"></i> Solicitud de Beca 2027
+                    </h2>
+                    
+                    <form id="becaForm" onsubmit="submitBeca(event)">
+                        <!-- Sección 1: Información Personal -->
+                        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+                            <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-user"></i> 1. Información Personal</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Nombre *</label>
+                                    <input type="text" id="becaInputFirstName" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu nombre">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Apellido *</label>
+                                    <input type="text" id="becaInputLastName" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu apellido">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Motivo -->
+                        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+                            <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-pen"></i> 2. Motivo de la Solicitud</h3>
+                            <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">¿Por qué solicitás la beca? *</label>
+                            <textarea id="becaInputReason" required rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; resize: vertical;" placeholder="Contanos brevemente tu situación..."></textarea>
+                        </div>
+
+                        <!-- Sección 3: Contacto -->
+                        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+                            <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-address-book"></i> 3. Información de Contacto</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Correo Electrónico *</label>
+                                    <input type="email" id="becaInputEmail" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="ejemplo@correo.com">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Celular / WhatsApp *</label>
+                                    <input type="tel" id="becaInputPhone" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="+54 9 ...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center;">
+                            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Un asesor te responderá dentro de las 72 horas hábiles.</p>
+                            <button type="submit" id="becaSubmitBtn" class="btn btn-gold btn-lg" style="width: 100%;">
+                                Enviar Solicitud de Beca
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- PASANTÍAS SECTION -->
             <% if (pasantias.length> 0) { %>
@@ -769,6 +840,54 @@
                             document.getElementById('idx-modal-' + idx).classList.remove('active');
                             document.body.style.overflow = '';
                         }
+
+                        // ─── BECA MODAL LOGIC ───────────────────────────────
+                        function openBecaModal() {
+                            document.getElementById('publicBecaModal').classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        }
+                        
+                        function closeBecaModal() {
+                            document.getElementById('publicBecaModal').classList.remove('active');
+                            document.body.style.overflow = '';
+                            document.getElementById('becaForm').reset();
+                        }
+
+                        async function submitBeca(e) {
+                            e.preventDefault();
+                            const btn = document.getElementById('becaSubmitBtn');
+                            btn.disabled = true;
+                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+                            const payload = {
+                                first_name: document.getElementById('becaInputFirstName').value.trim(),
+                                last_name: document.getElementById('becaInputLastName').value.trim(),
+                                reason: document.getElementById('becaInputReason').value.trim(),
+                                email: document.getElementById('becaInputEmail').value.trim(),
+                                phone: document.getElementById('becaInputPhone').value.trim()
+                            };
+
+                            try {
+                                const res = await fetch('/api/scholarships', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(payload)
+                                });
+                                const data = await res.json();
+                                if (data.ok) {
+                                    alert('¡Solicitud enviada con éxito! Te responderemos dentro de las próximas 72 horas.');
+                                    closeBecaModal();
+                                } else {
+                                    alert('Error al enviar solicitud: ' + (data.error || 'Desconocido'));
+                                }
+                            } catch (err) {
+                                alert('Error de conexión. Intente nuevamente.');
+                            } finally {
+                                btn.disabled = false;
+                                btn.innerHTML = 'Enviar Solicitud de Beca';
+                            }
+                        }
+
                         document.addEventListener('keydown', function (e) {
                             if (e.key === 'Escape') {
                                 document.querySelectorAll('.diplom-modal-overlay.active').forEach(function (m) {

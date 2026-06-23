@@ -35,6 +35,7 @@
                 <li><a href="#" data-panel="configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
                 <li><a href="#" data-panel="textos"><i class="fas fa-font"></i> Textos Fijos</a></li>
                 <li><a href="#" data-panel="ia"><i class="fas fa-robot"></i> Estado IA</a></li>
+                <li><a href="#" data-panel="becas"><i class="fas fa-envelope-open-text"></i> Becas</a></li>
                 <li><a href="#" data-panel="livechat" id="livechatSidebarLink"><i class="fas fa-comments"></i> Chat en Vivo <span class="livechat-badge" id="livechatBadge" style="display:none;"></span></a></li>
             </ul>
 
@@ -733,6 +734,55 @@
                 </div>
             </div>
 
+            <!-- ═══ BECAS PANEL ═══ -->
+            <div class="panel" id="panel-becas">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-envelope-open-text"></i> Solicitudes de Becas</h3>
+                    </div>
+
+                    <% if (typeof scholarships !== 'undefined' && scholarships.length > 0) { %>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th style="text-align:right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% scholarships.forEach(function(b) { 
+                                    let dt = new Date(b.created_at);
+                                    let dateStr = dt.toLocaleDateString('es-AR') + ' ' + dt.toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'});
+                                %>
+                                    <tr data-id="<%= b.id %>" data-beca="<%- encodeURIComponent(JSON.stringify(b)) %>">
+                                        <td><span style="font-size:0.85rem; color:#666;"><%= dateStr %></span></td>
+                                        <td><strong><%= b.first_name %> <%= b.last_name %></strong></td>
+                                        <td><%= b.email %></td>
+                                        <td><%= b.phone || '–' %></td>
+                                        <td style="text-align:right">
+                                            <button class="btn btn-secondary btn-sm" onclick="viewBeca(this)">
+                                                <i class="fas fa-eye"></i> Ver
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteBeca(<%= b.id %>)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <div style="text-align:center; padding: 3rem; color: #999;">
+                            <i class="fas fa-envelope-open" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+                            <p>No hay solicitudes de becas recibidas aún.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
             <!-- ═══ LIVE CHAT PANEL ═══ -->
             <div class="panel" id="panel-livechat">
                 <div class="panel-section">
@@ -798,6 +848,37 @@
     </div>
 
     <!-- ═══ MODALS ═══ -->
+
+    <!-- Beca Modal -->
+    <div class="modal-overlay" id="becaModal">
+        <div class="modal" style="max-width: 600px;">
+            <h3><i class="fas fa-envelope-open-text"></i> Detalles de Solicitud de Beca</h3>
+            <div style="margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <p><strong>Nombre Completo:</strong> <span id="becaName"></span></p>
+                <p><strong>Email:</strong> <span id="becaEmail"></span></p>
+                <p><strong>Teléfono / WhatsApp:</strong> <span id="becaPhone"></span></p>
+                <p><strong>Fecha de Solicitud:</strong> <span id="becaDate"></span></p>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Motivo de la Solicitud</label>
+                <div id="becaReason" style="padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: 6px; min-height: 80px; white-space: pre-wrap;"></div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+                <a href="#" id="becaBtnWhatsApp" target="_blank" class="btn btn-gold" style="background:#25D366; color:white; border:none; text-decoration:none; text-align:center; flex:1; min-width: 150px;">
+                    <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+                </a>
+                <a href="#" id="becaBtnEmail" target="_blank" class="btn btn-secondary" style="text-decoration:none; text-align:center; flex:1; min-width: 150px;">
+                    <i class="fas fa-envelope"></i> Enviar Correo
+                </a>
+            </div>
+
+            <div class="form-actions" style="margin-top: 1.5rem; border-top: 1px solid #eee; padding-top: 1rem;">
+                <button type="button" class="btn btn-danger" onclick="closeBecaModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Curriculum Modal -->
     <div class="modal-overlay" id="curriculumModal">
@@ -1921,6 +2002,58 @@
 
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-paper-plane"></i> Probar';
+        }
+
+        // ─── BECAS LOGIC ─────────────────────────────────────
+        function viewBeca(btn) {
+            const tr = btn.closest('tr');
+            const data = JSON.parse(decodeURIComponent(tr.dataset.beca));
+            
+            document.getElementById('becaName').textContent = data.first_name + ' ' + data.last_name;
+            document.getElementById('becaEmail').textContent = data.email;
+            document.getElementById('becaPhone').textContent = data.phone || '–';
+            document.getElementById('becaReason').textContent = data.reason || 'Sin motivo especificado';
+            
+            let dt = new Date(data.created_at);
+            document.getElementById('becaDate').textContent = dt.toLocaleDateString('es-AR') + ' ' + dt.toLocaleTimeString('es-AR');
+
+            // Email link
+            const emailBtn = document.getElementById('becaBtnEmail');
+            emailBtn.href = `mailto:${data.email}?subject=Respuesta%20a%20tu%20solicitud%20de%20Beca%20-%20Instituto%20INCUYO`;
+
+            // WhatsApp link
+            const waBtn = document.getElementById('becaBtnWhatsApp');
+            if (data.phone) {
+                // Remove non numeric chars except +
+                let num = data.phone.replace(/[^\d+]/g, '');
+                if (!num.startsWith('+')) {
+                    // Assuming Argentina (+549) if not specified, simple normalization
+                    if (num.startsWith('0')) num = num.substring(1);
+                    if (num.startsWith('15')) num = num.substring(2);
+                    if (!num.startsWith('54')) num = '549' + num;
+                }
+                waBtn.href = `https://wa.me/${num}?text=Hola%20${encodeURIComponent(data.first_name)},%20te%20contactamos%20desde%20el%20Instituto%20INCUYO...`;
+                waBtn.style.display = 'block';
+            } else {
+                waBtn.style.display = 'none';
+            }
+
+            document.getElementById('becaModal').classList.add('active');
+        }
+
+        function closeBecaModal() {
+            document.getElementById('becaModal').classList.remove('active');
+        }
+
+        async function deleteBeca(id) {
+            if (!confirm('¿Seguro que querés eliminar esta solicitud?')) return;
+            try {
+                const res = await fetch(`/admin/api/scholarships/${id}`, { method: 'DELETE' });
+                if (res.ok) window.location.reload();
+                else alert('Error al eliminar');
+            } catch (err) {
+                alert('Error de conexión');
+            }
         }
     </script>
 

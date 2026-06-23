@@ -44,7 +44,7 @@ router.get('/logout', (req, res) => {
 // ─── DASHBOARD ───────────────────────────────────────
 router.get('/', requireAdmin, async (req, res) => {
     try {
-        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult, testResult] = await Promise.all([
+        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult, testResult, scholarshipsResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM student_projects ORDER BY year, order_index'),
@@ -53,6 +53,7 @@ router.get('/', requireAdmin, async (req, res) => {
             query("SELECT * FROM configuracion").catch(() => ({ result: [] })),
             query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
             query('SELECT * FROM testimonios ORDER BY order_index').catch(() => ({ result: [] })),
+            query('SELECT * FROM scholarship_applications ORDER BY created_at DESC').catch(() => ({ result: [] })),
         ]);
 
         const curriculum = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
@@ -63,6 +64,7 @@ router.get('/', requireAdmin, async (req, res) => {
         const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
         const certificaciones = certResult?.result || certResult?.results || (Array.isArray(certResult) ? certResult : []);
         const testimonios = testResult?.result || testResult?.results || (Array.isArray(testResult) ? testResult : []);
+        const scholarships = scholarshipsResult?.result || scholarshipsResult?.results || (Array.isArray(scholarshipsResult) ? scholarshipsResult : []);
 
         // Parse tech_tags
         projects.forEach((p) => {
@@ -77,10 +79,10 @@ router.get('/', requireAdmin, async (req, res) => {
         let horario = null;
         try { horario = JSON.parse(config.horario || 'null'); } catch (e) { horario = null; }
 
-        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios, config });
+        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios, scholarships, config });
     } catch (err) {
         console.error('Error load dashboard:', err);
-        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [], config: {} });
+        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [], scholarships: [], config: {} });
     }
 });
 
@@ -186,6 +188,18 @@ router.post('/api/init-tables', requireAdmin, async (req, res) => {
             video_url TEXT,
             order_index INT DEFAULT 0
         )`).catch(() => {});
+        // Crear tabla de becas
+        await query(`CREATE TABLE IF NOT EXISTS scholarship_applications (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            first_name VARCHAR(255) NOT NULL,
+            last_name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            phone VARCHAR(255),
+            reason TEXT,
+            status ENUM('pending', 'reviewed') DEFAULT 'pending',
+            created_at DATETIME DEFAULT NOW()
+        )`).catch(() => {});
+
         // Insert default horario if not exists
         await query(`INSERT IGNORE INTO configuracion (clave, valor) VALUES ('horario', '${JSON.stringify([
             { dia: 'Lunes', abierto: true, apertura: '08:00', cierre: '20:00' },
@@ -432,6 +446,25 @@ router.post('/api/testimonios/:id', requireAdmin, async (req, res) => {
 router.post('/api/testimonios/:id/delete', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM testimonios WHERE id=?`, [parseInt(req.params.id)]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── BECAS (SCHOLARSHIPS) CRUD ────────────────────────
+router.get('/api/scholarships', requireAdmin, async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM scholarship_applications ORDER BY created_at DESC');
+        res.json(result?.result || result?.results || (Array.isArray(result) ? result : []));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/api/scholarships/:id', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM scholarship_applications WHERE id=?`, [parseInt(req.params.id)]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -140,7 +140,7 @@
                                 <p class="section-subtitle" style="color: var(--primary-gold)">
                                     Ciclo Lectivo 2027
                                 </p>
-                                <h2 class="section-title">¡Inscripciones Abiertas con 30%/40%/50% OFF!</h2>
+                                <h2 class="section-title">¡Inscripciones desde Agosto con becas 30%-40%-50% OFF x3 años!</h2>
                             </div>
 
                             <div class="highlight-box reveal">
@@ -149,7 +149,7 @@
                                         <i class="fas fa-graduation-cap"></i> PROGRAMA DE BECAS 2027
                                     </div>
                                     <p style="color: white; font-size: 1.125rem; margin-bottom: 2rem">
-                                        Aprovechá nuestros descuentos especiales para el próximo ciclo lectivo y asegurá tu futuro en el desarrollo de software.
+                                        Unica institucion educativa con apoyo economico para sus alumnos apoyado por empresas de primer nivel.
                                     </p>
                                 </div>
 
@@ -159,7 +159,7 @@
                                         <h3 style="color: white; font-size: 1.25rem; margin-bottom: 0.5rem;">Turno Mañana</h3>
                                         <p class="highlight-item-text">
                                             <strong style="color: var(--primary-gold); font-size: 1.1rem;">De 9hs a 13hs</strong><br>
-                                            Cursado intensivo y focalizado.
+                                            Ideal para aquellos que salen de la secundaraia.
                                         </p>
                                     </div>
 
@@ -168,7 +168,7 @@
                                         <h3 style="color: white; font-size: 1.25rem; margin-bottom: 0.5rem;">Turno Tarde</h3>
                                         <p class="highlight-item-text">
                                             <strong style="color: var(--primary-gold); font-size: 1.1rem;">De 14hs a 17:30hs</strong><br>
-                                            Ideal para combinar con otras actividades.
+                                            Ideal para quienes estudian y trbajan.
                                         </p>
                                     </div>
 
@@ -422,7 +422,7 @@
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                 <div>
                                     <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Edad *</label>
-                                    <input type="number" id="becaInputAge" required min="16" max="99" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu edad" oninput="checkArticulo7()">
+                                    <input type="number" id="becaInputAge" required min="17" max="99" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu edad" oninput="checkArticulo7()">
                                 </div>
                                 <div>
                                     <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">¿Terminó la secundaria? *</label>
@@ -434,7 +434,7 @@
                                 </div>
                             </div>
                             <div id="articulo7Alert" style="display: none; margin-top: 1rem; padding: 0.75rem; background-color: #fef9c3; border-left: 4px solid #eab308; color: #854d0e; font-size: 0.9rem; border-radius: 4px;">
-                                <i class="fas fa-info-circle"></i> <strong>Aviso:</strong> Ingreso por Artículo 7mo de la Ley de Educación Superior (mayor de 25 años sin título secundario).
+                                <i class="fas fa-info-circle"></i> <strong>Aviso:</strong> Como indicaste que no has terminado la secundaria, tu edad mínima para inscribirte debe ser de 25 años en adelante (Ingreso amparado por el Artículo 7mo de la Ley de Educación Superior).
                             </div>
                         </div>
 
@@ -886,13 +886,15 @@
                         }
 
                         function checkArticulo7() {
-                            const age = parseInt(document.getElementById('becaInputAge').value, 10);
+                            const ageInput = document.getElementById('becaInputAge');
                             const hs = document.getElementById('becaInputHS').value;
                             const alertBox = document.getElementById('articulo7Alert');
                             
-                            if (age > 25 && hs === '0') {
+                            if (hs === '0') {
+                                ageInput.min = "25";
                                 alertBox.style.display = 'block';
                             } else {
+                                ageInput.min = "17";
                                 alertBox.style.display = 'none';
                             }
                         }
@@ -918,7 +920,7 @@
                                 .map(cb => cb.value);
 
                             if (checkedShifts.length === 0) {
-                                alert("Por favor seleccione al menos un turno de preferencia.");
+                                showToast("Por favor seleccione al menos un turno de preferencia.", true);
                                 return;
                             }
 
@@ -945,13 +947,13 @@
                                 });
                                 const data = await res.json();
                                 if (data.ok) {
-                                    alert('¡Solicitud enviada con éxito! Te responderemos dentro de las próximas 72 horas.');
+                                    showToast('¡Solicitud enviada con éxito! Te responderemos pronto.');
                                     closeBecaModal();
                                 } else {
-                                    alert('Error al enviar solicitud: ' + (data.error || 'Desconocido'));
+                                    showToast('Error al enviar solicitud: ' + (data.error || 'Desconocido'), true);
                                 }
                             } catch (err) {
-                                alert('Error de conexión. Intente nuevamente.');
+                                showToast('Error de conexión. Intente nuevamente.', true);
                             } finally {
                                 btn.disabled = false;
                                 btn.innerHTML = 'Enviar Solicitud de Beca';
@@ -1215,6 +1217,32 @@
                         }
                     })();
                     </script>
+
+    <!-- Toast Notification -->
+    <div id="customToast" style="visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 10001; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 1rem; opacity: 0; transition: opacity 0.5s, bottom 0.5s;">
+        <span id="customToastMessage">Mensaje</span>
+    </div>
+
+    <script>
+        function showToast(message, isError = false) {
+            const toast = document.getElementById("customToast");
+            const toastMessage = document.getElementById("customToastMessage");
+            toastMessage.textContent = message;
+            if (isError) {
+                toast.style.backgroundColor = "#ef4444"; // Red for error
+            } else {
+                toast.style.backgroundColor = "#22c55e"; // Green for success
+            }
+            toast.style.visibility = "visible";
+            toast.style.opacity = "1";
+            toast.style.bottom = "50px";
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.bottom = "30px";
+                setTimeout(() => { toast.style.visibility = "hidden"; }, 500);
+            }, 3000);
+        }
+    </script>
 </body>
 
 </html>

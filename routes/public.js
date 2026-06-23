@@ -136,23 +136,33 @@ router.get('/', async (req, res) => {
 // GET /diplomaturas — Página completa de diplomaturas
 router.get('/diplomaturas', async (req, res) => {
     try {
-        const result = await query('SELECT * FROM diplomaturas ORDER BY order_index');
+        const [result, configResult] = await Promise.all([
+            query('SELECT * FROM diplomaturas ORDER BY order_index'),
+            query("SELECT * FROM configuracion").catch(() => ({ result: [] }))
+        ]);
         const diplomaturas = result?.result || result?.results || (Array.isArray(result) ? result : []);
         diplomaturas.forEach(d => { d.imagen_url = normalizeImgUrl(d.imagen_url); });
-        res.render('diplomaturas', { diplomaturas });
+
+        const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
+        const configMap = {};
+        configRows.forEach(r => { configMap[r.clave] = r.valor; });
+
+        res.render('diplomaturas', { diplomaturas, config: configMap });
     } catch (err) {
         console.error('Error loading diplomaturas:', err);
-        res.render('diplomaturas', { diplomaturas: [] });
+        res.render('diplomaturas', { diplomaturas: [], config: {} });
     }
 });
 
 // GET /proyectosalumnos — Student Projects
 router.get('/proyectosalumnos', async (req, res) => {
     try {
-        const projResult = await query('SELECT * FROM student_projects ORDER BY year, order_index');
+        const [projResult, testResult, configResult] = await Promise.all([
+            query('SELECT * FROM student_projects ORDER BY year, order_index'),
+            query('SELECT * FROM testimonios ORDER BY order_index').catch(() => ({ result: [] })),
+            query("SELECT * FROM configuracion").catch(() => ({ result: [] }))
+        ]);
         const projRows = projResult?.result || projResult?.results || (Array.isArray(projResult) ? projResult : []);
-
-        const testResult = await query('SELECT * FROM testimonios ORDER BY order_index').catch(() => ({ result: [] }));
         const testimonios = testResult?.result || testResult?.results || (Array.isArray(testResult) ? testResult : []);
 
         const projects = { 1: [], 2: [], 3: [] };
@@ -164,16 +174,29 @@ router.get('/proyectosalumnos', async (req, res) => {
             if (projects[row.year]) projects[row.year].push(row);
         });
 
-        res.render('proyectos', { projects, testimonios });
+        const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
+        const configMap = {};
+        configRows.forEach(r => { configMap[r.clave] = r.valor; });
+
+        res.render('proyectos', { projects, testimonios, config: configMap });
     } catch (err) {
         console.error('Error loading projects:', err);
-        res.render('proyectos', { projects: { 1: [], 2: [], 3: [] }, testimonios: [] });
+        res.render('proyectos', { projects: { 1: [], 2: [], 3: [] }, testimonios: [], config: {} });
     }
 });
 
 // GET /servicios — Servicios tecnológicos integrales INCUYO
-router.get('/servicios', (req, res) => {
-    res.render('Servicios');
+router.get('/servicios', async (req, res) => {
+    try {
+        const configResult = await query("SELECT * FROM configuracion").catch(() => ({ result: [] }));
+        const configRows = configResult?.result || configResult?.results || (Array.isArray(configResult) ? configResult : []);
+        const configMap = {};
+        configRows.forEach(r => { configMap[r.clave] = r.valor; });
+        res.render('Servicios', { config: configMap });
+    } catch (err) {
+        console.error('Error loading servicios:', err);
+        res.render('Servicios', { config: {} });
+    }
 });
 
 // GET /sabermas

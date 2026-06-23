@@ -404,15 +404,15 @@ router.post('/api/chat/session/:sessionKey/send', async (req, res) => {
 // ─── SOLICITUD DE BECAS ──────────────────────────────────────────
 router.post('/api/scholarships', async (req, res) => {
     try {
-        const { first_name, last_name, email, phone, reason } = req.body;
+        const { first_name, last_name, email, phone, reason, age, high_school_finished, preferred_shifts } = req.body;
         
         if (!email) {
             return res.status(400).json({ ok: false, error: 'El correo electrónico es obligatorio' });
         }
 
         await query(
-            `INSERT INTO scholarship_applications (first_name, last_name, email, phone, reason, status, created_at) VALUES (?, ?, ?, ?, ?, 'pending', NOW())`,
-            [first_name || '', last_name || '', email, phone || '', reason || '']
+            `INSERT INTO scholarship_applications (first_name, last_name, email, phone, reason, age, high_school_finished, preferred_shifts, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())`,
+            [first_name || '', last_name || '', email, phone || '', reason || '', age || null, high_school_finished ? 1 : 0, preferred_shifts || '']
         );
 
         res.json({ ok: true });

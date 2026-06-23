@@ -196,6 +196,9 @@ router.post('/api/init-tables', requireAdmin, async (req, res) => {
             email VARCHAR(255) NOT NULL,
             phone VARCHAR(255),
             reason TEXT,
+            age INT,
+            high_school_finished TINYINT(1),
+            preferred_shifts VARCHAR(255),
             status ENUM('pending', 'reviewed') DEFAULT 'pending',
             created_at DATETIME DEFAULT NOW()
         )`).catch(() => {});

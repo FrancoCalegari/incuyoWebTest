@@ -409,7 +409,7 @@
                         <!-- Sección 1: Información Personal -->
                         <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
                             <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-user"></i> 1. Información Personal</h3>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                                 <div>
                                     <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Nombre *</label>
                                     <input type="text" id="becaInputFirstName" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu nombre">
@@ -419,11 +419,42 @@
                                     <input type="text" id="becaInputLastName" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu apellido">
                                 </div>
                             </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Edad *</label>
+                                    <input type="number" id="becaInputAge" required min="16" max="99" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu edad" oninput="checkArticulo7()">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">¿Terminó la secundaria? *</label>
+                                    <select id="becaInputHS" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; background: white;" onchange="checkArticulo7()">
+                                        <option value="" disabled selected>Seleccione</option>
+                                        <option value="1">Sí</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="articulo7Alert" style="display: none; margin-top: 1rem; padding: 0.75rem; background-color: #fef9c3; border-left: 4px solid #eab308; color: #854d0e; font-size: 0.9rem; border-radius: 4px;">
+                                <i class="fas fa-info-circle"></i> <strong>Aviso:</strong> Ingreso por Artículo 7mo de la Ley de Educación Superior (mayor de 25 años sin título secundario).
+                            </div>
                         </div>
 
-                        <!-- Sección 2: Motivo -->
+                        <!-- Sección 2: Preferencia y Motivo -->
                         <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
-                            <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-pen"></i> 2. Motivo de la Solicitud</h3>
+                            <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-pen"></i> 2. Preferencia de Horario y Motivo</h3>
+                            
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: #64748b;">Turnos de preferencia (Mínimo 1, Máximo 2) *</label>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #334155; cursor: pointer;">
+                                    <input type="checkbox" class="becaShiftCb" value="Mañana" onchange="checkShifts()"> Mañana
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #334155; cursor: pointer;">
+                                    <input type="checkbox" class="becaShiftCb" value="Tarde" onchange="checkShifts()"> Tarde
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #334155; cursor: pointer;">
+                                    <input type="checkbox" class="becaShiftCb" value="Vespertino" onchange="checkShifts()"> Vespertino
+                                </label>
+                            </div>
+
                             <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">¿Por qué solicitás la beca? *</label>
                             <textarea id="becaInputReason" required rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; resize: vertical;" placeholder="Contanos brevemente tu situación..."></textarea>
                         </div>
@@ -851,10 +882,46 @@
                             document.getElementById('publicBecaModal').classList.remove('active');
                             document.body.style.overflow = '';
                             document.getElementById('becaForm').reset();
+                            document.getElementById('articulo7Alert').style.display = 'none';
+                        }
+
+                        function checkArticulo7() {
+                            const age = parseInt(document.getElementById('becaInputAge').value, 10);
+                            const hs = document.getElementById('becaInputHS').value;
+                            const alertBox = document.getElementById('articulo7Alert');
+                            
+                            if (age > 25 && hs === '0') {
+                                alertBox.style.display = 'block';
+                            } else {
+                                alertBox.style.display = 'none';
+                            }
+                        }
+
+                        function checkShifts() {
+                            const cbs = document.querySelectorAll('.becaShiftCb');
+                            let checkedCount = 0;
+                            cbs.forEach(cb => {
+                                if (cb.checked) checkedCount++;
+                            });
+                            cbs.forEach(cb => {
+                                if (!cb.checked) {
+                                    cb.disabled = checkedCount >= 2;
+                                }
+                            });
                         }
 
                         async function submitBeca(e) {
                             e.preventDefault();
+                            
+                            const checkedShifts = Array.from(document.querySelectorAll('.becaShiftCb'))
+                                .filter(cb => cb.checked)
+                                .map(cb => cb.value);
+
+                            if (checkedShifts.length === 0) {
+                                alert("Por favor seleccione al menos un turno de preferencia.");
+                                return;
+                            }
+
                             const btn = document.getElementById('becaSubmitBtn');
                             btn.disabled = true;
                             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
@@ -864,7 +931,10 @@
                                 last_name: document.getElementById('becaInputLastName').value.trim(),
                                 reason: document.getElementById('becaInputReason').value.trim(),
                                 email: document.getElementById('becaInputEmail').value.trim(),
-                                phone: document.getElementById('becaInputPhone').value.trim()
+                                phone: document.getElementById('becaInputPhone').value.trim(),
+                                age: parseInt(document.getElementById('becaInputAge').value, 10),
+                                high_school_finished: document.getElementById('becaInputHS').value === '1',
+                                preferred_shifts: checkedShifts.join(', ')
                             };
 
                             try {

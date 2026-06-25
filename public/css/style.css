@@ -48,7 +48,7 @@
 	/* Font Sizes */
 	--text-xs: 0.75rem;
 	/* 12px */
-	--text-sm: 0.875rem;
+	--text-sm: 1rem;
 	/* 14px */
 	--text-base: 1rem;
 	/* 16px */
@@ -2131,7 +2131,7 @@ a:hover {
 }
 
 .servicios-incuyo__title {
-	font-size: clamp(2rem, 5vw, 3.25rem);
+	font-size: clamp(1rem, 5vw, 2.25rem);
 	color: var(--white);
 	margin-bottom: 1.5rem;
 	letter-spacing: -0.5px;

@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const { query } = require('../lib/spider');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID: uuidv4 } = require('crypto');
 const nodemailer = require('nodemailer');
 
 // ─── Email transporter ───────────────────────────────

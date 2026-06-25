@@ -280,7 +280,7 @@ a:hover {
 }
 
 .navbar-logo {
-	height: 42px;
+	height: 12vh;
 	max-width: 160px;
 	width: auto;
 	object-fit: contain;

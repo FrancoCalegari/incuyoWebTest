@@ -28,14 +28,14 @@
                 <span></span>
             </button>
 
-            <ul class="navbar-menu" id="navbarMenu">
-                <!-- <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#inscripciones">Inscripciones</a></li> -->
+            <!--<ul class="navbar-menu" id="navbarMenu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#inscripciones">Inscripciones</a></li>
                 <li><a href="/diplomaturas">Diplomaturas</a></li>
                 <li>
                     <a href="<%= config.campus_virtual_url || 'https://aula.incuyo.edu.ar/' %>" target="_blank" class="campus-link">Campus Virtual</a>
-                </li>
-            </ul>
+                </li> 
+            </ul>-->
         </div>
     </nav>
 
@@ -172,8 +172,8 @@
                     <div class="cert-card-body">
                         <div class="cert-item"><i class="fab fa-linux"></i> Sistemas Operativos (Linux-Windows)</div>
                         <div class="cert-item"><i class="fas fa-building"></i> Sistemas de Programación Pymes</div>
-                        <div class="cert-item"><i class="fas fa-project-diagram"></i> Análisis y Técnicas de Sistemas
-                        </div>
+                        <div class="cert-item"><i class="fas fa-project-diagram"></i> Análisis y Técnicas de Sistemas</div>
+                        <div class="cert-item"><i class="fas fa-cloud"></i> Inteligencia Artificial en la Nube</div>
                     </div>
                 </div>
 
@@ -187,7 +187,7 @@
                         </div>
                         <div class="cert-item"><i class="fas fa-database"></i> WEB SITE con Bases de Datos Dinámicas
                         </div>
-                        <div class="cert-item"><i class="fas fa-cloud"></i> Inteligencia Artificial en la Nube</div>
+                        <div class="cert-item"><i class="fas fa-robot"></i> Experto en Inteligencia Artificial Senior</div>
                     </div>
                 </div>
             </div>
@@ -221,6 +221,9 @@
                         <li><i class="fas fa-robot"></i> Inteligencia Artificial integrada en todas las materias</li>
                         <li><i class="fas fa-chalkboard-teacher"></i> Docentes con experiencia real en la industria</li>
                         <li><i class="fas fa-users"></i> Proyectos reales desde el primer año</li>
+                        <li><i class="fas fa-clock"></i> 3 clases Bimodal y 2 clases asíncronicas semanales</li>
+                        <li><i class="fas fa-computer"></i> Prácticas en laboratorio desde la primer semana hasta la última</li>
+                        <li><i class="fas fa-flag"></i> Garantía de aprendizaje (1 Clase semanal de apoyo)</li>
                     </ul>
                 </div>
             </div>
@@ -261,10 +264,10 @@
             <h2>¿Listo para empezar tu futuro?</h2>
             <p>Consultá por inscripciones, becas y toda la información que necesitás para dar el primer paso</p>
             <div class="final-cta-btns">
-                <a href="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>"
-                    class="btn btn-gold btn-lg" target="_blank">
-                    <i class="fab fa-whatsapp"></i> Consultá por WhatsApp
-                </a>
+                <button class="btn btn-gold btn-lg" onclick="openBecaModal()"
+                    style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+                    <i class="fas fa-envelope-open-text"></i> Solicitar Beca Ahora
+                </button>
                 <a href="/" class="btn btn-secondary btn-lg">
                     <i class="fas fa-arrow-left"></i> Volver al Inicio
                 </a>

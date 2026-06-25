@@ -44,7 +44,7 @@ router.get('/logout', (req, res) => {
 // ─── DASHBOARD ───────────────────────────────────────
 router.get('/', requireAdmin, async (req, res) => {
     try {
-        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult, testResult, scholarshipsResult] = await Promise.all([
+        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult, testResult, scholarshipsResult, reviewsResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM student_projects ORDER BY year, order_index'),
@@ -54,6 +54,7 @@ router.get('/', requireAdmin, async (req, res) => {
             query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
             query('SELECT * FROM testimonios ORDER BY order_index').catch(() => ({ result: [] })),
             query('SELECT * FROM scholarship_applications ORDER BY created_at DESC').catch(() => ({ result: [] })),
+            query('SELECT * FROM student_reviews ORDER BY created_at DESC').catch(() => ({ result: [] })),
         ]);
 
         const curriculum = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
@@ -65,6 +66,7 @@ router.get('/', requireAdmin, async (req, res) => {
         const certificaciones = certResult?.result || certResult?.results || (Array.isArray(certResult) ? certResult : []);
         const testimonios = testResult?.result || testResult?.results || (Array.isArray(testResult) ? testResult : []);
         const scholarships = scholarshipsResult?.result || scholarshipsResult?.results || (Array.isArray(scholarshipsResult) ? scholarshipsResult : []);
+        const studentReviews = reviewsResult?.result || reviewsResult?.results || (Array.isArray(reviewsResult) ? reviewsResult : []);
 
         // Parse tech_tags
         projects.forEach((p) => {
@@ -79,10 +81,10 @@ router.get('/', requireAdmin, async (req, res) => {
         let horario = null;
         try { horario = JSON.parse(config.horario || 'null'); } catch (e) { horario = null; }
 
-        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios, scholarships, config });
+        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios, scholarships, studentReviews, config });
     } catch (err) {
         console.error('Error load dashboard:', err);
-        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [], scholarships: [], config: {} });
+        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [], scholarships: [], studentReviews: [], config: {} });
     }
 });
 
@@ -200,6 +202,16 @@ router.post('/api/init-tables', requireAdmin, async (req, res) => {
             high_school_finished TINYINT(1),
             preferred_shifts VARCHAR(255),
             status ENUM('pending', 'reviewed') DEFAULT 'pending',
+            created_at DATETIME DEFAULT NOW()
+        )`).catch(() => {});
+
+        // Crear tabla de comentarios de alumnos
+        await query(`CREATE TABLE IF NOT EXISTS student_reviews (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            student_name VARCHAR(255) NOT NULL,
+            description TEXT NOT NULL,
+            photo_url TEXT,
+            status VARCHAR(20) DEFAULT 'pending',
             created_at DATETIME DEFAULT NOW()
         )`).catch(() => {});
 
@@ -449,6 +461,38 @@ router.post('/api/testimonios/:id', requireAdmin, async (req, res) => {
 router.post('/api/testimonios/:id/delete', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM testimonios WHERE id=?`, [parseInt(req.params.id)]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── COMENTARIOS ALUMNOS (STUDENT REVIEWS) CRUD ────────────────────────
+router.get('/api/reviews', requireAdmin, async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM student_reviews ORDER BY created_at DESC');
+        res.json(result?.result || result?.results || (Array.isArray(result) ? result : []));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/api/reviews/:id/status', requireAdmin, async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['approved', 'rejected', 'pending'].includes(status)) {
+            return res.status(400).json({ error: 'Estado inválido' });
+        }
+        await query(`UPDATE student_reviews SET status=? WHERE id=?`, [status, parseInt(req.params.id)]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/api/reviews/:id', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM student_reviews WHERE id=?`, [parseInt(req.params.id)]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

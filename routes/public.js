@@ -3,9 +3,23 @@
  */
 const express = require('express');
 const router = express.Router();
-const { query } = require('../lib/spider');
+const { query, uploadFile } = require('../lib/spider');
 const { randomUUID: uuidv4 } = require('crypto');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+const photoUpload = multer({
+    storage: multer.diskStorage({
+        destination: path.join(__dirname, '../public/uploads'),
+        filename: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            cb(null, 'review-' + Date.now() + '-' + Math.round(Math.random() * 1E9) + ext);
+        }
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB máximo para fotos
+});
 
 // ─── Email transporter ───────────────────────────────
 function createTransporter() {
@@ -82,13 +96,14 @@ function normalizeImgUrl(url) {
 // GET / — Landing page
 router.get('/', async (req, res) => {
     try {
-        const [currResult, scResult, diplomResult, pasResult, configResult, certResult] = await Promise.all([
+        const [currResult, scResult, diplomResult, pasResult, configResult, certResult, reviewsResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM diplomaturas WHERE destacado=1 ORDER BY order_index LIMIT 6').catch(() => ({ result: [] })),
             query('SELECT * FROM pasantias_empresas ORDER BY order_index').catch(() => ({ result: [] })),
             query("SELECT * FROM configuracion").catch(() => ({ result: [] })),
             query('SELECT * FROM certificaciones_laborales ORDER BY year, order_index').catch(() => ({ result: [] })),
+            query("SELECT * FROM student_reviews WHERE status='approved' ORDER BY created_at DESC").catch(() => ({ result: [] })),
         ]);
 
         const currRows = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
@@ -118,7 +133,10 @@ router.get('/', async (req, res) => {
             if (certificaciones[row.year]) certificaciones[row.year].push(row);
         });
 
-        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario, certificaciones, config: configMap });
+        const approvedReviews = reviewsResult?.result || reviewsResult?.results || (Array.isArray(reviewsResult) ? reviewsResult : []);
+        approvedReviews.forEach(r => { r.photo_url = normalizeImgUrl(r.photo_url); });
+
+        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario, certificaciones, config: configMap, reviews: approvedReviews });
     } catch (err) {
         console.error('Error loading landing page:', err);
         res.render('index', {
@@ -128,7 +146,8 @@ router.get('/', async (req, res) => {
             pasantias: [],
             horario: null,
             certificaciones: { 1: [], 2: [], 3: [] },
-            config: {}
+            config: {},
+            reviews: []
         });
     }
 });
@@ -251,7 +270,8 @@ router.get('/api/storage/files/:id', async (req, res) => {
         const contentType = response.headers.get('content-type');
         if (contentType) res.setHeader('Content-Type', contentType);
 
-        response.body.pipe(res);
+        const { Readable } = require('stream');
+        Readable.fromWeb(response.body).pipe(res);
     } catch (err) {
         console.error('Error proxying image:', err);
         res.status(500).send('Internal Server Error proxying image');
@@ -421,5 +441,75 @@ router.post('/api/scholarships', async (req, res) => {
         res.status(500).json({ ok: false, error: err.message });
     }
 });
+
+// ─── COMENTARIOS ALUMNOS (STUDENT REVIEWS) PÚBLICOS ────────────────────────
+router.post('/api/reviews/upload-photo', photoUpload.single('photo'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ ok: false, error: 'No se envíó archivo' });
+
+        const fileBuffer = fs.readFileSync(req.file.path);
+        const uploaded = await uploadFile(fileBuffer, req.file.originalname, req.file.mimetype);
+        fs.unlinkSync(req.file.path);
+
+        // Devolver URL normalizada (proxy interno)
+        const url = `/api/storage/files/${uploaded.id}`;
+        res.json({ ok: true, url });
+    } catch (err) {
+        console.error('❌ Error subiendo foto de review:', err);
+        // Si falla el cloud, intentar guardar localmente
+        if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+            const localUrl = `/uploads/${req.file.filename}`;
+            return res.json({ ok: true, url: localUrl });
+        }
+        res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/api/reviews', async (req, res) => {
+    try {
+        const { student_name, description, photo_url } = req.body;
+
+        if (!student_name || !student_name.trim()) {
+            return res.status(400).json({ ok: false, error: 'El nombre es obligatorio' });
+        }
+        if (!description || !description.trim()) {
+            return res.status(400).json({ ok: false, error: 'La descripción es obligatoria' });
+        }
+
+        // Validar máx 230 palabras
+        const wordCount = description.trim().split(/\s+/).filter(Boolean).length;
+        if (wordCount > 230) {
+            return res.status(400).json({ ok: false, error: 'La descripción no puede superar las 230 palabras' });
+        }
+
+        // Auto-crear la tabla si no existe todavía
+        await ensureReviewsTable();
+
+        await query(
+            `INSERT INTO student_reviews (student_name, description, photo_url, status, created_at) VALUES (?, ?, ?, 'pending', NOW())`,
+            [student_name.trim(), description.trim(), photo_url || null]
+        );
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('❌ Error en review submit:', err);
+        res.status(500).json({ ok: false, error: 'No se pudo guardar el comentario. Intentá de nuevo más tarde.' });
+    }
+});
+
+async function ensureReviewsTable() {
+    try {
+        await query(`CREATE TABLE IF NOT EXISTS student_reviews (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            student_name VARCHAR(255) NOT NULL,
+            description TEXT NOT NULL,
+            photo_url TEXT,
+            status VARCHAR(20) DEFAULT 'pending',
+            created_at DATETIME DEFAULT NOW()
+        )`);
+    } catch (e) {
+        // Si falla CREATE TABLE (ej. ya existe), ignorar
+    }
+}
 
 module.exports = router;

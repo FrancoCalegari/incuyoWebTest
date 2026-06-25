@@ -664,7 +664,58 @@
                         </div>
                     </section>
 
-                    
+                    <!-- STUDENT REVIEWS SECTION -->
+                    <section class="section reviews-section" id="comentarios">
+                        <div class="container">
+                            <div class="section-header">
+                                <p class="section-subtitle" style="color: var(--primary-gold)">Voces de nuestra comunidad</p>
+                                <h2 class="section-title">Lo que dicen nuestros alumnos</h2>
+                                <p class="section-description">Experiencias reales de quienes ya eligieron formarse con nosotros.</p>
+                                <button class="btn btn-gold btn-lg reveal" style="margin-top: 1.5rem;" onclick="openReviewModal()">
+                                    <i class="fas fa-comment-alt"></i> Compartir mi experiencia
+                                </button>
+                            </div>
+
+                            <% if (reviews && reviews.length > 0) { %>
+                            <div class="reviews-grid reveal">
+                                <% reviews.forEach(function(review) { %>
+                                <article class="review-card">
+                                    <div class="review-card__top">
+                                        <div class="review-card__avatar">
+                                            <% if (review.photo_url) { %>
+                                                <img src="<%= review.photo_url %>" alt="<%= review.student_name %>" loading="lazy" />
+                                            <% } else { %>
+                                                <div class="review-card__avatar-placeholder">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                        <div class="review-card__info">
+                                            <h3 class="review-card__name"><%= review.student_name %></h3>
+                                            <div class="review-card__stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-card__quote">
+                                        <i class="fas fa-quote-left review-card__quote-icon"></i>
+                                        <p class="review-card__text"><%= review.description %></p>
+                                    </div>
+                                </article>
+                                <% }); %>
+                            </div>
+                            <% } else { %>
+                            <div class="reviews-empty reveal">
+                                <div class="reviews-empty__icon"><i class="fas fa-comments"></i></div>
+                                <p class="reviews-empty__text">S&eacute; el primero en compartir tu experiencia en INCUYO.</p>
+                            </div>
+                            <% } %>
+                        </div>
+                    </section>
 
                     <!-- LOCATION SECTION -->
                     <section class="section location" id="ubicacion">
@@ -783,6 +834,58 @@
                     </footer>
 
                     <!-- WHATSAPP FLOATING BUTTON -->
+
+                    <!-- REVIEW MODAL -->
+                    <div class="diplom-modal-overlay" id="reviewModal" style="z-index: 10000;" onclick="closeReviewModal()">
+                        <div class="diplom-modal" onclick="event.stopPropagation()" style="max-width: 620px; background: #fff; padding: 2rem; border-radius: 14px; max-height: 90vh; overflow-y: auto;">
+                            <button class="diplom-modal-close" onclick="closeReviewModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+
+                            <h2 style="color: #10182c; margin-bottom: 0.5rem; text-align: center; font-size: 1.8rem;">
+                                <i class="fas fa-comment-alt" style="color: var(--primary-gold);"></i> Compartir mi experiencia
+                            </h2>
+                            <p style="color: #64748b; text-align: center; font-size: 0.95rem; margin-bottom: 1.5rem;">Tu comentario será revisado antes de publicarse.</p>
+
+                            <form id="reviewForm" onsubmit="submitReview(event)">
+                                <!-- Foto -->
+                                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem;">
+                                    <div id="reviewPhotoPreview" style="width: 100px; height: 100px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #94a3b8; overflow: hidden; margin-bottom: 0.75rem; border: 3px solid var(--primary-gold);">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <label for="reviewPhotoInput" class="btn btn-outline-primary" style="cursor: pointer; font-size: 0.9rem; padding: 0.5rem 1.2rem; border: 2px solid #10182c; border-radius: 6px; background: transparent; color: #10182c;">
+                                        <i class="fas fa-camera"></i> Subir foto (opcional)
+                                    </label>
+                                    <input type="file" id="reviewPhotoInput" accept="image/*" style="display: none;" onchange="previewReviewPhoto(event)">
+                                    <p id="reviewPhotoStatus" style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.4rem;"></p>
+                                </div>
+
+                                <!-- Nombre -->
+                                <div style="margin-bottom: 1.2rem;">
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b; font-weight: 600;">Nombre completo *</label>
+                                    <input type="text" id="reviewInputName" required maxlength="100" placeholder="Tu nombre" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+                                </div>
+
+                                <!-- Descripción -->
+                                <div style="margin-bottom: 1rem;">
+                                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b; font-weight: 600;">Tu opinión / experiencia *</label>
+                                    <textarea id="reviewInputDesc" required rows="6" placeholder="Contános tu experiencia en INCUYO..." oninput="updateWordCount()" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; resize: vertical; box-sizing: border-box; font-family: inherit;"></textarea>
+                                    <div style="display: flex; justify-content: flex-end; margin-top: 0.3rem;">
+                                        <span id="reviewWordCount" style="font-size: 0.82rem; color: #94a3b8;">0 / 230 palabras</span>
+                                    </div>
+                                </div>
+
+                                <p style="font-size: 0.83rem; color: #94a3b8; margin-bottom: 1rem; text-align: center;">
+                                    <i class="fas fa-shield-alt"></i> Tu comentario pasará por una revisión antes de publicarse.
+                                </p>
+
+                                <button type="submit" id="reviewSubmitBtn" class="btn btn-gold btn-lg" style="width: 100%; font-size: 1.05rem;">
+                                    <i class="fas fa-paper-plane"></i> Enviar comentario
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- / REVIEW MODAL -->
                     <div class="whatsapp-float">
                         <!-- AI CHATBOT BUTTON -->
                         <button class="ai-chat-btn" id="aiChatBtn" aria-label="Hablar con el Asistente IA"
@@ -972,6 +1075,121 @@
                                 });
                             }
                         });
+
+                        // ─── REVIEW MODAL LOGIC ──────────────────────────────────
+                        var _reviewPhotoUrl = null;
+
+                        function openReviewModal() {
+                            document.getElementById('reviewModal').classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        }
+
+                        function closeReviewModal() {
+                            document.getElementById('reviewModal').classList.remove('active');
+                            document.body.style.overflow = '';
+                            document.getElementById('reviewForm').reset();
+                            document.getElementById('reviewWordCount').textContent = '0 / 230 palabras';
+                            document.getElementById('reviewWordCount').style.color = '#94a3b8';
+                            var prev = document.getElementById('reviewPhotoPreview');
+                            prev.innerHTML = '<i class="fas fa-user"></i>';
+                            prev.style.background = '#e2e8f0';
+                            document.getElementById('reviewPhotoStatus').textContent = '';
+                            _reviewPhotoUrl = null;
+                        }
+
+                        function previewReviewPhoto(event) {
+                            const file = event.target.files[0];
+                            if (!file) return;
+                            if (file.size > 5 * 1024 * 1024) {
+                                showToast('La foto no puede superar los 5MB.', true);
+                                return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const prev = document.getElementById('reviewPhotoPreview');
+                                prev.innerHTML = '<img src="' + e.target.result + '" alt="Preview" style="width:100%;height:100%;object-fit:cover;">';
+                            };
+                            reader.readAsDataURL(file);
+                            document.getElementById('reviewPhotoStatus').textContent = 'Foto seleccionada: ' + file.name;
+                        }
+
+                        function updateWordCount() {
+                            const desc = document.getElementById('reviewInputDesc');
+                            const counter = document.getElementById('reviewWordCount');
+                            const words = desc.value.trim().split(/\s+/).filter(Boolean).length;
+                            counter.textContent = words + ' / 230 palabras';
+                            if (words > 230) {
+                                counter.style.color = '#ef4444';
+                                desc.style.borderColor = '#ef4444';
+                            } else if (words > 200) {
+                                counter.style.color = '#f59e0b';
+                                desc.style.borderColor = '#f59e0b';
+                            } else {
+                                counter.style.color = '#94a3b8';
+                                desc.style.borderColor = '#cbd5e1';
+                            }
+                        }
+
+                        async function submitReview(e) {
+                            e.preventDefault();
+
+                            const desc = document.getElementById('reviewInputDesc').value.trim();
+                            const wordCount = desc.split(/\s+/).filter(Boolean).length;
+                            if (wordCount > 230) {
+                                showToast('Tu descripción supera las 230 palabras. Por favor, reducila.', true);
+                                return;
+                            }
+
+                            const btn = document.getElementById('reviewSubmitBtn');
+                            btn.disabled = true;
+                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+                            try {
+                                // 1. Subir foto si fue seleccionada
+                                let photoUrl = null;
+                                const photoFile = document.getElementById('reviewPhotoInput').files[0];
+                                if (photoFile) {
+                                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo foto...';
+                                    const formData = new FormData();
+                                    formData.append('photo', photoFile);
+                                    const uploadRes = await fetch('/api/reviews/upload-photo', {
+                                        method: 'POST',
+                                        body: formData
+                                    });
+                                    const uploadData = await uploadRes.json();
+                                    if (uploadData.ok) {
+                                        photoUrl = uploadData.url;
+                                    }
+                                    // Si falla la subida de foto, continuamos sin foto (no bloqueante)
+                                }
+
+                                // 2. Enviar el comentario
+                                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+                                const payload = {
+                                    student_name: document.getElementById('reviewInputName').value.trim(),
+                                    description: desc,
+                                    photo_url: photoUrl
+                                };
+
+                                const res = await fetch('/api/reviews', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(payload)
+                                });
+                                const data = await res.json();
+                                if (data.ok) {
+                                    showToast('¡Gracias! Tu comentario está en revisión y será publicado pronto.');
+                                    closeReviewModal();
+                                } else {
+                                    showToast('Error: ' + (data.error || 'No se pudo enviar.'), true);
+                                }
+                            } catch (err) {
+                                showToast('Error de conexión. Intente nuevamente.', true);
+                            } finally {
+                                btn.disabled = false;
+                                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar comentario';
+                            }
+                        }
 
                         // ─── Pasantías Carousel (CSS, igual que tech-carousel) ───
                         // No requiere JS — animado por CSS con keyframes

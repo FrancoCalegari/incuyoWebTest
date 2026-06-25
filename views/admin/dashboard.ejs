@@ -36,6 +36,7 @@
                 <li><a href="#" data-panel="textos"><i class="fas fa-font"></i> Textos Fijos</a></li>
                 <li><a href="#" data-panel="ia"><i class="fas fa-robot"></i> Estado IA</a></li>
                 <li><a href="#" data-panel="becas"><i class="fas fa-envelope-open-text"></i> Becas</a></li>
+                <li><a href="#" data-panel="reviews"><i class="fas fa-comment-alt"></i> Comentarios</a></li>
                 <li><a href="#" data-panel="livechat" id="livechatSidebarLink"><i class="fas fa-comments"></i> Chat en Vivo <span class="livechat-badge" id="livechatBadge" style="display:none;"></span></a></li>
             </ul>
 
@@ -778,6 +779,99 @@
                         <div style="text-align:center; padding: 3rem; color: #999;">
                             <i class="fas fa-envelope-open" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
                             <p>No hay solicitudes de becas recibidas aún.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- ═══ COMENTARIOS ALUMNOS PANEL ═══ -->
+            <div class="panel" id="panel-reviews">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-comment-alt"></i> Comentarios de Alumnos</h3>
+                        <span style="background: #f59e0b; color: #000; font-size: 0.78rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 999px;">
+                            <%= (typeof studentReviews !== 'undefined' ? studentReviews.filter(r => r.status === 'pending').length : 0) %> pendientes
+                        </span>
+                    </div>
+                    <p style="color:#888; font-size:0.88rem; margin-bottom:1.5rem;">
+                        Aprobá, rechazá o eliminá los comentarios enviados por los alumnos. Solo los <strong>aprobados</strong> aparecen en la página de inicio.
+                    </p>
+
+                    <% if (typeof studentReviews !== 'undefined' && studentReviews.length > 0) { %>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">Foto</th>
+                                    <th>Alumno</th>
+                                    <th>Comentario</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th style="text-align:right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% studentReviews.forEach(function(r) {
+                                    let dt = new Date(r.created_at);
+                                    let dateStr = dt.toLocaleDateString('es-AR') + ' ' + dt.toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'});
+                                    let photoUrl = r.photo_url || '';
+                                    if (photoUrl && photoUrl.includes('/api/v1/storage/files/')) {
+                                        const fileId = photoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                        photoUrl = `/api/storage/files/${fileId}`;
+                                    }
+                                %>
+                                    <tr data-id="<%= r.id %>">
+                                        <td>
+                                            <% if (photoUrl) { %>
+                                                <img src="<%= photoUrl %>" alt="<%= r.student_name %>"
+                                                    style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid #e2e8f0;">
+                                            <% } else { %>
+                                                <div style="width:44px; height:44px; border-radius:50%; background:#334155; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:1.2rem;">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            <% } %>
+                                        </td>
+                                        <td><strong><%= r.student_name %></strong></td>
+                                        <td>
+                                            <span style="font-size:0.85rem; color:#ccc; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:280px;">
+                                                <%= r.description %>
+                                            </span>
+                                        </td>
+                                        <td><span style="font-size:0.82rem; color:#666;"><%= dateStr %></span></td>
+                                        <td>
+                                            <% if (r.status === 'pending') { %>
+                                                <span style="background:#fef3c7; color:#92400e; padding:0.2rem 0.6rem; border-radius:999px; font-size:0.78rem; font-weight:600;">⏳ Pendiente</span>
+                                            <% } else if (r.status === 'approved') { %>
+                                                <span style="background:#d1fae5; color:#065f46; padding:0.2rem 0.6rem; border-radius:999px; font-size:0.78rem; font-weight:600;">✅ Aprobado</span>
+                                            <% } else { %>
+                                                <span style="background:#fee2e2; color:#991b1b; padding:0.2rem 0.6rem; border-radius:999px; font-size:0.78rem; font-weight:600;">❌ Rechazado</span>
+                                            <% } %>
+                                        </td>
+                                        <td style="text-align:right; white-space:nowrap;">
+                                            <% if (r.status !== 'approved') { %>
+                                            <button class="btn btn-sm" style="background:#059669; color:#fff; border:none; margin-right:0.3rem;"
+                                                onclick="reviewSetStatus(<%= r.id %>, 'approved', this)">
+                                                <i class="fas fa-check"></i> Aprobar
+                                            </button>
+                                            <% } %>
+                                            <% if (r.status !== 'rejected') { %>
+                                            <button class="btn btn-sm" style="background:#d97706; color:#fff; border:none; margin-right:0.3rem;"
+                                                onclick="reviewSetStatus(<%= r.id %>, 'rejected', this)">
+                                                <i class="fas fa-times"></i> Rechazar
+                                            </button>
+                                            <% } %>
+                                            <button class="btn btn-danger btn-sm"
+                                                onclick="reviewDelete(<%= r.id %>, this)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <div style="text-align:center; padding: 3rem; color: #999;">
+                            <i class="fas fa-comment-slash" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+                            <p>Todavía no hay comentarios enviados por alumnos.</p>
                         </div>
                     <% } %>
                 </div>
@@ -2068,6 +2162,62 @@
                 else alert('Error al eliminar');
             } catch (err) {
                 alert('Error de conexión');
+            }
+        }
+
+        // ─── COMENTARIOS ALUMNOS ─────────────────────────────────
+        async function reviewSetStatus(id, status, btn) {
+            const label = status === 'approved' ? 'aprobar' : 'rechazar';
+            if (!confirm(`¿Seguro que querés ${label} este comentario?`)) return;
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            try {
+                const res = await fetch(`/admin/api/reviews/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (data.error || 'desconocido'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            } catch (err) {
+                alert('Error de conexión');
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+
+        async function reviewDelete(id, btn) {
+            if (!confirm('¿Eliminar este comentario permanentemente?')) return;
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            try {
+                const res = await fetch(`/admin/api/reviews/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    // Remover fila de la tabla
+                    const row = btn.closest('tr');
+                    if (row) {
+                        row.style.opacity = '0';
+                        row.style.transition = 'opacity 0.4s';
+                        setTimeout(() => row.remove(), 400);
+                    }
+                } else {
+                    alert('Error: ' + (data.error || 'desconocido'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            } catch (err) {
+                alert('Error de conexión');
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
             }
         }
     </script>

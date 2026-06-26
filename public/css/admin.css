@@ -71,34 +71,128 @@ body {
 .sidebar-nav {
     list-style: none;
     flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Scrollbar discreta */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(195, 146, 21, 0.3) transparent;
+    padding-right: 2px;
+    margin-right: -4px;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(195, 146, 21, 0.3);
+    border-radius: 99px;
 }
 
 .sidebar-nav li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.1rem;
 }
 
+/* ─── Separadores de Categoría ─────────────── */
+.sidebar-nav li.nav-category {
+    margin-top: 1.25rem;
+    margin-bottom: 0.4rem;
+    padding: 0 0.25rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.sidebar-nav li.nav-category:first-child {
+    margin-top: 0;
+}
+
+.sidebar-nav li.nav-category span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0.6;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    transition: opacity 0.18s, background 0.18s;
+}
+
+.sidebar-nav li.nav-category:hover span {
+    opacity: 0.9;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.sidebar-nav li.nav-category .nav-cat-icon {
+    font-size: 0.65rem;
+    opacity: 0.8;
+}
+
+/* Chevron de colapso */
+.sidebar-nav li.nav-category .nav-cat-chevron {
+    margin-left: auto;
+    font-size: 0.6rem;
+    opacity: 0.5;
+    transition: transform 0.25s ease;
+}
+
+/* Cuando la categoría está colapsada, rota el chevron */
+.sidebar-nav li.nav-category.collapsed .nav-cat-chevron {
+    transform: rotate(-90deg);
+}
+
+/* Ítems colapsados de una categoría */
+.sidebar-nav li.nav-cat-item {
+    overflow: hidden;
+    max-height: 60px;
+    transition: max-height 0.25s ease, opacity 0.2s ease, margin 0.2s ease;
+    opacity: 1;
+}
+
+.sidebar-nav li.nav-cat-item.cat-hidden {
+    max-height: 0 !important;
+    opacity: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+}
+
+/* ─── Links del nav ──────────────────────── */
 .sidebar-nav a {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius);
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    border-left: 3px solid transparent;
+    position: relative;
 }
 
-.sidebar-nav a:hover,
+.sidebar-nav a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-white);
+    border-left-color: rgba(195, 146, 21, 0.35);
+}
+
 .sidebar-nav a.active {
     background: rgba(195, 146, 21, 0.12);
     color: var(--primary-gold);
+    border-left-color: var(--primary-gold);
+    font-weight: 600;
 }
 
 .sidebar-nav a i {
-    width: 20px;
+    width: 18px;
     text-align: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
 }
 
 .sidebar-bottom {
@@ -864,3 +958,179 @@ body {
     flex: 1;
     min-height: 56px;
 }
+
+/* ─── Panel Control Visibilidad de Becas ──────── */
+.beca-visibility-card {
+    background: rgba(195, 146, 21, 0.06);
+    border: 1px solid rgba(195, 146, 21, 0.25);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.beca-vis-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.beca-vis-header h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin: 0 0 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.beca-vis-header h4 i { color: var(--primary-gold); }
+
+.beca-vis-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Badge de estado */
+.beca-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 99px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.beca-badge--loading { background: rgba(255,255,255,.08); color: var(--text-muted); }
+.beca-badge--on  { background: rgba(34, 197, 94, 0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+.beca-badge--off { background: rgba(239, 68, 68, 0.15);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+
+/* Toggle switch */
+.beca-vis-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+}
+
+.beca-toggle-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.beca-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.beca-toggle-input { display: none; }
+
+.beca-toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    background: rgba(255,255,255,.15);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.beca-toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.beca-toggle-input:checked + .beca-toggle-slider {
+    background: var(--primary-gold);
+}
+
+.beca-toggle-input:checked + .beca-toggle-slider::after {
+    transform: translateX(22px);
+}
+
+.beca-toggle-text {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 70px;
+}
+
+/* Date pickers */
+.beca-vis-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 600px) {
+    .beca-vis-dates { grid-template-columns: 1fr; }
+    .beca-vis-header { flex-direction: column; }
+}
+
+.beca-date-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+}
+
+.beca-date-field label i { color: var(--primary-gold); }
+
+.beca-date-field .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text-white);
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    colorscheme: dark;
+}
+
+.beca-date-hint {
+    display: block;
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    opacity: 0.7;
+}
+
+.beca-vis-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    line-height: 1.5;
+    border-left: 3px solid rgba(195, 146, 21, 0.4);
+}
+
+.beca-vis-hint i { color: var(--primary-gold); margin-right: 0.25rem; }

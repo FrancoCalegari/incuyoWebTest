@@ -93,6 +93,19 @@ function normalizeImgUrl(url) {
     return url;
 }
 
+// ─── Helper: visibilidad de becas ───────────────────
+function isBecaVisible(config) {
+    // Si el toggle manual está en '0', siempre oculto
+    if (config.beca_activa === '0') return false;
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const desde = config.beca_desde ? new Date(config.beca_desde) : null;
+    const hasta  = config.beca_hasta  ? new Date(config.beca_hasta)  : null;
+    if (desde && hoy < desde) return false;
+    if (hasta  && hoy > hasta)  return false;
+    return true; // sin fechas → siempre visible mientras beca_activa !== '0'
+}
+
 // GET / — Landing page
 router.get('/', async (req, res) => {
     try {
@@ -136,7 +149,7 @@ router.get('/', async (req, res) => {
         const approvedReviews = reviewsResult?.result || reviewsResult?.results || (Array.isArray(reviewsResult) ? reviewsResult : []);
         approvedReviews.forEach(r => { r.photo_url = normalizeImgUrl(r.photo_url); });
 
-        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario, certificaciones, config: configMap, reviews: approvedReviews });
+        res.render('index', { curriculum, commitments, diplomaturas: diplomRows, pasantias: pasRows, horario, certificaciones, config: configMap, reviews: approvedReviews, becaVisible: isBecaVisible(configMap) });
     } catch (err) {
         console.error('Error loading landing page:', err);
         res.render('index', {
@@ -147,7 +160,8 @@ router.get('/', async (req, res) => {
             horario: null,
             certificaciones: { 1: [], 2: [], 3: [] },
             config: {},
-            reviews: []
+            reviews: [],
+            becaVisible: true
         });
     }
 });
@@ -242,10 +256,10 @@ router.get('/sabermas', async (req, res) => {
         const configMap = {};
         configRows.forEach(r => { configMap[r.clave] = r.valor; });
 
-        res.render('masinfo', { curriculum, certificaciones, config: configMap });
+        res.render('masinfo', { curriculum, certificaciones, config: configMap, becaVisible: isBecaVisible(configMap) });
     } catch (err) {
         console.error('Error loading sabermas:', err);
-        res.render('masinfo', { curriculum: { 1: [], 2: [], 3: [] }, certificaciones: { 1: [], 2: [], 3: [] }, config: {} });
+        res.render('masinfo', { curriculum: { 1: [], 2: [], 3: [] }, certificaciones: { 1: [], 2: [], 3: [] }, config: {}, becaVisible: true });
     }
 });
 

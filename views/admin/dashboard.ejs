@@ -26,14 +26,33 @@
             </div>
 
             <ul class="sidebar-nav">
+                <!-- ── Contenido ── -->
+                <li class="nav-category" data-group="contenido">
+                    <span><i class="fas fa-layer-group nav-cat-icon"></i> Contenido <i class="fas fa-chevron-down nav-cat-chevron"></i></span>
+                </li>
                 <li><a href="#" class="active" data-panel="curriculum"><i class="fas fa-book"></i> Plan de Estudios</a></li>
                 <li><a href="#" data-panel="commitment"><i class="fas fa-heart"></i> Compromiso Social</a></li>
                 <li><a href="#" data-panel="projects"><i class="fas fa-code"></i> Proyectos Alumnos</a></li>
                 <li><a href="#" data-panel="testimonios"><i class="fas fa-video"></i> Testimonios</a></li>
-                <li><a href="#" data-panel="diplomaturas"><i class="fas fa-graduation-cap"></i> Diplomaturas</a></li>
+
+                <!-- ── Formación ── -->
+                <li class="nav-category" data-group="formacion">
+                    <span><i class="fas fa-graduation-cap nav-cat-icon"></i> Formación <i class="fas fa-chevron-down nav-cat-chevron"></i></span>
+                </li>
+                <li><a href="#" data-panel="diplomaturas"><i class="fas fa-medal"></i> Diplomaturas</a></li>
                 <li><a href="#" data-panel="pasantias"><i class="fas fa-building"></i> Pasantías</a></li>
-                <li><a href="#" data-panel="configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+
+                <!-- ── Configuración ── -->
+                <li class="nav-category" data-group="configuracion">
+                    <span><i class="fas fa-sliders-h nav-cat-icon"></i> Configuración <i class="fas fa-chevron-down nav-cat-chevron"></i></span>
+                </li>
+                <li><a href="#" data-panel="configuracion"><i class="fas fa-cog"></i> Configuración del Sitio</a></li>
                 <li><a href="#" data-panel="textos"><i class="fas fa-font"></i> Textos Fijos</a></li>
+
+                <!-- ── Sistema ── -->
+                <li class="nav-category" data-group="sistema">
+                    <span><i class="fas fa-server nav-cat-icon"></i> Sistema <i class="fas fa-chevron-down nav-cat-chevron"></i></span>
+                </li>
                 <li><a href="#" data-panel="ia"><i class="fas fa-robot"></i> Estado IA</a></li>
                 <li><a href="#" data-panel="becas"><i class="fas fa-envelope-open-text"></i> Becas</a></li>
                 <li><a href="#" data-panel="reviews"><i class="fas fa-comment-alt"></i> Comentarios</a></li>
@@ -742,6 +761,60 @@
                         <h3><i class="fas fa-envelope-open-text"></i> Solicitudes de Becas</h3>
                     </div>
 
+                    <!-- ── Control de Visibilidad ── -->
+                    <div class="beca-visibility-card" id="becaVisibilityCard">
+                        <div class="beca-vis-header">
+                            <div>
+                                <h4><i class="fas fa-eye"></i> Visibilidad de la Sección de Becas</h4>
+                                <p class="beca-vis-subtitle">Controla cuándo aparece la sección de becas en el sitio público y en la página "Más Info".</p>
+                            </div>
+                            <span id="becaStatusBadge" class="beca-badge beca-badge--loading">
+                                <i class="fas fa-circle-notch fa-spin"></i> Cargando...
+                            </span>
+                        </div>
+
+                        <div class="beca-vis-form">
+                            <!-- Toggle manual -->
+                            <div class="beca-vis-row">
+                                <label class="beca-toggle-label" for="becaActivaToggle">
+                                    <i class="fas fa-power-off"></i> Activar Becas Manualmente
+                                </label>
+                                <div class="beca-toggle-wrap">
+                                    <input type="checkbox" id="becaActivaToggle" class="beca-toggle-input">
+                                    <label for="becaActivaToggle" class="beca-toggle-slider"></label>
+                                    <span id="becaToggleLabel" class="beca-toggle-text">—</span>
+                                </div>
+                            </div>
+
+                            <!-- Rango de fechas -->
+                            <div class="beca-vis-dates">
+                                <div class="beca-date-field">
+                                    <label for="becaDesdePicker"><i class="fas fa-calendar-alt"></i> Desde (inclusive)</label>
+                                    <input type="date" id="becaDesdePicker" class="form-input">
+                                    <span class="beca-date-hint">La sección se muestra a partir de esta fecha</span>
+                                </div>
+                                <div class="beca-date-field">
+                                    <label for="becaHastaPicker"><i class="fas fa-calendar-check"></i> Hasta (inclusive)</label>
+                                    <input type="date" id="becaHastaPicker" class="form-input">
+                                    <span class="beca-date-hint">La sección se oculta después de esta fecha</span>
+                                </div>
+                            </div>
+
+                            <div class="beca-vis-hint">
+                                <i class="fas fa-info-circle"></i>
+                                Si no se configura ninguna fecha, la sección se muestra siempre que el toggle esté activado.
+                                Si el toggle está <strong>desactivado</strong>, la sección se oculta sin importar las fechas.
+                            </div>
+
+                            <div style="margin-top: 1.25rem;">
+                                <button class="btn btn-gold" id="saveBecaConfigBtn" onclick="saveBecaConfig()">
+                                    <i class="fas fa-save"></i> Guardar Configuración de Becas
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ── / Control de Visibilidad ── -->
+
                     <% if (typeof scholarships !== 'undefined' && scholarships.length > 0) { %>
                         <table class="data-table">
                             <thead>
@@ -1300,39 +1373,122 @@
 
     <script>
         // ─── Navigation ─────────────────────────────
+
+        /**
+         * Activa un panel por su nombre (data-panel).
+         * Actualiza el hash de la URL para persistir la pestaña activa entre recargas.
+         */
+        function activatePanel(panelName, updateHash = true) {
+            // Actualizar link activo en sidebar
+            document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`.sidebar-nav a[data-panel="${panelName}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            // Mostrar panel correspondiente
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            const targetPanel = document.getElementById('panel-' + panelName);
+            if (targetPanel) targetPanel.classList.add('active');
+
+            // Cerrar sidebar en mobile
+            document.querySelector('.sidebar').classList.remove('open');
+
+            // Persistir pestaña en la URL (sin recargar)
+            if (updateHash) {
+                history.replaceState(null, '', '#' + panelName);
+            }
+
+            // Live chat: cargar sesiones automáticamente al navegar al panel
+            if (panelName === 'livechat') {
+                setTimeout(function() {
+                    if (typeof lcLoadSessions === 'function') {
+                        lcLoadSessions();
+                        // Iniciar auto-polling cada 10s
+                        if (typeof lcPollListInterval !== 'undefined' && !lcPollListInterval) {
+                            lcPollListInterval = setInterval(lcLoadSessions, 10000);
+                        }
+                        if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+                            Notification.requestPermission();
+                        }
+                    }
+                }, 50);
+            } else {
+                // Detener polling si salimos del panel live chat
+                if (typeof lcPollListInterval !== 'undefined' && lcPollListInterval) {
+                    clearInterval(lcPollListInterval);
+                    lcPollListInterval = null;
+                }
+            }
+        }
+
+        // Vincular clics del sidebar a activatePanel
         document.querySelectorAll('.sidebar-nav a').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-                document.getElementById('panel-' + link.dataset.panel).classList.add('active');
-                document.querySelector('.sidebar').classList.remove('open');
-                // Live chat: cargar sesiones automáticamente al navegar al panel
-                if (link.dataset.panel === 'livechat') {
-                    setTimeout(function() {
-                        if (typeof lcLoadSessions === 'function') {
-                            lcLoadSessions();
-                            // Iniciar auto-polling cada 10s
-                            if (typeof lcPollListInterval !== 'undefined' && !lcPollListInterval) {
-                                lcPollListInterval = setInterval(lcLoadSessions, 10000);
-                            }
-                            if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-                                Notification.requestPermission();
-                            }
-                        }
-                    }, 50);
-                } else {
-                    // Detener polling si salimos del panel live chat
-                    if (typeof lcPollListInterval !== 'undefined' && lcPollListInterval) {
-                        clearInterval(lcPollListInterval);
-                        lcPollListInterval = null;
-                    }
-                }
+                activatePanel(link.dataset.panel);
             });
         });
 
+        // ─── Restaurar pestaña activa desde el hash de la URL ───────────
+        (function restoreActivePanel() {
+            const hash = window.location.hash.replace('#', '').trim();
+            const validPanels = ['curriculum','commitment','projects','testimonios',
+                                 'diplomaturas','pasantias','configuracion','textos',
+                                 'ia','becas','reviews','livechat'];
+            if (hash && validPanels.includes(hash)) {
+                activatePanel(hash, false);
+            }
+        })();
+
+        // ─── Colapso de Categorías del Sidebar ──────
+        (function initSidebarCollapse() {
+            const nav = document.querySelector('.sidebar-nav');
+            const categories = nav.querySelectorAll('li.nav-category');
+
+            categories.forEach(catLi => {
+                const group = catLi.dataset.group;
+
+                // Marcar todos los <li> hermanos que pertenecen a este grupo
+                let sibling = catLi.nextElementSibling;
+                while (sibling && !sibling.classList.contains('nav-category')) {
+                    sibling.classList.add('nav-cat-item');
+                    sibling.dataset.catGroup = group;
+                    sibling = sibling.nextElementSibling;
+                }
+
+                // Restaurar estado desde localStorage
+                const savedCollapsed = localStorage.getItem('sidebar-cat-' + group);
+                if (savedCollapsed === 'true') {
+                    _collapseGroup(catLi, group, false);
+                }
+
+                // Clic en la categoría → colapsar/expandir
+                catLi.addEventListener('click', () => {
+                    const isCollapsed = catLi.classList.contains('collapsed');
+                    if (isCollapsed) {
+                        _expandGroup(catLi, group);
+                    } else {
+                        _collapseGroup(catLi, group, true);
+                    }
+                });
+            });
+
+            function _collapseGroup(catLi, group, save) {
+                catLi.classList.add('collapsed');
+                nav.querySelectorAll(`li.nav-cat-item[data-cat-group="${group}"]`)
+                   .forEach(li => li.classList.add('cat-hidden'));
+                if (save) localStorage.setItem('sidebar-cat-' + group, 'true');
+            }
+
+            function _expandGroup(catLi, group) {
+                catLi.classList.remove('collapsed');
+                nav.querySelectorAll(`li.nav-cat-item[data-cat-group="${group}"]`)
+                   .forEach(li => li.classList.remove('cat-hidden'));
+                localStorage.setItem('sidebar-cat-' + group, 'false');
+            }
+        })();
+
         // ─── Toast ───────────────────────────────────
+
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -2038,15 +2194,89 @@
             btn.innerHTML = '<i class="fas fa-save"></i> Guardar selección';
         }
 
-        // Auto-cargar cuando se abre el panel IA
-        document.querySelectorAll('.sidebar-nav a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (link.dataset.panel === 'ia') loadSpiderStatus();
-            });
-        });
+        // Auto-cargar SpiderIA cuando se activa ese panel
+        document.querySelector('.sidebar-nav a[data-panel="ia"]')
+            ?.addEventListener('click', () => loadSpiderStatus());
+        // ─── Configuración de Visibilidad de Becas ──────
+        async function loadBecaConfig() {
+            try {
+                const res = await fetch('/admin/api/configuracion');
+                const cfg = await res.json();
+
+                const activa = cfg.beca_activa !== '0'; // undefined o '1' → activo
+                const toggle = document.getElementById('becaActivaToggle');
+                const label  = document.getElementById('becaToggleLabel');
+                const badge  = document.getElementById('becaStatusBadge');
+
+                toggle.checked = activa;
+                label.textContent = activa ? 'Activada' : 'Desactivada';
+
+                document.getElementById('becaDesdePicker').value = cfg.beca_desde || '';
+                document.getElementById('becaHastaPicker').value = cfg.beca_hasta  || '';
+
+                // Badge de estado real (considera fechas + toggle)
+                let visible = activa;
+                if (visible && cfg.beca_desde) {
+                    const hoy = new Date(); hoy.setHours(0,0,0,0);
+                    if (hoy < new Date(cfg.beca_desde)) visible = false;
+                }
+                if (visible && cfg.beca_hasta) {
+                    const hoy = new Date(); hoy.setHours(0,0,0,0);
+                    if (hoy > new Date(cfg.beca_hasta)) visible = false;
+                }
+
+                badge.innerHTML = visible
+                    ? '<i class="fas fa-eye"></i> Visible en el sitio'
+                    : '<i class="fas fa-eye-slash"></i> Oculta en el sitio';
+                badge.className = 'beca-badge ' + (visible ? 'beca-badge--on' : 'beca-badge--off');
+
+                // Listener para actualizar label en tiempo real
+                toggle.onchange = () => {
+                    label.textContent = toggle.checked ? 'Activada' : 'Desactivada';
+                };
+            } catch (e) {
+                console.error('Error cargando config de beca:', e);
+            }
+        }
+
+        async function saveBecaConfig() {
+            const btn = document.getElementById('saveBecaConfigBtn');
+            const activa = document.getElementById('becaActivaToggle').checked ? '1' : '0';
+            const desde  = document.getElementById('becaDesdePicker').value;
+            const hasta  = document.getElementById('becaHastaPicker').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+            try {
+                const payload = { beca_activa: activa, beca_desde: desde, beca_hasta: hasta };
+                const res = await fetch('/admin/api/configuracion/bulk', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Configuración de becas guardada ✓', 'success');
+                    await loadBecaConfig(); // refresca el badge
+                } else {
+                    showToast('Error al guardar: ' + (data.error || 'desconocido'), 'error');
+                }
+            } catch (e) {
+                showToast('Error de red: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar Configuración de Becas';
+            }
+        }
+
+        // Cargar config de becas cuando se activa el panel
+        document.querySelector('.sidebar-nav a[data-panel="becas"]')
+            ?.addEventListener('click', () => loadBecaConfig());
 
 
         // ─── SpiderIA Test ──────────────────────────
+
         async function runSpiderTest() {
             const prompt = document.getElementById('spiderTestPrompt').value.trim();
             const resultBox = document.getElementById('spiderTestResult');

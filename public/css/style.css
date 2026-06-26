@@ -805,7 +805,7 @@ a:hover {
 
 .section-title {
 	font-size: var(--text-4xl);
-	color: white;
+	color: var(--gray-100);
 	margin-bottom: var(--space-4);
 }
 

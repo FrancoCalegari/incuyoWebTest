@@ -136,6 +136,7 @@
         </div>
     </section>
 
+    <% if (becaVisible) { %>
     <!-- ENROLLMENT SECTION (BECAS) -->
                     <section class="section section-dark enrollment" id="inscripciones">
                         <div class="container">
@@ -207,6 +208,7 @@
                             </div>
                         </div>
                     </section>
+    <% } /* end becaVisible */ %>
 
     <!-- CURRICULUM SECTION (DYNAMIC)
     <section class="section curriculum" id="curriculum">
@@ -399,6 +401,7 @@
         </div>
         <% }); %>
 
+            <% if (becaVisible) { %>
             <!-- BECA PUBLIC MODAL -->
             <div class="diplom-modal-overlay" id="publicBecaModal" style="z-index: 10000;" onclick="closeBecaModal()">
                 <div class="diplom-modal" onclick="event.stopPropagation()" style="max-width: 650px; background: #fff; padding: 2rem; border-radius: 12px;">
@@ -488,13 +491,14 @@
                     </form>
                 </div>
             </div>
+            <% } /* end becaVisible modal */ %>
 
             <!-- PASANTÍAS SECTION -->
             <% if (pasantias.length> 0) { %>
                 <section class="section pasantias-section" id="pasantias">
                     <div class="container">
                         <div class="section-header">
-                            <h2 class="section-title">Pasantias</h2>
+                            <h2 class="section-title" style="color:#10182c">Pasantias</h2>
                             <p class="section-description">
                                 Nuestros alumnos desarrollan experiencia real en empresas líderes a través de pasantías
                                 y proyectos profesionales.
@@ -639,7 +643,7 @@
                         <div class="container">
                             <div class="section-header">
                                 <p class="section-subtitle"><%= config.compromiso_subtitle || 'Compromiso Social' %></p>
-                                <h2 class="section-title"><%= config.compromiso_title || 'Ayudando a la Comunidad' %></h2>
+                                <h2 class="section-title" style="color:#10182c"><%= config.compromiso_title || 'Ayudando a la Comunidad' %></h2>
                                 <p class="section-description">
                                     <%= config.compromiso_desc || 'Los alumnos del instituto en la materia Ética organizan tareas extracurriculares para ayudar a los más necesitados.' %>
                                 </p>
@@ -722,7 +726,7 @@
                         <div class="container">
                             <div class="section-header">
                                 <p class="section-subtitle"><%= config.ubicacion_subtitle || 'Visitanos' %></p>
-                                <h2 class="section-title"><%= config.ubicacion_title || 'Nuestra Ubicación' %></h2>
+                                <h2 class="section-title" style="color:#10182c"><%= config.ubicacion_title || 'Nuestra Ubicación' %></h2>
                                 <p class="section-description">
                                     <i class="fas fa-map-marker-alt"></i> <%= config.ubicacion_desc || 'La Rioja 614 - Ciudad de Mendoza - Argentina' %>
                                 </p>

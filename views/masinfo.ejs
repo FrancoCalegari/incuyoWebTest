@@ -52,7 +52,9 @@
                 <span class="mi-chip"><i class="fas fa-robot"></i> IA en todas las materias</span>
                 <span class="mi-chip"><i class="fas fa-certificate"></i> 3 Títulos oficiales</span>
                 <span class="mi-chip"><i class="fas fa-award"></i> Certificaciones laborales</span>
+                <% if (becaVisible) { %>
                 <span class="mi-chip"><i class="fas fa-graduation-cap"></i> Becas hasta 40% En Agosto</span>
+                <% } %>
             </div>
         </div>
     </section>
@@ -264,10 +266,12 @@
             <h2>¿Listo para empezar tu futuro?</h2>
             <p>Consultá por inscripciones, becas y toda la información que necesitás para dar el primer paso</p>
             <div class="final-cta-btns">
+                <% if (becaVisible) { %>
                 <button class="btn btn-gold btn-lg" onclick="openBecaModal()"
                     style="font-size: 1.1rem; padding: 1rem 2.5rem;">
                     <i class="fas fa-envelope-open-text"></i> Solicitar Beca Ahora
                 </button>
+                <% } %>
                 <a href="/" class="btn btn-secondary btn-lg">
                     <i class="fas fa-arrow-left"></i> Volver al Inicio
                 </a>

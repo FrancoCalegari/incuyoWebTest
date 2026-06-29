@@ -1,0 +1,461 @@
+/* ============================================
+   SECTION STYLES
+   ============================================ */
+.section-header {
+	text-align: center;
+	margin-bottom: var(--space-16);
+}
+
+.section-subtitle {
+	font-size: var(--text-sm);
+	color: var(--primary-gold);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-bottom: var(--space-3);
+}
+
+.section-title {
+	font-size: var(--text-4xl);
+	color: var(--gray-900);
+	margin-bottom: var(--space-4);
+}
+
+.section-description {
+	font-size: var(--text-lg);
+	color: var(--gray-600);
+	max-width: 700px;
+	margin: 0 auto;
+}
+
+/* Dark Section Variant */
+.section-dark {
+	background: var(--gradient-dark);
+	color: var(--white);
+}
+
+.section-dark .section-title,
+.section-dark .card-title {
+	color: var(--white);
+}
+
+.section-dark .section-description,
+.section-dark .card-text {
+	color: var(--gray-300);
+}
+
+/* ============================================
+   PROGRAM INFO SECTION
+   ============================================ */
+.program-info {
+	background: var(--gray-100);
+}
+
+.feature-grid {
+	margin-top: var(--space-12);
+}
+
+/* ============================================
+   ENROLLMENT SECTION
+   ============================================ */
+.enrollment {
+	background:
+		var(--gradient-overlay),
+		url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path fill="%23ffffff" fill-opacity="0.05" d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"/><path fill="%23ffffff" fill-opacity="0.05" d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"/><path fill="%23ffffff" fill-opacity="0.1" d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"/></svg>') center/cover no-repeat;
+	position: relative;
+}
+
+.highlight-box {
+	background: rgba(255, 255, 255, 0.15);
+	backdrop-filter: blur(10px);
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	border-radius: var(--radius-2xl);
+	padding: var(--space-10);
+	margin-top: var(--space-12);
+}
+
+.highlight-title {
+	font-size: var(--text-3xl);
+	color: var(--white);
+	text-align: center;
+	margin-bottom: var(--space-8);
+}
+
+.highlight-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: var(--space-6);
+	margin-bottom: var(--space-8);
+}
+
+.highlight-item {
+	text-align: center;
+	padding: var(--space-6);
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: var(--radius-lg);
+	transition: all var(--transition-base);
+}
+
+.highlight-item:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transform: scale(1.05);
+}
+
+.highlight-item-icon {
+	font-size: var(--text-3xl);
+	margin-bottom: var(--space-4);
+	color: var(--white);
+	width: 60px;
+	height: 60px;
+	border-radius: var(--radius-full);
+	background: rgba(255, 255, 255, 0.15);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto var(--space-4);
+}
+
+.highlight-item-text {
+	color: var(--white);
+	font-size: var(--text-lg);
+	font-weight: 600;
+}
+
+.scholarship-badge {
+	display: inline-block;
+	background: var(--gradient-accent);
+	color: var(--white);
+	padding: var(--space-3) var(--space-6);
+	border-radius: var(--radius-full);
+	font-size: var(--text-xl);
+	font-weight: 700;
+	margin-bottom: var(--space-6);
+	box-shadow: var(--shadow-lg);
+}
+
+/* ============================================
+   SOCIAL COMMITMENT SECTION
+   ============================================ */
+.social-commitment {
+	background: var(--white);
+}
+
+.image-gallery {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: var(--space-6);
+	margin-top: var(--space-12);
+}
+
+.gallery-item {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--radius-xl);
+	cursor: pointer;
+	aspect-ratio: 4/3;
+	box-shadow: var(--shadow-md);
+	transition: all var(--transition-base);
+}
+
+.gallery-item:hover {
+	transform: scale(1.03);
+	box-shadow: var(--shadow-xl);
+}
+
+.gallery-item img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform var(--transition-slow);
+}
+
+.gallery-item:hover img {
+	transform: scale(1.1);
+}
+
+.gallery-item-overlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+	padding: var(--space-6);
+	transform: translateY(100%);
+	transition: transform var(--transition-base);
+}
+
+.gallery-item:hover .gallery-item-overlay {
+	transform: translateY(0);
+}
+
+.gallery-item-title {
+	color: var(--white);
+	font-size: var(--text-lg);
+	font-weight: 600;
+}
+
+/* ============================================
+   CURRICULUM SECTION
+   ============================================ */
+.curriculum {
+	background: var(--gray-100);
+}
+
+.curriculum-accordion {
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+.accordion-item {
+	background: var(--white);
+	border-radius: var(--radius-lg);
+	margin-bottom: var(--space-4);
+	overflow: hidden;
+	box-shadow: var(--shadow-md);
+	transition: all var(--transition-base);
+}
+
+.accordion-item:hover {
+	box-shadow: var(--shadow-lg);
+}
+
+.accordion-header {
+	padding: var(--space-6);
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: var(--gradient-primary);
+	color: var(--white);
+	transition: all var(--transition-base);
+}
+
+.accordion-header:hover {
+	background: var(--gradient-accent);
+}
+
+.accordion-title {
+	font-size: var(--text-xl);
+	font-weight: 700;
+	margin: 0;
+	color: var(--white);
+}
+
+.accordion-icon {
+	font-size: var(--text-2xl);
+	transition: transform var(--transition-base);
+}
+
+.accordion-item.active .accordion-icon {
+	transform: rotate(180deg);
+}
+
+.accordion-content {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height var(--transition-slow);
+}
+
+.accordion-item.active .accordion-content {
+	max-height: 1000px;
+}
+
+.accordion-body {
+	padding: var(--space-6);
+}
+
+.course-list {
+	list-style: none;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: var(--space-3);
+}
+
+.course-list li {
+	padding: var(--space-3) var(--space-4);
+	background: var(--gray-100);
+	border-radius: var(--radius-md);
+	font-size: var(--text-sm);
+	color: var(--gray-700);
+	border-left: 3px solid var(--primary-blue-light);
+}
+
+/* ============================================
+   CERTIFICATIONS SECTION
+   ============================================ */
+.certifications {
+	background: var(--white);
+}
+
+.cert-year-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: var(--space-8);
+	margin-top: var(--space-12);
+}
+
+.cert-year-card {
+	background: var(--white);
+	border-radius: var(--radius-xl);
+	padding: var(--space-8);
+	box-shadow: var(--shadow-lg);
+	border-top: 4px solid var(--primary-blue-light);
+	transition: all var(--transition-base);
+}
+
+.cert-year-card:nth-child(2) {
+	border-top-color: var(--primary-cyan);
+}
+
+.cert-year-card:nth-child(3) {
+	border-top-color: var(--accent-purple);
+}
+
+.cert-year-card:hover {
+	transform: translateY(-5px);
+	box-shadow: var(--shadow-xl);
+}
+
+.cert-year {
+	font-size: var(--text-3xl);
+	font-weight: 800;
+	background: var(--gradient-primary);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	margin-bottom: var(--space-6);
+}
+
+.cert-list {
+	list-style: none;
+}
+
+.cert-list li {
+	padding: var(--space-3) 0;
+	border-bottom: 1px solid var(--gray-200);
+	font-size: var(--text-base);
+	color: var(--gray-700);
+	position: relative;
+	padding-left: var(--space-6);
+}
+
+.cert-list li:last-child {
+	border-bottom: none;
+}
+
+.cert-list li::before {
+	content: "✓";
+	position: absolute;
+	left: 0;
+	color: var(--primary-blue-light);
+	font-weight: 700;
+}
+
+/* ============================================
+   LOCATION SECTION
+   ============================================ */
+.location {
+	background: var(--gray-100);
+}
+
+.map-wrapper {
+	margin-top: var(--space-12);
+	border-radius: var(--radius-2xl);
+	overflow: hidden;
+	box-shadow: var(--shadow-xl);
+	height: 450px;
+}
+
+.map-wrapper iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+	background: var(--gradient-dark);
+	color: var(--white);
+	padding: var(--space-16) 0 var(--space-8);
+}
+
+.footer-content {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: var(--space-10);
+	margin-bottom: var(--space-10);
+}
+
+.footer-section h3 {
+	color: var(--white);
+	margin-bottom: var(--space-6);
+	font-size: var(--text-xl);
+}
+
+.footer-section p,
+.footer-section a {
+	color: var(--gray-300);
+	font-size: var(--text-base);
+	line-height: 1.8;
+}
+
+.footer-section a:hover {
+	color: var(--primary-cyan);
+}
+
+.contact-item {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	margin-bottom: var(--space-4);
+}
+
+.contact-icon {
+	font-size: var(--text-xl);
+	color: var(--primary-gold);
+}
+
+.footer-bottom {
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	padding-top: var(--space-6);
+	text-align: center;
+	color: var(--gray-400);
+	font-size: var(--text-sm);
+}
+
+/* ============================================
+   WHATSAPP BUTTON
+   ============================================ */
+.whatsapp-float {
+	position: fixed;
+	bottom: var(--space-8);
+	right: var(--space-8);
+	z-index: 998;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-3);
+}
+
+.whatsapp-btn {
+	width: 60px;
+	height: 60px;
+	border-radius: var(--radius-full);
+	background: #25d366;
+	color: var(--white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--text-3xl);
+	box-shadow: var(--shadow-xl);
+	transition: all var(--transition-base);
+	animation: pulse 2s infinite;
+}
+
+.whatsapp-btn:hover {
+	transform: scale(1.1);
+	box-shadow: 0 10px 30px rgba(37, 211, 102, 0.5);
+}
+

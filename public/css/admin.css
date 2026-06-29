@@ -1134,3 +1134,35 @@ body {
 }
 
 .beca-vis-hint i { color: var(--primary-gold); margin-right: 0.25rem; }
+
+/* ─── Curriculum Sub-Tabs ──────────────────── */
+.curr-sub-tab {
+    padding: 0.7rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-weight: 600;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.2s, border-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.curr-sub-tab i {
+    color: inherit;
+}
+
+.curr-sub-tab.active {
+    color: #111 !important;
+    border-bottom-color: var(--primary-gold) !important;
+}
+
+.curr-sub-tab.active i {
+    color: var(--primary-gold) !important;
+}
+
+.curr-sub-tab:not(.active):hover {
+    color: #555;
+}

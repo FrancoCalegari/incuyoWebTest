@@ -76,10 +76,10 @@
             <div class="panel active" id="panel-curriculum">
                 <!-- Sub-tabs -->
                 <div class="curr-sub-tabs" style="display:flex; gap:0; margin-bottom:1.5rem; border-bottom:2px solid var(--border-color, #e5e7eb);">
-                    <button class="curr-sub-tab active" data-subtab="materias" onclick="switchCurrTab('materias', this)" style="padding:0.7rem 1.5rem; background:none; border:none; border-bottom:3px solid transparent; font-weight:600; cursor:pointer; color:#888; transition:all 0.2s;">
+                    <button class="curr-sub-tab active" data-subtab="materias" onclick="switchCurrTab('materias', this)">
                         <i class="fas fa-book"></i> Materias
                     </button>
-                    <button class="curr-sub-tab" data-subtab="certificaciones" onclick="switchCurrTab('certificaciones', this)" style="padding:0.7rem 1.5rem; background:none; border:none; border-bottom:3px solid transparent; font-weight:600; cursor:pointer; color:#888; transition:all 0.2s;">
+                    <button class="curr-sub-tab" data-subtab="certificaciones" onclick="switchCurrTab('certificaciones', this)">
                         <i class="fas fa-award"></i> Certificaciones Laborales
                     </button>
                 </div>
@@ -1553,24 +1553,13 @@
             }
         }
 
-        // ─── CURRICULUM TABS ─────────────────────────────
+        // ─── CURRICULUM TABS ─────────────────────────────────
         function switchCurrTab(tab, btn) {
-            document.querySelectorAll('.curr-sub-tab').forEach(t => {
-                t.classList.remove('active');
-                t.style.borderBottomColor = 'transparent';
-                t.style.color = '#888';
-            });
+            document.querySelectorAll('.curr-sub-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
-            btn.style.borderBottomColor = 'var(--primary-gold, #f59e0b)';
-            btn.style.color = 'var(--text-primary, #111)';
             document.querySelectorAll('.curr-subpanel').forEach(p => p.style.display = 'none');
             document.getElementById('subpanel-' + tab).style.display = '';
         }
-        // Init first tab active style
-        document.addEventListener('DOMContentLoaded', () => {
-            const firstTab = document.querySelector('.curr-sub-tab.active');
-            if (firstTab) { firstTab.style.borderBottomColor = 'var(--primary-gold, #f59e0b)'; firstTab.style.color = 'var(--text-primary, #111)'; }
-        });
 
         // ─── CURRICULUM ─────────────────────────────
         function openCurriculumModal(id, year, name, order, semestre) {

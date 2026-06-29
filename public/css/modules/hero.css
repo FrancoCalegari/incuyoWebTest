@@ -1,0 +1,209 @@
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--gradient-dark);
+	position: relative;
+	overflow: hidden;
+	padding-top: var(--space-20);
+	isolation: isolate;
+}
+
+.hero::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background:
+		radial-gradient(circle at 20% 50%,
+			rgba(59, 130, 246, 0.1) 0%,
+			transparent 50%),
+		radial-gradient(circle at 80% 80%,
+			rgba(139, 92, 246, 0.1) 0%,
+			transparent 50%);
+	pointer-events: none;
+	z-index: 1;
+}
+
+/* Hero Background Video */
+.hero-bg-video {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: auto;
+	transform: translate(-50%, -50%);
+	object-fit: cover;
+	z-index: 0;
+	filter: blur(8px) brightness(0.6);
+}
+
+/* YouTube Background Video */
+.hero-youtube-bg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 100vw;
+	height: 56.25vw;
+	min-height: 100vh;
+	min-width: 177.77vh;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	z-index: 0;
+}
+
+.hero-youtube-bg iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
+/* Glassmorphism Overlay */
+.hero-glass-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(34, 58, 91, 0.3);
+	backdrop-filter: blur(50px) saturate(180%);
+	-webkit-backdrop-filter: blur(10px) saturate(180%);
+	z-index: 1;
+}
+
+/* Hero Row Layout (two columns) */
+.hero-row {
+	position: relative;
+	z-index: 10;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--space-12);
+	width: 100%;
+	padding: var(--space-6) 0;
+}
+
+.hero-text-col {
+	flex: 1 1 45%;
+	text-align: left;
+}
+
+.hero-video-col {
+	flex: 1 1 55%;
+	animation: fadeInUp 0.8s ease-out 0.6s backwards;
+}
+
+/* Keep old hero-content for any other usage */
+.hero-content {
+	position: relative;
+	z-index: 10;
+	text-align: center;
+	max-width: 900px;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.hero-subtitle {
+	font-size: var(--text-lg);
+	color: var(--primary-gold);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-bottom: var(--space-4);
+	animation: fadeInUp 0.8s ease-out;
+	line-height: 1.4;
+}
+
+.hero-title {
+	font-size: var(--text-6xl);
+	color: var(--white);
+	margin-bottom: var(--space-6);
+	line-height: 1.1;
+	animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.hero-description {
+	font-size: var(--text-xl);
+	color: var(--gray-300);
+	margin-bottom: var(--space-8);
+	animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.hero-cta-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-4);
+	align-items: center;
+	animation: fadeInUp 0.8s ease-out 0.55s backwards;
+}
+
+.hero-video {
+	margin-top: var(--space-12);
+	animation: fadeInUp 0.8s ease-out 0.6s backwards;
+}
+
+.video-wrapper {
+	position: relative;
+	padding-bottom: 56.25%;
+	/* 16:9 Aspect Ratio */
+	height: 0;
+	overflow: hidden;
+	max-width: 100%;
+	width: 100%;
+	margin: 0 auto;
+	border-radius: var(--radius-2xl);
+	box-shadow: var(--shadow-xl), var(--shadow-glow);
+}
+
+.video-wrapper iframe,
+.video-wrapper video {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+	object-fit: cover;
+}
+
+/* Hero responsive */
+@media (max-width: 900px) {
+	.hero-row {
+		flex-direction: column;
+		gap: var(--space-8);
+	}
+
+	.hero-text-col {
+		text-align: center;
+		flex: unset;
+		width: 100%;
+	}
+
+	.hero-video-col {
+		flex: unset;
+		width: 100%;
+	}
+
+	.hero-cta-group {
+		justify-content: center;
+	}
+
+	.hero-title {
+		font-size: var(--text-4xl);
+		min-height: 2.2em; /* Evita que el contenedor cambie de tamaño y haga saltar el contenido */
+	}
+}
+
+
+

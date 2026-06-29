@@ -28,14 +28,9 @@
                 <span></span>
             </button>
 
-            <!--<ul class="navbar-menu" id="navbarMenu">
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#inscripciones">Inscripciones</a></li>
-                <li><a href="/diplomaturas">Diplomaturas</a></li>
-                <li>
-                    <a href="<%= config.campus_virtual_url || 'https://aula.incuyo.edu.ar/' %>" target="_blank" class="campus-link">Campus Virtual</a>
-                </li> 
-            </ul>-->
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="/" class="btn btn-secondary-no-bg" style="padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600;"><i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Volver al Inicio</a></li>
+            </ul>
         </div>
     </nav>
 
@@ -279,6 +274,101 @@
         </div>
     </section>
 
+    <!-- BECA MODAL -->
+    <% if (becaVisible) { %>
+    <div class="diplom-modal-overlay" id="publicBecaModal" style="z-index: 10000;" onclick="closeBecaModal()">
+        <div class="diplom-modal" onclick="event.stopPropagation()" style="max-width: 650px; background: #fff; padding: 2rem; border-radius: 12px;">
+            <button class="diplom-modal-close" onclick="closeBecaModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h2 style="color: #10182c; margin-bottom: 1.5rem; text-align: center; font-size: 1.8rem;">
+                <i class="fas fa-graduation-cap" style="color: var(--primary-gold);"></i> Solicitud de Beca 2027
+            </h2>
+
+            <form id="becaForm" onsubmit="submitBeca(event)">
+                <!-- Sección 1: Información Personal -->
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+                    <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-user"></i> 1. Información Personal</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Nombre *</label>
+                            <input type="text" id="becaInputFirstName" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu nombre">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Apellido *</label>
+                            <input type="text" id="becaInputLastName" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu apellido">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Edad *</label>
+                            <input type="number" id="becaInputAge" required min="17" max="99" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="Tu edad" oninput="checkArticulo7()">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">¿Terminó la secundaria? *</label>
+                            <select id="becaInputHS" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; background: white;" onchange="checkArticulo7()">
+                                <option value="" disabled selected>Seleccione</option>
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="articulo7Alert" style="display: none; margin-top: 1rem; padding: 0.75rem; background-color: #fef9c3; border-left: 4px solid #eab308; color: #854d0e; font-size: 0.9rem; border-radius: 4px;">
+                        <i class="fas fa-info-circle"></i> <strong>Aviso:</strong> Como indicaste que no has terminado la secundaria, tu edad mínima para inscribirte debe ser de 25 años en adelante (Ingreso amparado por el Artículo 7mo de la Ley de Educación Superior).
+                    </div>
+                </div>
+
+                <!-- Sección 2: Preferencia y Motivo -->
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+                    <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-pen"></i> 2. Preferencia de Horario y Motivo</h3>
+                    <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: #64748b;">Turnos de preferencia (Mínimo 1, Máximo 2) *</label>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #334155; cursor: pointer;">
+                            <input type="checkbox" class="becaShiftCb" value="Mañana" onchange="checkShifts()"> Mañana
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #334155; cursor: pointer;">
+                            <input type="checkbox" class="becaShiftCb" value="Tarde" onchange="checkShifts()"> Tarde
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #334155; cursor: pointer;">
+                            <input type="checkbox" class="becaShiftCb" value="Vespertino" onchange="checkShifts()"> Vespertino
+                        </label>
+                    </div>
+                    <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">¿Por qué solicitás la beca? *</label>
+                    <textarea id="becaInputReason" required rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; resize: vertical;" placeholder="Contanos brevemente tu situación..."></textarea>
+                </div>
+
+                <!-- Sección 3: Contacto -->
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+                    <h3 style="color: #334155; font-size: 1.1rem; margin-bottom: 1rem;"><i class="fas fa-address-book"></i> 3. Información de Contacto</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Correo Electrónico *</label>
+                            <input type="email" id="becaInputEmail" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="ejemplo@correo.com">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem; color: #64748b;">Celular / WhatsApp *</label>
+                            <input type="tel" id="becaInputPhone" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px;" placeholder="+54 9 ...">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Un asesor te responderá dentro de las 72 horas hábiles.</p>
+                    <button type="submit" id="becaSubmitBtn" class="btn btn-gold btn-lg" style="width: 100%;">
+                        Enviar Solicitud de Beca
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Toast notification -->
+    <div id="customToast" style="visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 10001; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 1rem; opacity: 0; transition: opacity 0.5s, bottom 0.5s;">
+        <span id="customToastMessage">Mensaje</span>
+    </div>
+
     <!-- FOOTER mínimo -->
     <footer
         style="background: var(--gradient-dark); color: rgba(255,255,255,.6); text-align:center; padding: var(--space-6);">
@@ -290,11 +380,13 @@
 
     <!-- WhatsApp + AI Chat Flotante -->
     <div class="whatsapp-float">
-        <!-- AI CHATBOT BUTTON -->
+        <!-- AI CHATBOT BUTTON (Desactivado en esta sección) -->
+        <!--
         <button class="ai-chat-btn" id="aiChatBtn" aria-label="Hablar con el Asistente IA" title="Asistente INCUYO IA">
             <img src="/assets/img/robbie.png" alt="Robbie"
                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; padding: 10px; background: white;">
         </button>
+        -->
 
         <a href="<%= config.inscripciones_whatsapp || 'https://wa.me/5492616271658?text=Hola!%20Me%20interesa%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software' %>"
             class="whatsapp-btn" target="_blank" aria-label="Contactar por WhatsApp">
@@ -302,7 +394,8 @@
         </a>
     </div>
 
-    <!-- AI CHATBOT WINDOW -->
+    <!-- AI CHATBOT WINDOW (Desactivado en esta sección) -->
+    <!--
     <div class="ai-chat-window" id="aiChatWindow" aria-hidden="true">
         <div class="ai-chat-header">
             <div class="ai-chat-header-info">
@@ -339,6 +432,7 @@
             </button>
         </div>
     </div>
+    -->
 
     <!-- Script compartido (incluye lógica del chatbot) -->
     <script src="/js/script.js"></script>
@@ -354,6 +448,106 @@
                 tab.classList.add('active');
                 document.getElementById(tab.dataset.tab).classList.add('active');
             });
+        });
+
+        // ─── BECA MODAL LOGIC ───────────────────────────────
+        function openBecaModal() {
+            document.getElementById('publicBecaModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBecaModal() {
+            document.getElementById('publicBecaModal').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('becaForm').reset();
+            document.getElementById('articulo7Alert').style.display = 'none';
+        }
+
+        function checkArticulo7() {
+            const ageInput = document.getElementById('becaInputAge');
+            const hs = document.getElementById('becaInputHS').value;
+            const alertBox = document.getElementById('articulo7Alert');
+            if (hs === '0') {
+                ageInput.min = "25";
+                alertBox.style.display = 'block';
+            } else {
+                ageInput.min = "17";
+                alertBox.style.display = 'none';
+            }
+        }
+
+        function checkShifts() {
+            const cbs = document.querySelectorAll('.becaShiftCb');
+            let checkedCount = 0;
+            cbs.forEach(cb => { if (cb.checked) checkedCount++; });
+            cbs.forEach(cb => {
+                if (!cb.checked) cb.disabled = checkedCount >= 2;
+            });
+        }
+
+        async function submitBeca(e) {
+            e.preventDefault();
+            const checkedShifts = Array.from(document.querySelectorAll('.becaShiftCb'))
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            if (checkedShifts.length === 0) {
+                showToast("Por favor seleccione al menos un turno de preferencia.", true);
+                return;
+            }
+            const btn = document.getElementById('becaSubmitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            const payload = {
+                first_name: document.getElementById('becaInputFirstName').value.trim(),
+                last_name: document.getElementById('becaInputLastName').value.trim(),
+                reason: document.getElementById('becaInputReason').value.trim(),
+                email: document.getElementById('becaInputEmail').value.trim(),
+                phone: document.getElementById('becaInputPhone').value.trim(),
+                age: parseInt(document.getElementById('becaInputAge').value, 10),
+                high_school_finished: document.getElementById('becaInputHS').value === '1',
+                preferred_shifts: checkedShifts.join(', ')
+            };
+            try {
+                const res = await fetch('/api/scholarships', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    showToast('¡Solicitud enviada con éxito! Te responderemos pronto.');
+                    closeBecaModal();
+                } else {
+                    showToast('Error al enviar solicitud: ' + (data.error || 'Desconocido'), true);
+                }
+            } catch (err) {
+                showToast('Error de conexión. Intente nuevamente.', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Enviar Solicitud de Beca';
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('customToast');
+            const toastMessage = document.getElementById('customToastMessage');
+            toastMessage.textContent = message;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#22c55e';
+            toast.style.visibility = 'visible';
+            toast.style.opacity = '1';
+            toast.style.bottom = '50px';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.bottom = '30px';
+                setTimeout(() => { toast.style.visibility = 'hidden'; }, 500);
+            }, 3000);
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('publicBecaModal');
+                if (modal && modal.classList.contains('active')) closeBecaModal();
+            }
         });
     </script>
 </body>

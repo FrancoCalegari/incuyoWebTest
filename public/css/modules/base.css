@@ -1,0 +1,107 @@
+/* ============================================
+   RESET & BASE STYLES
+   ============================================ */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+	font-size: 16px;
+}
+
+body {
+	font-family: var(--font-body);
+	font-weight: 400;
+	line-height: 1.6;
+	color: var(--gray-800);
+	background-color: var(--white);
+	overflow-x: hidden;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-heading);
+	font-weight: 700;
+	line-height: 1.2;
+	color: var(--gray-900);
+	margin-bottom: var(--space-4);
+}
+
+h1 {
+	font-size: var(--text-5xl);
+	font-weight: 800;
+}
+
+h2 {
+	font-size: var(--text-4xl);
+}
+
+h3 {
+	font-size: var(--text-3xl);
+}
+
+h4 {
+	font-size: var(--text-2xl);
+}
+
+h5 {
+	font-size: var(--text-xl);
+}
+
+h6 {
+	font-size: var(--text-lg);
+}
+
+p {
+	margin-bottom: var(--space-4);
+	font-size: var(--text-base);
+	color: var(--gray-600);
+}
+
+a {
+	color: var(--primary-blue-light);
+	text-decoration: none;
+	transition: color var(--transition-fast);
+}
+
+a:hover {
+	color: var(--primary-cyan);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.container {
+	width: 100%;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0 var(--space-6);
+}
+
+.section {
+	padding: var(--space-20) 0;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.text-gradient {
+	background: var(--gradient-primary);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+

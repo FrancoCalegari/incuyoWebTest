@@ -1,0 +1,182 @@
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes pulse {
+
+	0%,
+	100% {
+		box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+	}
+
+	50% {
+		box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+	}
+}
+
+.fade-in {
+	animation: fadeIn 0.8s ease-out;
+}
+
+.fade-in-up {
+	animation: fadeInUp 0.8s ease-out;
+}
+
+/* Scroll Reveal */
+.reveal {
+	opacity: 0;
+	transform: translateY(30px);
+	transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.active {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.icon {
+	color: var(--gray-100);
+}
+
+/* Tech Stack Infinite Carousel */
+.tech-carousel-container {
+	margin-top: var(--space-16);
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	padding: var(--space-8) 0;
+}
+
+.tech-carousel {
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+	mask-image: linear-gradient(to right,
+			transparent,
+			black 10%,
+			black 90%,
+			transparent);
+	-webkit-mask-image: linear-gradient(to right,
+			transparent,
+			black 10%,
+			black 90%,
+			transparent);
+}
+
+.tech-carousel-track {
+	display: flex;
+	gap: var(--space-12);
+	animation: scroll-tech 30s linear infinite;
+	width: max-content;
+}
+
+.tech-carousel-track:hover {
+	animation-play-state: paused;
+}
+
+.tech-icon {
+	font-size: 3.5rem;
+	color: var(--primary-gold);
+	opacity: 0.8;
+	transition: all var(--transition-base);
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 80px;
+	height: 80px;
+}
+
+.tech-icon:hover {
+	opacity: 1;
+	transform: scale(1.2) translateY(-5px);
+	filter: drop-shadow(0 4px 12px rgba(195, 146, 21, 0.5));
+}
+
+@keyframes scroll-tech {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+/* CTA Button Pulse Animation */
+.cta-pulse {
+	position: relative;
+	animation: ctaPulse 2s ease-in-out infinite;
+}
+
+.cta-pulse::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: inherit;
+	background: inherit;
+	opacity: 0.7;
+	animation: ctaGlow 2s ease-in-out infinite;
+	z-index: -1;
+}
+
+.cta-pulse:hover {
+	animation: none;
+	transform: scale(1.05);
+}
+
+.cta-pulse:hover::before {
+	animation: none;
+	opacity: 1;
+}
+
+@keyframes ctaPulse {
+
+	0%,
+	100% {
+		transform: scale(1);
+		box-shadow: 0 4px 20px rgba(195, 146, 21, 0.4);
+	}
+
+	50% {
+		transform: scale(1.03);
+		box-shadow: 0 6px 30px rgba(195, 146, 21, 0.6);
+	}
+}
+
+@keyframes ctaGlow {
+
+	0%,
+	100% {
+		box-shadow: 0 0 15px rgba(195, 146, 21, 0.5);
+	}
+
+	50% {
+		box-shadow: 0 0 30px rgba(195, 146, 21, 0.8);
+	}
+}
+

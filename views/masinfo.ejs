@@ -37,18 +37,19 @@
     <!-- HERO -->
     <section class="mi-hero">
         <div class="container" style="position:relative; z-index:2;">
-            <p class="mi-hero-eyebrow">Tecnicatura Superior en Desarrollo de Software DGE/R:6079</p>
+            <p class="mi-hero-eyebrow">Tecnicatura Superior en Desarrollo de Software DGE/RES:6079</p>
             <h1>Todo lo que necesitás saber<br>sobre la carrera</h1>
-            <p>3 años · Bimodal · IA integrada · Títulos intermedios habilitantes · Certificaciones laborales</p>
+            <p>3 años · Bimodal · IA integrada · Título final e intermedios habilitantes · Certificaciones laborales</p>
 
             <div class="mi-chips">
                 <span class="mi-chip"><i class="fas fa-calendar-alt"></i> 3 Años (6 cuatrimestres)</span>
                 <span class="mi-chip"><i class="fas fa-laptop"></i> Modalidad Bimodal</span>
                 <span class="mi-chip"><i class="fas fa-robot"></i> IA en todas las materias</span>
                 <span class="mi-chip"><i class="fas fa-certificate"></i> 3 Títulos oficiales</span>
+                <span class="mi-chip"><i class="fas fa-certificate"></i> Títulos habilitantes para dar clases</span>
                 <span class="mi-chip"><i class="fas fa-award"></i> Certificaciones laborales</span>
                 <% if (becaVisible) { %>
-                <span class="mi-chip"><i class="fas fa-graduation-cap"></i> Becas hasta 40% En Agosto</span>
+                <span class="mi-chip"><i class="fas fa-graduation-cap"></i> Becas de descuento hasta 50% OFF desde agosto</span>
                 <% } %>
             </div>
         </div>
@@ -137,6 +138,7 @@
                 <% }); %>
         </div>
     </section>
+
 
     <!-- CERTIFICACIONES LABORALES -->
     <section class="section" style="background: var(--gray-100);">
@@ -240,7 +242,7 @@
                     <i class="fas fa-door-open"></i>
                 </div>
                 <div class="ingreso-content">
-                    <h2>Acceso amplio e inclusivo</h2>
+                    <h2 style="color:#ffff">Acceso amplio e inclusivo</h2>
                     <p><i class="fas fa-check" style="color:var(--primary-gold); margin-right:.5rem;"></i>
                         Haber aprobado el nivel Secundario o estar cursando el último año.</p>
                     <p><i class="fas fa-check" style="color:var(--primary-gold); margin-right:.5rem;"></i>
@@ -264,7 +266,7 @@
                 <% if (becaVisible) { %>
                 <button class="btn btn-gold btn-lg" onclick="openBecaModal()"
                     style="font-size: 1.1rem; padding: 1rem 2.5rem;">
-                    <i class="fas fa-envelope-open-text"></i> Solicitar Beca Ahora
+                    <i class="fas fa-envelope-open-text"></i> Solicitar Beca
                 </button>
                 <% } %>
                 <a href="/" class="btn btn-secondary btn-lg">
@@ -285,6 +287,9 @@
             <h2 style="color: #10182c; margin-bottom: 1.5rem; text-align: center; font-size: 1.8rem;">
                 <i class="fas fa-graduation-cap" style="color: var(--primary-gold);"></i> Solicitud de Beca 2027
             </h2>
+            <p style="text-align: center; color: #64748b; font-size: 1.05rem; margin-top: -1rem; margin-bottom: 1.5rem; font-weight: 500;">
+                <i class="fas fa-calendar-alt" style="margin-right: 5px;"></i> Fecha de habilitación: <strong style="color: #10182c;">Desde 13 de julio</strong>
+            </p>
 
             <form id="becaForm" onsubmit="submitBeca(event)">
                 <!-- Sección 1: Información Personal -->

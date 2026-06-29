@@ -68,7 +68,9 @@
             </button>
 
             <ul class="navbar-menu" id="navbarMenu">
-                <li><a href="/" class="btn btn-secondary-no-bg" style="padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600;"><i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Volver al Inicio</a></li>
+                <li><a href="/" class="btn btn-secondary-no-bg"
+                        style="padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600;"><i class="fas fa-arrow-left"
+                            style="margin-right: 5px;"></i> Volver al Inicio</a></li>
             </ul>
 
         </div>
@@ -78,9 +80,6 @@
     <section class="projects-hero">
         <div class="container">
             <div class="projects-hero-content">
-                <a href="/" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Volver al inicio
-                </a>
                 <h1 class="hero-title" style="color: var(--white)">
                     Proyectos de Alumnos
                 </h1>
@@ -238,136 +237,147 @@
     </section>
 
     <!-- TESTIMONIOS SECTION -->
-    <% if (testimonios && testimonios.length > 0) { %>
-    <section class="section" style="background: var(--white)">
-        <div class="container" style="max-width: 1200px">
-            <h2 class="section-title text-center" style="margin-bottom: var(--space-12)">Testimonios de nuestros Egresados</h2>
-            <div class="projects-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-8);">
-                <% testimonios.forEach(function(t) { %>
-                    <div class="project-card reveal">
-                        <div class="project-header" style="background: var(--gray-100);">
-                            <div class="student-photo" style="display:flex;align-items:center;justify-content:center;background:var(--gradient-primary);color:white;font-size:2rem;">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                            <div class="student-info">
-                                <h3><%= t.student_name %></h3>
-                                <span class="student-year"><%= t.student_role %></span>
-                            </div>
-                        </div>
-
-                        <% if (t.video_url) { %>
-                            <div class="project-media">
-                                <% 
-                                let videoUrl = t.video_url;
-                                let isYoutube = videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
-                                %>
-                                <div class="media-container has-video">
-                                    <% if (isYoutube) { 
-                                        let ytId = '';
-                                        if (videoUrl.includes('youtube.com/watch?v=')) { ytId = videoUrl.split('v=')[1].split('&')[0]; }
-                                        else if (videoUrl.includes('youtu.be/')) { ytId = videoUrl.split('youtu.be/')[1].split('?')[0]; }
-                                        if (ytId) { %>
-                                            <iframe class="project-video youtube-video" src="https://www.youtube.com/embed/<%= ytId %>?enablejsapi=1&autoplay=0&controls=1&loop=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                        <% } 
-                                    } else { 
-                                        if (videoUrl.includes('/api/v1/storage/files/')) {
-                                            const fileId = videoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
-                                            videoUrl = `/api/storage/files/${fileId}`;
-                                        }
-                                    %>
-                                        <video class="project-video html-video" controls preload="metadata" playsinline>
-                                            <source src="<%= videoUrl %>" type="video/mp4">
-                                            Tu navegador no soporta la reproducción de video.
-                                        </video>
-                                    <% } %>
+    <% if (testimonios && testimonios.length> 0) { %>
+        <section class="section" style="background: var(--white)">
+            <div class="container" style="max-width: 1200px">
+                <h2 class="section-title text-center" style="margin-bottom: var(--space-12)">Testimonios de nuestros
+                    Egresados</h2>
+                <div class="projects-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-8);">
+                    <% testimonios.forEach(function(t) { %>
+                        <div class="project-card reveal">
+                            <div class="project-header" style="background: var(--gray-100);">
+                                <div class="student-photo"
+                                    style="display:flex;align-items:center;justify-content:center;background:var(--gradient-primary);color:white;font-size:2rem;">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="student-info">
+                                    <h3>
+                                        <%= t.student_name %>
+                                    </h3>
+                                    <span class="student-year">
+                                        <%= t.student_role %>
+                                    </span>
                                 </div>
                             </div>
-                        <% } %>
-                    </div>
-                <% }); %>
-            </div>
-        </div>
-    </section>
-    <% } %>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Instituto INCUYO</h3>
-                    <p>Instituto de Estudios Superiores Nuevo Cuyo PT-169</p>
-                    <p>Formando profesionales en desarrollo de software con las últimas tecnologías e inteligencia
-                        artificial.</p>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Enlaces Rápidos</h3>
-                    <p><a href="/#inicio">Inicio</a></p>
-                    <p><a href="/#programa">Programa</a></p>
-                    <p><a href="/#curriculum">Curriculum</a></p>
-                    <p><a href="/proyectosalumnos">Proyectos Alumnos</a></p>
-                    <p><a href="https://aula.incuyo.edu.ar/" target="_blank">Campus Virtual</a></p>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Contacto</h3>
-                    <div class="contact-item">
-                        <i class="fas fa-phone contact-icon"></i>
-                        <a href="tel:+5492616271658">(+054) 261 6271658</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope contact-icon"></i>
-                        <a href="mailto:incuyo@gmail.com">incuyo@gmail.com</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt contact-icon"></i>
-                        <span>La Rioja 614, Mendoza, Argentina</span>
-                    </div>
+                            <% if (t.video_url) { %>
+                                <div class="project-media">
+                                    <% let videoUrl=t.video_url; let isYoutube=videoUrl.includes('youtube.com') ||
+                                        videoUrl.includes('youtu.be'); %>
+                                        <div class="media-container has-video">
+                                            <% 
+                                                if (isYoutube) { 
+                                                    let ytId = '';
+                                                    if (videoUrl.includes('youtube.com/watch?v=')) { 
+                                                        ytId = videoUrl.split('v=')[1].split('&')[0]; 
+                                                    } else if (videoUrl.includes('youtu.be/')) {
+                                                        ytId = videoUrl.split('youtu.be/')[1].split('?')[0]; 
+                                                    } 
+                                                    if (ytId) { 
+                                            %>
+                                                <iframe class="project-video youtube-video"
+                                                    src="https://www.youtube.com/embed/<%= ytId %>?enablejsapi=1&autoplay=0&controls=1&loop=0"
+                                                    frameborder="0" allow="autoplay; encrypted-media"
+                                                    allowfullscreen></iframe>
+                                                <% } } else { if (videoUrl.includes('/api/v1/storage/files/')) { const
+                                                    fileId=videoUrl.split('/api/v1/storage/files/')[1].split('?')[0];
+                                                    videoUrl=`/api/storage/files/${fileId}`; } %>
+                                                    <video class="project-video html-video" controls preload="metadata"
+                                                        playsinline>
+                                                        <source src="<%= videoUrl %>" type="video/mp4">
+                                                        Tu navegador no soporta la reproducción de video.
+                                                    </video>
+                                                    <% } %>
+                                        </div>
+                                </div>
+                                <% } %>
+                        </div>
+                        <% }); %>
                 </div>
             </div>
+        </section>
+        <% } %>
 
-            <div class="footer-bottom">
-                <p>&copy; 2026 Instituto INCUYO - Todos los derechos reservados</p>
+            <!-- FOOTER -->
+            <footer class="footer">
+                <div class="container">
+                    <div class="footer-content">
+                        <div class="footer-section">
+                            <h3>Instituto INCUYO</h3>
+                            <p>Instituto de Estudios Superiores Nuevo Cuyo PT-169</p>
+                            <p>Formando profesionales en desarrollo de software con las últimas tecnologías e
+                                inteligencia
+                                artificial.</p>
+                        </div>
+
+                        <div class="footer-section">
+                            <h3>Enlaces Rápidos</h3>
+                            <p><a href="/#inicio">Inicio</a></p>
+                            <p><a href="/#programa">Programa</a></p>
+                            <p><a href="/#curriculum">Curriculum</a></p>
+                            <p><a href="/proyectosalumnos">Proyectos Alumnos</a></p>
+                            <p><a href="https://aula.incuyo.edu.ar/" target="_blank">Campus Virtual</a></p>
+                        </div>
+
+                        <div class="footer-section">
+                            <h3>Contacto</h3>
+                            <div class="contact-item">
+                                <i class="fas fa-phone contact-icon"></i>
+                                <a href="tel:+5492616271658">(+054) 261 6271658</a>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope contact-icon"></i>
+                                <a href="mailto:incuyo@gmail.com">incuyo@gmail.com</a>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt contact-icon"></i>
+                                <span>La Rioja 614, Mendoza, Argentina</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-bottom">
+                        <p>&copy; 2026 Instituto INCUYO - Todos los derechos reservados</p>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- WHATSAPP FLOATING BUTTON -->
+            <div class="whatsapp-float">
+                <a href="https://wa.me/5492616271658?text=Hola!%20Me%20gustaría%20recibir%20más%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
+                    class="whatsapp-btn" target="_blank" aria-label="Contactar por WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
             </div>
-        </div>
-    </footer>
 
-    <!-- WHATSAPP FLOATING BUTTON -->
-    <div class="whatsapp-float">
-        <a href="https://wa.me/5492616271658?text=Hola!%20Me%20gustaría%20recibir%20más%20información%20sobre%20la%20Tecnicatura%20en%20Desarrollo%20de%20Software"
-            class="whatsapp-btn" target="_blank" aria-label="Contactar por WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-    </div>
+            <!-- JavaScript -->
+            <script src="/js/script.js"></script>
+            <script>
 
-    <!-- JavaScript -->
-    <script src="/js/script.js"></script>
-    <script>
+                // Year tab filtering
+                document.querySelectorAll('.year-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
 
-        // Year tab filtering
-        document.querySelectorAll('.year-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
+                        const year = tab.dataset.year;
+                        const cards = document.querySelectorAll('.project-card');
+                        let visible = 0;
 
-                const year = tab.dataset.year;
-                const cards = document.querySelectorAll('.project-card');
-                let visible = 0;
+                        cards.forEach(card => {
+                            if (year === 'all' || card.dataset.year === year) {
+                                card.style.display = '';
+                                visible++;
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
 
-                cards.forEach(card => {
-                    if (year === 'all' || card.dataset.year === year) {
-                        card.style.display = '';
-                        visible++;
-                    } else {
-                        card.style.display = 'none';
-                    }
+                        document.getElementById('noProjects').style.display = visible === 0 ? '' : 'none';
+                    });
                 });
-
-                document.getElementById('noProjects').style.display = visible === 0 ? '' : 'none';
-            });
-        });
-    </script>
+            </script>
 </body>
 
 </html>

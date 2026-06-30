@@ -111,9 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		function showTyping() {
 			const typingDiv = document.createElement("div");
-			typingDiv.className = "ai-chat-msg ai-chat-msg--bot";
+			typingDiv.className = "ai-chat-msg ai-chat-msg--bot ai-chat-typing";
 			typingDiv.id = "chatTyping";
-			typingDiv.innerHTML = '<div class="ai-chat-typing"><span></span><span></span><span></span></div>';
+			typingDiv.innerHTML = '<div class="ai-chat-msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
 			chatMessages.appendChild(typingDiv);
 			chatMessages.scrollTop = chatMessages.scrollHeight;
 			return typingDiv;

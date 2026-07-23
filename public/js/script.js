@@ -25,8 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 		anchor.onclick = (e) => {
 			e.preventDefault();
-			const target = document.querySelector(anchor.getAttribute("href"));
-			if (target && navbar) window.scrollTo({ top: target.offsetTop - navbar.offsetHeight, behavior: "smooth" });
+			const targetId = anchor.getAttribute("href");
+			let target = targetId !== "#" ? document.querySelector(targetId) : null;
+			
+			// Fallback para el botón de scroll del hero si el target no existe (ej: becas ocultas)
+			if (!target && anchor.id === "heroScrollBtn") {
+				target = document.querySelector(".hero ~ section");
+			}
+
+			const navOffset = navbar ? navbar.offsetHeight : 0;
+			if (target) {
+				window.scrollTo({ top: target.offsetTop - navOffset, behavior: "smooth" });
+			} else if (anchor.id === "heroScrollBtn") {
+				window.scrollTo({ top: window.innerHeight - navOffset, behavior: "smooth" });
+			}
 		};
 	});
 

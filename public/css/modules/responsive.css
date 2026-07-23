@@ -48,18 +48,19 @@
 	}
 
 	.hero-text-col {
-		flex: 1 1 48%;
+		flex: 1 1 52%;
 		text-align: left;
 	}
 
 	.hero-video-col {
-		flex: 1 1 52%;
+		flex: 1 1 48%;
 	}
 
 	.hero-title {
-		font-size: 2rem;
+		font-size: clamp(2rem, 3.2vw, 2.5rem);
 		margin-bottom: var(--space-4);
 		line-height: 1.15;
+		min-height: 1.15em;
 	}
 
 	.hero-subtitle {
@@ -244,9 +245,10 @@
 	}
 
 	.hero-title {
-		font-size: 3rem;
+		font-size: clamp(1.8rem, 5vw, 2.4rem);
 		margin-bottom: var(--space-4);
 		line-height: 1.2;
+		min-height: 2.3em;
 	}
 
 	.hero-description {

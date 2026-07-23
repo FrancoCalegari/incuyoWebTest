@@ -89,18 +89,18 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: var(--space-12);
+	gap: var(--space-14);
 	width: 100%;
 	padding: var(--space-6) 0;
 }
 
 .hero-text-col {
-	flex: 1 1 45%;
+	flex: 1 1 52%;
 	text-align: left;
 }
 
 .hero-video-col {
-	flex: 1 1 55%;
+	flex: 1 1 48%;
 	animation: fadeInUp 0.8s ease-out 0.6s backwards;
 }
 
@@ -126,10 +126,11 @@
 }
 
 .hero-title {
-	font-size: var(--text-6xl);
+	font-size: clamp(2.3rem, 3.6vw, 3.4rem);
 	color: var(--white);
 	margin-bottom: var(--space-6);
-	line-height: 1.1;
+	line-height: 1.15;
+	min-height: 1.15em; /* Mantiene la altura reservada sin separar la descripción */
 	animation: fadeInUp 0.8s ease-out 0.2s backwards;
 }
 
@@ -200,10 +201,105 @@
 	}
 
 	.hero-title {
-		font-size: var(--text-4xl);
-		min-height: 2.2em; /* Evita que el contenedor cambie de tamaño y haga saltar el contenido */
+		font-size: clamp(1.8rem, 5vw, 2.4rem);
+		min-height: 2.3em; /* Evita saltos en móviles reservando espacio de 2 líneas */
+		line-height: 1.2;
+	}
+
+	.hero {
+		padding-bottom: calc(var(--space-20) + 1rem);
+	}
+
+	.hero-scroll-btn {
+		bottom: 1rem;
 	}
 }
+
+/* Hero Scroll Indicator Button */
+.hero-scroll-btn {
+	position: absolute;
+	bottom: 1.8rem;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 10;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.35rem;
+	color: rgba(255, 255, 255, 0.7);
+	text-decoration: none;
+	transition: transform 0.3s ease, color 0.3s ease;
+	cursor: pointer;
+	animation: heroScrollFadeIn 1s ease-out 0.8s backwards;
+}
+
+.hero-scroll-text {
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-weight: 600;
+	color: var(--gray-300);
+	opacity: 0.85;
+	transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.hero-scroll-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: rgba(16, 24, 44, 0.6);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgba(195, 146, 21, 0.4);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 12px rgba(195, 146, 21, 0.15);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.9rem;
+	color: var(--primary-gold);
+	transition: all 0.3s ease;
+	animation: heroScrollBounce 2.2s infinite ease-in-out;
+}
+
+.hero-scroll-btn:hover {
+	transform: translateX(-50%) translateY(-3px);
+}
+
+.hero-scroll-btn:hover .hero-scroll-icon {
+	background: rgba(195, 146, 21, 0.25);
+	border-color: var(--primary-gold);
+	box-shadow: 0 6px 22px rgba(195, 146, 21, 0.5), 0 0 20px rgba(195, 146, 21, 0.3);
+	color: #ffffff;
+}
+
+.hero-scroll-btn:hover .hero-scroll-text {
+	opacity: 1;
+	color: var(--primary-gold);
+}
+
+@keyframes heroScrollFadeIn {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
+}
+
+@keyframes heroScrollBounce {
+	0%, 20%, 50%, 80%, 100% {
+		transform: translateY(0);
+	}
+	40% {
+		transform: translateY(8px);
+	}
+	60% {
+		transform: translateY(4px);
+	}
+}
+
 
 
 

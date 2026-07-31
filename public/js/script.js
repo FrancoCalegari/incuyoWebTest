@@ -106,29 +106,86 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		if (chatClose) chatClose.onclick = () => toggleChat(true);
 
-		function addMessage(text, isBot) {
+		function formatBotHtml(text) {
+			return text
+				.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+				.replace(/\n/g, '<br>');
+		}
+
+		function addMessage(text, isBot, animate = false) {
 			const msgDiv = document.createElement("div");
 			msgDiv.className = `ai-chat-msg ai-chat-msg--${isBot ? 'bot' : 'user'}`;
-			// Simple markdown-like formatting for bot responses
-			let html = text;
-			if (isBot) {
-				html = html
-					.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-					.replace(/\n/g, '<br>');
-			}
-			msgDiv.innerHTML = `<div class="ai-chat-msg-bubble">${html}</div>`;
+			const bubble = document.createElement("div");
+			bubble.className = "ai-chat-msg-bubble";
+			msgDiv.appendChild(bubble);
 			chatMessages.appendChild(msgDiv);
-			chatMessages.scrollTop = chatMessages.scrollHeight;
+
+			if (isBot && animate) {
+				// Typewriter animation: reveal HTML char by char
+				const fullHtml = formatBotHtml(text);
+				let charIndex = 0;
+				const SPEED = 14; // ms per char — ajustá para velocidad
+
+				if (chatSend) chatSend.disabled = true;
+
+				function typeNextChunk() {
+					// Avanzar de a varios chars para velocidad razonable con textos largos
+					const chunkSize = Math.max(1, Math.floor(fullHtml.length / 120));
+					charIndex = Math.min(charIndex + chunkSize, fullHtml.length);
+					bubble.innerHTML = fullHtml.slice(0, charIndex);
+					chatMessages.scrollTop = chatMessages.scrollHeight;
+
+					if (charIndex < fullHtml.length) {
+						setTimeout(typeNextChunk, SPEED);
+					} else {
+						// Terminó: habilitar envío
+						if (chatSend) chatSend.disabled = false;
+					}
+				}
+				setTimeout(typeNextChunk, SPEED);
+			} else {
+				if (isBot) {
+					bubble.innerHTML = formatBotHtml(text);
+				} else {
+					bubble.textContent = text;
+				}
+				chatMessages.scrollTop = chatMessages.scrollHeight;
+			}
 		}
 
 		function showTyping() {
 			const typingDiv = document.createElement("div");
 			typingDiv.className = "ai-chat-msg ai-chat-msg--bot ai-chat-typing";
 			typingDiv.id = "chatTyping";
-			typingDiv.innerHTML = '<div class="ai-chat-msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+			typingDiv.innerHTML = `
+				<div class="ai-chat-msg-bubble">
+					<div class="ai-chat-typing-inner">
+						<span class="typing-dot"></span>
+						<span class="typing-dot"></span>
+						<span class="typing-dot"></span>
+					</div>
+					<span class="ai-chat-eta" id="chatEta"><i class="fa-regular fa-clock"></i> Respondiendo...</span>
+				</div>`;
 			chatMessages.appendChild(typingDiv);
 			chatMessages.scrollTop = chatMessages.scrollHeight;
+
+			// Contador de tiempo transcurrido
+			let secs = 0;
+			const etaEl = typingDiv.querySelector('#chatEta');
+			const _timer = setInterval(() => {
+				secs++;
+				if (etaEl) etaEl.innerHTML = `<i class="fa-regular fa-clock"></i> Respondiendo... ${secs}s`;
+			}, 1000);
+
+			// Guardar referencia al timer en el elemento para poder pararlo
+			typingDiv._etaTimer = _timer;
 			return typingDiv;
+		}
+
+		function removeTyping(typingEl) {
+			if (!typingEl) return;
+			if (typingEl._etaTimer) clearInterval(typingEl._etaTimer);
+			if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
 		}
 
 		async function sendMessage() {
@@ -157,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				const data = await res.json();
 				console.log("📥 Respuesta recibida del servidor:", data);
 
-				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+				removeTyping(typingEl);
 
 				if (!res.ok) {
 					console.error("❌ Error en respuesta del servidor:", data);
@@ -176,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 					chatHistory.push({ role: "model", parts: [{ text: data.response }] });
 
-					addMessage(data.response, true);
+					addMessage(data.response, true, true); // true = animate typewriter
 
 					// Ejecutar acción de UI si el bot la pidió (aunque ahora el backend no las envía, mantenemos por compatibilidad futura)
 					if (data.action) {
@@ -200,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			} catch (err) {
 				console.error("❌ Error CRÍTICO de conexión:", err);
 				if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+				removeTyping(typingEl);
 				addMessage("Error de conexión con el servidor. Asegurate de que el servicio esté activo e intentá de nuevo.", true);
 			}
 		}

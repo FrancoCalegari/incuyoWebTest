@@ -153,9 +153,22 @@
 /* Typing indicator */
 .ai-chat-typing .ai-chat-msg-bubble {
 	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	padding: 10px 14px;
+}
+.ai-chat-typing-inner {
+	display: flex;
 	align-items: center;
 	gap: 4px;
-	padding: 10px 14px;
+}
+.ai-chat-eta {
+	font-size: 0.7rem;
+	color: var(--gray-500, #9ca3af);
+	font-style: italic;
+	letter-spacing: 0.01em;
+	line-height: 1;
 }
 .typing-dot {
 	width: 7px;

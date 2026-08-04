@@ -187,6 +187,11 @@ router.get('/diplomaturas', async (req, res) => {
     }
 });
 
+// GET /sobrenosotros — Nuestra Historia
+router.get('/sobrenosotros', (req, res) => {
+    res.render('sobrenosotros');
+});
+
 // GET /proyectosalumnos — Student Projects
 router.get('/proyectosalumnos', async (req, res) => {
     try {

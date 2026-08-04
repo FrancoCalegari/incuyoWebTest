@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Nuestra historia — Instituto de Estudios Superiores Nuevo Cuyo PT-169. Más de 40 años formando profesionales en tecnología y desarrollo de software en Mendoza, Argentina." />
+    <meta name="keywords"
+        content="historia incuyo, instituto nuevo cuyo, educación tecnológica mendoza, 40 años, tecnicatura software" />
+    <meta name="author" content="Instituto Nuevo Cuyo" />
+    <title>Nuestra Historia — Instituto Nuevo Cuyo INCUYO</title>
+    <meta name="theme-color" content="#10182c" />
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* ── Page-specific hero ───────────────────────── */
+        .historia-hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1a2744 60%, #0d1f3c 100%);
+            padding: 7rem 0 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .historia-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(195, 146, 21, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(195, 146, 21, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .historia-hero .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(195, 146, 21, 0.15);
+            border: 1px solid rgba(195, 146, 21, 0.4);
+            color: var(--primary-gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+
+        .historia-hero h1 {
+            color: var(--white);
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+
+        .historia-hero h1 span {
+            color: var(--primary-gold);
+        }
+
+        .historia-hero .hero-sub {
+            color: #a0aec0;
+            font-size: 1.1rem;
+            max-width: 580px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        .historia-hero .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.25s;
+            margin-top: 0.5rem;
+        }
+
+        .historia-hero .back-btn:hover {
+            color: var(--primary-gold);
+        }
+
+        /* ── Content section ─────────────────────────── */
+        .historia-content {
+            background: var(--primary-dark);
+            padding: 4rem 0 6rem;
+        }
+
+        .historia-content .sobre-nosotros__body {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        /* ── Responsive adjustments ──────────────────── */
+        @media (max-width: 768px) {
+            .historia-hero {
+                padding: 6rem 1rem 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <img src="/assets/img/logo.png" alt="Instituto Nuevo Cuyo" class="navbar-logo" />
+            </a>
+
+            <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="navbar-menu" id="navbarMenu">
+                <li>
+                    <a href="/" class="btn btn-secondary-no-bg"
+                        style="padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600;">
+                        <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Volver al Inicio
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <section class="historia-hero">
+        <div class="container">
+            <div class="hero-badge">
+                <i class="fas fa-landmark"></i> Instituto Nuevo Cuyo PT-169
+            </div>
+            <h1>Nuestra <span>Historia</span></h1>
+            <p class="hero-sub">
+                Más de 40 años formando los profesionales tecnológicos que el mundo necesita,
+                desde los disquetes hasta la inteligencia artificial.
+            </p>
+        </div>
+    </section>
+
+    <!-- SOBRE NOSOTROS CONTENT -->
+    <section class="historia-content sobre-nosotros">
+        <div class="container">
+            <div class="sobre-nosotros__body reveal">
+                <!-- Introducción -->
+                <div class="sobre-nosotros__intro">
+                    <p>
+                        Hace 40 años, el mundo de la tecnología se guardaba en un bolsillo y medía exactamente 3,5 pulgadas.
+                        En los inicios de nuestra institución, el gran hito tecnológico era escribir código en pantallas de fósforo
+                        verde y escuchar el crujido de un disquete al guardar unas pocas líneas de código. En ese entonces, el
+                        nacimiento de lo que hoy es el <strong>Instituto de Estudios Superiores Nuevo Cuyo PT-169</strong> (incuyo.edu.ar)
+                        comenzó con un sueño simple pero ambicioso: preparar a los profesionales para un futuro que el resto del
+                        mundo apenas imaginaba.
+                    </p>
+                    <p>
+                        El viaje desde esos primeros días ha sido una evolución imparable de herramientas y lenguajes.
+                    </p>
+                </div>
+
+                <!-- Línea de tiempo tecnológica -->
+                <div class="sobre-nosotros__timeline">
+                    <div class="sn-timeline-item reveal">
+                        <div class="sn-timeline-icon"><i class="fas fa-code"></i></div>
+                        <div class="sn-timeline-content">
+                            <h3>Los cimientos de la programación</h3>
+                            <p>Empezamos dominando la lógica estructurada con gigantes de la época como COBOL, BASIC, RPG, C, C++, FORTRAN y más.</p>
+                        </div>
+                    </div>
+
+                    <div class="sn-timeline-item reveal">
+                        <div class="sn-timeline-icon"><i class="fas fa-floppy-disk"></i></div>
+                        <div class="sn-timeline-content">
+                            <h3>La era del disquete</h3>
+                            <p>Aprendimos a optimizar cada byte porque el espacio físico era un verdadero lujo.</p>
+                        </div>
+                    </div>
+
+                    <div class="sn-timeline-item reveal">
+                        <div class="sn-timeline-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="sn-timeline-content">
+                            <h3>La revolución del disco sólido (SSD)</h3>
+                            <p>Dejamos atrás las esperas magnéticas para dar paso a la velocidad pura y al procesamiento de datos en tiempo real.</p>
+                        </div>
+                    </div>
+
+                    <div class="sn-timeline-item reveal">
+                        <div class="sn-timeline-icon"><i class="fas fa-cloud"></i></div>
+                        <div class="sn-timeline-content">
+                            <h3>La conquista de la nube</h3>
+                            <p>Las fronteras físicas desaparecieron; el almacenamiento se volvió infinito y el aula se expandió al código colaborativo global con SQL y la gestión avanzada de bases de datos.</p>
+                        </div>
+                    </div>
+
+                    <div class="sn-timeline-item reveal">
+                        <div class="sn-timeline-icon"><i class="fas fa-brain"></i></div>
+                        <div class="sn-timeline-content">
+                            <h3>El ecosistema de la Inteligencia Artificial</h3>
+                            <p>Hoy lideramos el desarrollo actual con Python, el lenguaje rey de la IA, y tecnologías de vanguardia como JavaScript (TensorFlow.js) y más, para optimizar modelos de aprendizaje automático.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Párrafos centrales -->
+                <div class="sobre-nosotros__message reveal">
+                    <p>
+                        En Incuyo no solo cambiamos de soportes físicos o de sintaxis; <strong>transformamos vidas a través del conocimiento</strong>.
+                        Actualmente, nuestros profesores utilizan herramientas de IA para personalizar la enseñanza. A su vez, los alumnos
+                        desarrollan software integrando agentes inteligentes, automatización y modelos de lenguaje avanzados desde el primer semestre.
+                    </p>
+                    <p>
+                        El mercado global busca desarrolladores que dominen la lógica tradicional pero que también sepan co-programar con
+                        algoritmos inteligentes. Nuestra <strong>Tecnicatura Superior en Desarrollo de Software</strong> está completamente
+                        actualizada para darte esa ventaja competitiva. Aquí no vienes a memorizar código obsoleto; vienes a dominar las
+                        tecnologías que las empresas tecnológicas globales exigen hoy mismo.
+                    </p>
+                </div>
+
+                <!-- Cierre destacado -->
+                <div class="sobre-nosotros__highlight reveal">
+                    <p>
+                        El futuro ya no se escribe en COBOL ni se guarda en un disquete:
+                        <strong>se programa en Python, se despliega en la nube y se optimiza con Inteligencia Artificial.</strong>
+                        Tu lugar está en Incuyo, te esperamos.
+                    </p>
+                </div>
+
+                <!-- Firma -->
+                <div class="sobre-nosotros__firma reveal">
+                    <div class="sobre-nosotros__firma-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="sobre-nosotros__firma-info">
+                        <span class="sobre-nosotros__firma-nombre">Lic. Miguel Ángel Rodríguez</span>
+                        <span class="sobre-nosotros__firma-cargo">Fundador &amp; Rector</span>
+                    </div>
+                </div>
+
+                <!-- CTA volver -->
+                <div style="text-align:center; margin-top: 3rem;">
+                    <a href="/" class="btn btn-gold btn-lg">
+                        <i class="fas fa-arrow-left"></i> Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Navbar scroll
+        const _navbar = document.getElementById('navbar');
+        const _navMenu = document.getElementById('navbarMenu');
+        const _navToggle = document.getElementById('navbarToggle');
+
+        window.addEventListener('scroll', () => {
+            _navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Hamburger
+        function _toggleMenu(state) {
+            _navToggle.classList.toggle('active', state);
+            _navMenu.classList.toggle('active', state);
+        }
+
+        _navToggle.addEventListener('click', () => _toggleMenu(!_navMenu.classList.contains('active')));
+
+        document.addEventListener('click', (e) => {
+            if (!_navbar.contains(e.target) || e.target.tagName === 'A') _toggleMenu(false);
+        });
+
+        // Reveal on scroll — usa .active igual que animations.css
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(en => {
+                if (en.isIntersecting) {
+                    en.target.classList.add('active');
+                    revealObserver.unobserve(en.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+
+</html>
+

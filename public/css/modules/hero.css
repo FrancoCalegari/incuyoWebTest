@@ -143,10 +143,38 @@
 
 .hero-cta-group {
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	gap: var(--space-4);
-	align-items: center;
+	width: 100%;
+	max-width: 520px;
 	animation: fadeInUp 0.8s ease-out 0.55s backwards;
+}
+
+.hero-cta-main {
+	width: 100%;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+}
+
+.hero-cta-row {
+	display: flex;
+	gap: var(--space-4);
+	width: 100%;
+}
+
+.hero-cta-row .btn {
+	flex: 1;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	padding-left: var(--space-3);
+	padding-right: var(--space-3);
+	white-space: nowrap;
 }
 
 .hero-video {

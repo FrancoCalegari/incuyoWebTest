@@ -76,14 +76,12 @@
 	}
 
 	.hero-cta-group {
-		justify-content: flex-start;
 		gap: var(--space-3);
 	}
 
 	.hero-cta-group .btn {
 		font-size: 0.8rem;
-		padding: var(--space-3) var(--space-5);
-		width: auto;
+		padding: var(--space-3) var(--space-4);
 	}
 
 	.hero-video {
@@ -317,6 +315,10 @@
 
 	.btn {
 		width: 100%;
+	}
+
+	.hero-cta-row {
+		flex-direction: column;
 	}
 
 	.course-list {

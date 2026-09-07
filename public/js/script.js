@@ -106,6 +106,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		if (chatClose) chatClose.onclick = () => toggleChat(true);
 
+		// Respuestas rápidas
+		document.querySelectorAll('.ai-quick-reply').forEach(btn => {
+			btn.addEventListener('click', () => {
+				const question = btn.getAttribute('data-question');
+				if (chatInput) chatInput.value = question;
+				sendMessage();
+				const repliesContainer = document.getElementById('aiChatQuickReplies');
+				if (repliesContainer) {
+					repliesContainer.style.display = 'none';
+				}
+			});
+		});
+
 		function formatBotHtml(text) {
 			return text
 				.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')

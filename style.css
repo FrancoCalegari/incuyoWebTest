@@ -1313,7 +1313,33 @@ a:hover {
 }
 
 /* Input Area */
-.ai-chat-input-area {
+	.ai-chat-quick-replies {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		padding: 10px 15px;
+		background: var(--white);
+		border-top: 1px solid var(--gray-200);
+	}
+
+	.ai-quick-reply {
+		background: var(--gray-100);
+		color: var(--primary-dark);
+		border: 1px solid var(--gray-300);
+		border-radius: 16px;
+		padding: 6px 12px;
+		font-size: 0.85rem;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.ai-quick-reply:hover {
+		background: var(--primary-blue-light);
+		color: var(--white);
+		border-color: var(--primary-blue-light);
+	}
+
+	.ai-chat-input-area {
 	display: flex;
 	align-items: flex-end;
 	gap: var(--space-2);

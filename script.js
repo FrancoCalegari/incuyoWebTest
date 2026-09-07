@@ -100,6 +100,19 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 	chatSend.onclick = sendMessage;
 
+	// Respuestas rápidas
+	document.querySelectorAll('.ai-quick-reply').forEach(btn => {
+		btn.addEventListener('click', () => {
+			const question = btn.getAttribute('data-question');
+			chatInput.value = question;
+			sendMessage();
+			const repliesContainer = document.getElementById('aiChatQuickReplies');
+			if (repliesContainer) {
+				repliesContainer.style.display = 'none';
+			}
+		});
+	});
+
 	/** Agrega un mensaje al DOM del chat */
 	function appendMessage(role, textContent, richContent) {
 		const wrapper = document.createElement("div");

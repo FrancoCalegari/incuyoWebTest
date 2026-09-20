@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		function formatBotHtml(text) {
 			return text
 				.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+				.replace(/\[BOTON_BECA\]/g, '<button type="button" class="btn btn-gold btn-sm" onclick="openBecaModal()" style="margin-top: 8px; display: inline-block; border-radius: 6px;"><i class="fas fa-wpforms"></i> Completar Formulario de Beca</button>')
 				.replace(/\n/g, '<br>');
 		}
 

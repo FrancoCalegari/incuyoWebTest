@@ -65,6 +65,7 @@
                 <li><a href="#" data-panel="ia"><i class="fas fa-robot"></i> Estado IA</a></li>
                 <li><a href="#" data-panel="becas"><i class="fas fa-envelope-open-text"></i> Becas</a></li>
                 <li><a href="#" data-panel="reviews"><i class="fas fa-comment-alt"></i> Comentarios</a></li>
+                <li><a href="#" data-panel="company-contacts"><i class="fas fa-briefcase"></i> Empresas / IncStudents <span style="background:var(--primary-gold,#c39215);color:#000;border-radius:10px;padding:2px 7px;font-size:0.75rem;margin-left:5px;font-weight:700;"><%= (typeof companyContacts !== 'undefined' ? companyContacts.filter(c => c.status === 'pending').length : 0) %></span></a></li>
                 <li><a href="#" data-panel="livechat" id="livechatSidebarLink"><i class="fas fa-comments"></i> Chat en Vivo <span class="livechat-badge" id="livechatBadge" style="display:none;"></span></a></li>
             </ul>
 
@@ -954,6 +955,101 @@
                         <div style="text-align:center; padding: 3rem; color: #999;">
                             <i class="fas fa-comment-slash" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
                             <p>Todavía no hay comentarios enviados por alumnos.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- ═══ EMPRESAS / INCSTUDENTS PANEL ═══ -->
+            <div class="panel" id="panel-company-contacts">
+                <div class="panel-section">
+                    <div class="panel-title">
+                        <h3><i class="fas fa-briefcase"></i> Contactos de Empresas (IncStudents)</h3>
+                        <span style="background: var(--primary-gold, #c39215); color: #000; font-size: 0.78rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 999px;">
+                            <%= (typeof companyContacts !== 'undefined' ? companyContacts.filter(c => c.status === 'pending').length : 0) %> pendientes
+                        </span>
+                    </div>
+                    <p style="color:#888; font-size:0.88rem; margin-bottom:1.5rem;">
+                        Gestioná las solicitudes corporativas, requerimientos de proyectos y pedidos de pasantes enviados a través de la sección <strong>IncStudents</strong> (/servicios).
+                    </p>
+
+                    <% if (typeof companyContacts !== 'undefined' && companyContacts.length > 0) { %>
+                        <div style="overflow-x: auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Empresa</th>
+                                        <th>Referente</th>
+                                        <th>Contacto</th>
+                                        <th>Servicio de Interés</th>
+                                        <th>Mensaje / Proyecto</th>
+                                        <th>Estado</th>
+                                        <th style="text-align:right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% companyContacts.forEach(function(c) {
+                                        let dt = new Date(c.created_at);
+                                        let dateStr = dt.toLocaleDateString('es-AR') + ' ' + dt.toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'});
+                                        const cleanPhone = (c.phone || '').replace(/[^0-9]/g, '');
+
+                                        const serviceLabels = {
+                                            'desarrollo_software': 'Desarrollo a Medida',
+                                            'pasantes': 'Incorporación de Pasantes',
+                                            'digitalizacion': 'Digitalización / Procesos',
+                                            'consultoria': 'Consultoría Tecnológica',
+                                            'otro': 'Otro requerimiento'
+                                        };
+                                        const serviceLabel = serviceLabels[c.service_type] || c.service_type;
+                                    %>
+                                        <tr data-id="<%= c.id %>">
+                                            <td><span style="font-size:0.82rem; color:#888; white-space:nowrap;"><%= dateStr %></span></td>
+                                            <td><strong style="color:var(--primary-gold, #c39215);"><%= c.company_name %></strong></td>
+                                            <td><span><%= c.contact_name %></span></td>
+                                            <td>
+                                                <div style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem;">
+                                                    <a href="mailto:<%= c.email %>" style="color:#38bdf8; text-decoration:none;"><i class="fas fa-envelope"></i> <%= c.email %></a>
+                                                    <% if (cleanPhone) { %>
+                                                        <a href="https://wa.me/<%= cleanPhone %>" target="_blank" style="color:#4ade80; text-decoration:none;"><i class="fab fa-whatsapp"></i> <%= c.phone %></a>
+                                                    <% } else if (c.phone) { %>
+                                                        <span style="color:#94a3b8;"><i class="fas fa-phone"></i> <%= c.phone %></span>
+                                                    <% } %>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span style="font-size:0.82rem; background:rgba(255,255,255,0.08); padding:0.25rem 0.6rem; border-radius:4px; display:inline-block; border:1px solid rgba(255,255,255,0.15);">
+                                                    <%= serviceLabel %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div style="font-size:0.85rem; color:#cbd5e1; max-width:260px; max-height:80px; overflow-y:auto; line-height:1.4; padding-right:4px;">
+                                                    <%= c.message %>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select onchange="companyContactSetStatus(<%= c.id %>, this.value, this)"
+                                                    style="padding:0.3rem 0.6rem; border-radius:6px; font-size:0.82rem; font-weight:600; cursor:pointer; background:#1e293b; color:#fff; border:1px solid #475569;">
+                                                    <option value="pending" <%= c.status === 'pending' ? 'selected' : '' %>>⏳ Pendiente</option>
+                                                    <option value="contacted" <%= c.status === 'contacted' ? 'selected' : '' %>>📞 Contactado</option>
+                                                    <option value="in_progress" <%= c.status === 'in_progress' ? 'selected' : '' %>>🔄 En Gestión</option>
+                                                    <option value="closed" <%= c.status === 'closed' ? 'selected' : '' %>>✅ Concretado / Cerrado</option>
+                                                </select>
+                                            </td>
+                                            <td style="text-align:right; white-space:nowrap;">
+                                                <button class="btn btn-danger btn-sm" onclick="companyContactDelete(<%= c.id %>, this)" title="Eliminar registro">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div style="text-align:center; padding: 3rem; color: #999;">
+                            <i class="fas fa-building" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+                            <p>Todavía no se han recibido solicitudes de contacto de empresas.</p>
                         </div>
                     <% } %>
                 </div>
@@ -2439,6 +2535,60 @@
                     }
                 } else {
                     alert('Error: ' + (data.error || 'desconocido'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            } catch (err) {
+                alert('Error de conexión');
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+
+        // ─── CONTACTOS DE EMPRESAS (INCSTUDENTS) ─────────────────────
+        async function companyContactSetStatus(id, status, selectEl) {
+            const originalValue = selectEl.dataset.prev || selectEl.value;
+            selectEl.disabled = true;
+            try {
+                const res = await fetch(`/admin/api/company-contacts/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    selectEl.dataset.prev = status;
+                    showToast('Estado de la empresa actualizado');
+                } else {
+                    alert('Error: ' + (data.error || 'No se pudo actualizar'));
+                    selectEl.value = originalValue;
+                }
+            } catch (err) {
+                alert('Error de conexión');
+                selectEl.value = originalValue;
+            } finally {
+                selectEl.disabled = false;
+            }
+        }
+
+        async function companyContactDelete(id, btn) {
+            if (!confirm('¿Seguro que deseas eliminar este registro de contacto de empresa?')) return;
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            try {
+                const res = await fetch(`/admin/api/company-contacts/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    const row = btn.closest('tr');
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => row.remove(), 300);
+                    }
+                    showToast('Contacto de empresa eliminado');
+                } else {
+                    alert('Error al eliminar: ' + (data.error || 'Desconocido'));
                     btn.disabled = false;
                     btn.innerHTML = originalHtml;
                 }

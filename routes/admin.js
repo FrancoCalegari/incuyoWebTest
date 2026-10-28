@@ -44,7 +44,7 @@ router.get('/logout', (req, res) => {
 // ─── DASHBOARD ───────────────────────────────────────
 router.get('/', requireAdmin, async (req, res) => {
     try {
-        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult, testResult, scholarshipsResult, reviewsResult] = await Promise.all([
+        const [currResult, scResult, projResult, diplomResult, pasResult, configResult, certResult, testResult, scholarshipsResult, reviewsResult, companyContactsResult] = await Promise.all([
             query('SELECT * FROM curriculum ORDER BY year, order_index'),
             query('SELECT * FROM social_commitment ORDER BY order_index'),
             query('SELECT * FROM student_projects ORDER BY year, order_index'),
@@ -55,6 +55,7 @@ router.get('/', requireAdmin, async (req, res) => {
             query('SELECT * FROM testimonios ORDER BY order_index').catch(() => ({ result: [] })),
             query('SELECT * FROM scholarship_applications ORDER BY created_at DESC').catch(() => ({ result: [] })),
             query('SELECT * FROM student_reviews ORDER BY created_at DESC').catch(() => ({ result: [] })),
+            query('SELECT * FROM company_contacts ORDER BY created_at DESC').catch(() => ({ result: [] })),
         ]);
 
         const curriculum = currResult?.result || currResult?.results || (Array.isArray(currResult) ? currResult : []);
@@ -67,6 +68,7 @@ router.get('/', requireAdmin, async (req, res) => {
         const testimonios = testResult?.result || testResult?.results || (Array.isArray(testResult) ? testResult : []);
         const scholarships = scholarshipsResult?.result || scholarshipsResult?.results || (Array.isArray(scholarshipsResult) ? scholarshipsResult : []);
         const studentReviews = reviewsResult?.result || reviewsResult?.results || (Array.isArray(reviewsResult) ? reviewsResult : []);
+        const companyContacts = companyContactsResult?.result || companyContactsResult?.results || (Array.isArray(companyContactsResult) ? companyContactsResult : []);
 
         // Parse tech_tags
         projects.forEach((p) => {
@@ -81,10 +83,10 @@ router.get('/', requireAdmin, async (req, res) => {
         let horario = null;
         try { horario = JSON.parse(config.horario || 'null'); } catch (e) { horario = null; }
 
-        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios, scholarships, studentReviews, config });
+        res.render('admin/dashboard', { curriculum, commitments, projects, diplomaturas, pasantias, horario, certificaciones, testimonios, scholarships, studentReviews, companyContacts, config });
     } catch (err) {
         console.error('Error load dashboard:', err);
-        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [], scholarships: [], studentReviews: [], config: {} });
+        res.render('admin/dashboard', { curriculum: [], commitments: [], projects: [], diplomaturas: [], pasantias: [], horario: null, certificaciones: [], testimonios: [], scholarships: [], studentReviews: [], companyContacts: [], config: {} });
     }
 });
 
@@ -214,6 +216,21 @@ router.post('/api/init-tables', requireAdmin, async (req, res) => {
             status VARCHAR(20) DEFAULT 'pending',
             created_at DATETIME DEFAULT NOW()
         )`).catch(() => {});
+
+        // Crear tabla de contactos de empresas (IncStudents)
+        await query(`CREATE TABLE IF NOT EXISTS company_contacts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            company_name VARCHAR(255) NOT NULL,
+            contact_name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            phone VARCHAR(100),
+            service_type VARCHAR(100) NOT NULL,
+            message TEXT NOT NULL,
+            status VARCHAR(30) DEFAULT 'pending',
+            notes TEXT,
+            created_at DATETIME DEFAULT NOW()
+        )`).catch(() => {});
+
 
         // Insert default horario if not exists
         await query(`INSERT IGNORE INTO configuracion (clave, valor) VALUES ('horario', '${JSON.stringify([
@@ -512,6 +529,42 @@ router.get('/api/scholarships', requireAdmin, async (req, res) => {
 router.delete('/api/scholarships/:id', requireAdmin, async (req, res) => {
     try {
         await query(`DELETE FROM scholarship_applications WHERE id=?`, [parseInt(req.params.id)]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── CONTACTOS DE EMPRESAS (INCSTUDENTS) CRUD ────────────────────────
+router.get('/api/company-contacts', requireAdmin, async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM company_contacts ORDER BY created_at DESC');
+        res.json(result?.result || result?.results || (Array.isArray(result) ? result : []));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/api/company-contacts/:id/status', requireAdmin, async (req, res) => {
+    try {
+        const { status, notes } = req.body;
+        if (!['pending', 'contacted', 'in_progress', 'closed'].includes(status)) {
+            return res.status(400).json({ error: 'Estado inválido' });
+        }
+        if (notes !== undefined) {
+            await query(`UPDATE company_contacts SET status=?, notes=? WHERE id=?`, [status, notes, parseInt(req.params.id)]);
+        } else {
+            await query(`UPDATE company_contacts SET status=? WHERE id=?`, [status, parseInt(req.params.id)]);
+        }
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/api/company-contacts/:id', requireAdmin, async (req, res) => {
+    try {
+        await query(`DELETE FROM company_contacts WHERE id=?`, [parseInt(req.params.id)]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -83,6 +83,85 @@ async function sendAdminNotificationEmail(sessionId, chatHistory) {
     }
 }
 
+async function sendCompanyContactNotificationEmail({ company_name, contact_name, email, phone, service_type, message }) {
+    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean);
+    if (!adminEmails.length) {
+        console.warn('⚠️ [CompanyContact] No hay ADMIN_EMAILS configurados en .env');
+        return;
+    }
+    if (!process.env.SMTP_USER || process.env.SMTP_PASS === 'xxxx xxxx xxxx xxxx') {
+        console.warn('⚠️ [CompanyContact] SMTP no configurado — email no enviado');
+        return;
+    }
+
+    const serviceLabels = {
+        'desarrollo_software': 'Desarrollo de Software / Plataforma Web',
+        'pasantes': 'Incorporación de Pasantes / Alumnos del Último Año',
+        'digitalizacion': 'Digitalización y Automatización de Procesos',
+        'consultoria': 'Auditoría / Consultoría Tecnológica',
+        'otro': 'Otro requerimiento'
+    };
+    const serviceLabel = serviceLabels[service_type] || service_type;
+
+    const dashboardUrl = `${process.env.SITE_URL || 'http://localhost:3000'}/admin`;
+
+    const transporter = createTransporter();
+    try {
+        await transporter.sendMail({
+            from: `"INCUYO Web — IncStudents" <${process.env.SMTP_USER}>`,
+            to: adminEmails.join(', '),
+            subject: `💼 Nueva Solicitud Corporativa: ${company_name} (IncStudents)`,
+            html: `
+            <div style="font-family:sans-serif;max-width:600px;margin:0 auto;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#ffffff;">
+                <div style="background:linear-gradient(135deg,#10182c,#1e3a5f);padding:24px;color:white;border-bottom:3px solid #c39215;">
+                    <span style="background:rgba(195,146,21,0.25);color:#c39215;font-size:0.75rem;padding:4px 8px;border-radius:4px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">IncStudents</span>
+                    <h2 style="margin:10px 0 0;font-size:1.35rem;color:#ffffff;">💼 Solicitud de Contacto Corporativo</h2>
+                    <p style="margin:6px 0 0;opacity:0.85;font-size:0.9rem;">Una empresa se ha contactado a través de la sección de servicios</p>
+                </div>
+                <div style="padding:24px;color:#333;">
+                    <table style="width:100%;border-collapse:collapse;font-size:0.95rem;margin-bottom:20px;">
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:8px 0;font-weight:600;color:#555;width:160px;">Empresa / Organización:</td>
+                            <td style="padding:8px 0;font-weight:700;color:#10182c;">${company_name}</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:8px 0;font-weight:600;color:#555;">Referente / Cargo:</td>
+                            <td style="padding:8px 0;">${contact_name}</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:8px 0;font-weight:600;color:#555;">Email:</td>
+                            <td style="padding:8px 0;"><a href="mailto:${email}" style="color:#1a56db;text-decoration:none;">${email}</a></td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:8px 0;font-weight:600;color:#555;">Teléfono:</td>
+                            <td style="padding:8px 0;">${phone ? `<a href="https://wa.me/${phone.replace(/[^0-9]/g, '')}" style="color:#059669;text-decoration:none;">${phone}</a>` : 'No especificado'}</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:8px 0;font-weight:600;color:#555;">Interés / Servicio:</td>
+                            <td style="padding:8px 0;font-weight:600;color:#c39215;">${serviceLabel}</td>
+                        </tr>
+                    </table>
+
+                    <div style="background:#f8fafc;padding:16px;border-left:4px solid #c39215;border-radius:4px;margin-bottom:24px;">
+                        <p style="margin:0 0 6px;font-size:0.85rem;color:#666;font-weight:600;text-transform:uppercase;">Mensaje / Requerimiento:</p>
+                        <p style="margin:0;white-space:pre-line;color:#222;font-size:0.95rem;">${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+                    </div>
+
+                    <div style="text-align:center;">
+                        <a href="${dashboardUrl}" style="background:#10182c;color:#ffffff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;border:1px solid #c39215;">
+                            🖥️ Ver en Panel de Administración
+                        </a>
+                    </div>
+                </div>
+            </div>`,
+        });
+        console.log(`✉️ [CompanyContact] Notificación enviada a: ${adminEmails.join(', ')}`);
+    } catch (err) {
+        console.error('❌ [CompanyContact] Error enviando email:', err.message);
+    }
+}
+
+
 // ─── Helper: normalizar imagen URLs ─────────────────
 function normalizeImgUrl(url) {
     if (!url) return '';
@@ -458,6 +537,53 @@ router.post('/api/scholarships', async (req, res) => {
     } catch (err) {
         console.error('❌ Error en scholarship submit:', err);
         res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+// ─── CONTACTO DE EMPRESAS (INCSTUDENTS) ──────────────────────────
+router.post('/api/company-contact', async (req, res) => {
+    try {
+        const { company_name, contact_name, email, phone, service_type, message } = req.body;
+
+        if (!company_name || !company_name.trim()) {
+            return res.status(400).json({ ok: false, error: 'El nombre de la empresa es obligatorio' });
+        }
+        if (!contact_name || !contact_name.trim()) {
+            return res.status(400).json({ ok: false, error: 'El nombre del contacto o referente es obligatorio' });
+        }
+        if (!email || !email.trim() || !email.includes('@')) {
+            return res.status(400).json({ ok: false, error: 'Ingrese un correo electrónico válido' });
+        }
+        if (!message || !message.trim()) {
+            return res.status(400).json({ ok: false, error: 'Por favor describa brevemente su necesidad o proyecto' });
+        }
+
+        const safeCompany = company_name.trim();
+        const safeContact = contact_name.trim();
+        const safeEmail = email.trim();
+        const safePhone = (phone || '').trim();
+        const safeService = (service_type || 'desarrollo_software').trim();
+        const safeMessage = message.trim();
+
+        await query(
+            `INSERT INTO company_contacts (company_name, contact_name, email, phone, service_type, message, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())`,
+            [safeCompany, safeContact, safeEmail, safePhone, safeService, safeMessage]
+        );
+
+        // Envío asincrónico del email para no demorar la respuesta del endpoint
+        sendCompanyContactNotificationEmail({
+            company_name: safeCompany,
+            contact_name: safeContact,
+            email: safeEmail,
+            phone: safePhone,
+            service_type: safeService,
+            message: safeMessage
+        }).catch(e => console.error('Error background email notification:', e));
+
+        res.json({ ok: true, message: '¡Gracias por contactarnos! Un responsable de IncStudents se comunicará a la brevedad.' });
+    } catch (err) {
+        console.error('❌ Error en company-contact submit:', err);
+        res.status(500).json({ ok: false, error: 'Error al enviar la solicitud. Por favor intente nuevamente.' });
     }
 });
 
